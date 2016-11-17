@@ -18,6 +18,29 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.sinnerschrader.com/projects/SKILLWILL</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@git.sinnerschrader.com:SkillWill/skillwill.git</connection>
+        <developerConnection>scm:git:git@git.sinnerschrader.com:SkillWill/skillwill.git</developerConnection>
+    </scm>
+
+    <organization>
+        <name>SinnerSchrader</name>
+        <url>https://sinnerschrader.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>torree</id>
+            <name>Torben Reetz</name>
+            <email>torben.reetz@sinnerschrader.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

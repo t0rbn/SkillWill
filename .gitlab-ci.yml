@@ -1,0 +1,11 @@
+image: java:8-jdk-alpine
+
+before_script:
+
+cache:
+  key: "$CI_BUILD_NAME"
+
+build:
+  script:
+    - ./mvnw package -e
+    - cat target/site/jacoco/index.html

@@ -1,4 +1,4 @@
-package com.sinnerschrader;
+package com.sinnerschrader.skillwill;
 
 import org.junit.Test;
 

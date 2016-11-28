@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,9 @@ public class LoginController {
 	})
 	@RequestMapping(path = "/login", method = RequestMethod.POST)
 	public ResponseEntity<String> login(@RequestParam("username") String username, @RequestParam("password") String password) {
-		return new ResponseEntity<String>("Not Implemented yet",  HttpStatus.NOT_IMPLEMENTED);
+		JSONObject returnStatus = new JSONObject();
+		returnStatus.put("session", "b374d9b3b58269309bf67d5ba2879c3e");
+		return new ResponseEntity<String>(returnStatus.toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -44,11 +47,12 @@ public class LoginController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 400, message = "Bad Request"),
-			@ApiResponse(code = 500, message = "Failure")
-	})
+			@ApiResponse(code = 500, message = "Failure") })
 	@RequestMapping(path = "/logout", method = RequestMethod.GET)
 	public ResponseEntity<String> logout() {
-		return new ResponseEntity<String>("Not Implemented yet", HttpStatus.NOT_IMPLEMENTED);
+		JSONObject returnStatus = new JSONObject();
+		returnStatus.put("status", "success");
+		return new ResponseEntity<String>(returnStatus.toString(), HttpStatus.OK);
 	}
 
 }

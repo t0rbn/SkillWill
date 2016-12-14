@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,7 @@ public class LoginController {
 		@ApiResponse(code = 401, message = "Unauthorized"),
 		@ApiResponse(code = 500, message = "Failure")
 	})
+	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/login", method = RequestMethod.POST)
 	public ResponseEntity<String> login(@RequestParam("username") String username, @RequestParam("password") String password) {
 		JSONObject returnStatus = new JSONObject();
@@ -48,6 +50,7 @@ public class LoginController {
 			@ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 400, message = "Bad Request"),
 			@ApiResponse(code = 500, message = "Failure") })
+	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/logout", method = RequestMethod.GET)
 	public ResponseEntity<String> logout() {
 		JSONObject returnStatus = new JSONObject();

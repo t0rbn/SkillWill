@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +44,7 @@ public class UserController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "search", value = "Names of skills to search, separated by ','", paramType="query", required = false),
 	})
+	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public ResponseEntity<String> getUsers(@RequestParam(required = false) String search) {
 		if (StringUtils.isEmpty(search)) {
@@ -61,6 +63,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = "Not Found"),
 			@ApiResponse(code = 500, message = "Failure")
 	})
+	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}", method = RequestMethod.GET)
 	public ResponseEntity<String> getUser(@PathVariable String user) {
 		return new ResponseEntity<String>(mockData.foobar.toString(), HttpStatus.OK);
@@ -82,6 +85,7 @@ public class UserController {
 		@ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType="form", required = true),
 		@ApiImplicitParam(name = "will_level", value = "Level of will", paramType="form", required = true)
 	})
+	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
 	public ResponseEntity<String> modifiySkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,@RequestParam("will_level") String will_level) {
 		JSONObject returnStatus = new JSONObject();

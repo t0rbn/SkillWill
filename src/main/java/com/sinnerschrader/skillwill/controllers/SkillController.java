@@ -1,9 +1,12 @@
 package com.sinnerschrader.skillwill.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
 import com.sinnerschrader.skillwill.skills.KnownSkill;
+import com.sinnerschrader.skillwill.skills.KnownSkillSuggestionComparator;
+import com.sinnerschrader.skillwill.skills.SuggestionSkill;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,6 +58,7 @@ public class SkillController {
 		} else {
 			skills = new ArrayList<KnownSkill>();
 			skills.addAll(skillRepo.findFuzzyByName(search));
+			skills.sort(new KnownSkillSuggestionComparator(search));
 		}
 
 		JSONArray arr = new JSONArray();
@@ -61,6 +67,68 @@ public class SkillController {
 		}
 
 		return new ResponseEntity<String>(arr.toString(), HttpStatus.OK);
+	}
+
+	/**
+	 * suggest next skill to enter
+	 */
+	@ApiOperation(value = "suggest next skill", nickname = "suggest next skill", notes = "suggest next skill")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Success"),
+		@ApiResponse(code = 500, message = "Failure")
+	})
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "q", value = "Names of skills already entered, separated by comma", paramType="query", required = true),
+	})
+	@CrossOrigin("http://localhost:8888")
+	@RequestMapping(path = "/skills/next", method = RequestMethod.GET)
+	public ResponseEntity<String> getNext(@RequestParam(required = true) String q) {
+		List<SuggestionSkill> candidates = new ArrayList<SuggestionSkill>();
+
+		// Create List of all known skills from search query
+		List<String> enteredStrings = new ArrayList<String>(Arrays.asList(q.split("\\s*,\\s*")));
+		List<KnownSkill> enteredSkills = enteredStrings.stream()
+				.map(s -> skillRepo.findByName(s))
+				.filter(s -> s != null)
+				.collect(Collectors.toList());
+
+		for (KnownSkill skill : enteredSkills) {
+			candidates.addAll(skill.getSuggestions());
+		}
+
+		// Remove already entered skills from list of suggestion candidates
+		candidates = candidates.stream()
+				.filter(s -> !(enteredSkills.stream().map(e -> e.getName()).collect(Collectors.toList()))
+					.contains(s.getName())
+				)
+				.collect(Collectors.toList());
+
+		// Aggregate List -> combine suggestion skills with same name
+		List<SuggestionSkill> aggregated = new ArrayList<SuggestionSkill>();
+		for (SuggestionSkill candidate : candidates) {
+			List<SuggestionSkill> existing = aggregated.stream()
+					.filter(s -> s.getName().equals(candidate.getName()))
+					.collect(Collectors.toList());
+		
+			if (existing.size() > 1) {
+				throw new IllegalStateException("Duplicate-Free aggregated list contains duplicates. Your're fucked");
+			}
+
+			if (!existing.isEmpty()) {
+				existing.get(0).setCount(existing.get(0).getCount() + candidate.getCount());
+			} else {
+				aggregated.add(candidate);
+			}
+		}
+
+		SuggestionSkill recommended = new SuggestionSkill("", -1);
+		for (SuggestionSkill max : aggregated) {
+			if (max.getCount() > recommended.getCount()) {
+				recommended = max;
+			}
+		}
+
+		return new ResponseEntity<String>(recommended.getName(), HttpStatus.OK);
 	}
 
 	/**

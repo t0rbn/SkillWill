@@ -1,0 +1,17 @@
+Java
+JavaScript
+Ruby
+Scrum
+Kanban
+Sketch
+Photoshop
+Illustrator
+Buchhaltung
+COBOL
+CSS
+LESS
+SASS
+Atomic Design
+.NET
+PHP
+XCode

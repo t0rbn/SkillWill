@@ -49,8 +49,8 @@ public class PersonalSkill {
 	public JSONObject toJSON() {
 		JSONObject o = new JSONObject();
 		o.put("name", this.name);
-		o.put("skillLevel", this.skillLevel.get());
-		o.put("willLevel", this.willLevel.get());
+		o.put("skillLevel", this.skillLevel.getInt());
+		o.put("willLevel", this.willLevel.getInt());
 		return o;
 	}
 

@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.person.FitnessScore;
+import com.sinnerschrader.skillwill.person.FitnessScoreComparator;
 import com.sinnerschrader.skillwill.person.Person;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.skills.KnownSkill;
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
 import io.swagger.annotations.Api;
@@ -59,24 +64,56 @@ public class UserController {
 
 		if (StringUtils.isEmpty(search)) {
 			matches = personRepo.findAll();
-		} else {
-			List<String> searchItems = new ArrayList<String>();
-			searchItems.addAll(Arrays.asList(search.split("\\s*,\\s*")));
-
-			String firstItem = searchItems.get(0);
-			searchItems.remove(0);
-
-			for (Person p : personRepo.findBySkill(firstItem)) {
-				if (p.getSkills().stream().filter(s -> searchItems.contains(s.getName())).count() == searchItems.size()) {
-					matches.add(p);
-				}
+			
+			JSONArray arr = new JSONArray();
+			for (Person person : matches) {
+				arr.put(person.toJSON());
 			}
-			// TODO sort matches by score
+
+			return new ResponseEntity<String>(arr.toString(), HttpStatus.OK);
+			
+		}
+
+		List<String> searchItems = new ArrayList<String>(Arrays.asList(search.split("\\s*,\\s*")));
+
+		// Check if all searchItems are known Skills
+		for (String s : searchItems) {
+			if (skillRepo.findByName(s) == null) {
+				StatusJSON json = new StatusJSON("skill " + s + " not found", HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+			}
+		}
+
+
+		// Split all search items into the first one by which the users will be retrieved from the DB,
+		// and all others that will be used to filter the users
+		String firstItem = searchItems.get(0);
+		List<String> otherItems = new ArrayList<String>(searchItems);
+		otherItems.remove(0);
+
+		for (Person p : personRepo.findBySkill(firstItem)) {
+			// Person p is a match, if it contains all other skills
+			if (p.getSkills().stream().map(s -> s.getName()).collect(Collectors.toList()).containsAll(otherItems)) {
+				matches.add(p);
+			}
+		}
+
+		matches.sort(new FitnessScoreComparator(searchItems));
+
+		// add the search to the knowledge base => refine next recommendations
+		for (String s : searchItems) {
+			KnownSkill skill = skillRepo.findByName(s);
+			if (skill != null) {
+				searchItems.stream().filter(t -> !s.equals(t)).forEach(t -> skill.incrementSuggestion(t));
+				skillRepo.save(skill);
+			}
 		}
 
 		JSONArray arr = new JSONArray();
-		for (Person p : matches) {
-			arr.put(p.toJSON());
+		for (Person person : matches) {
+			JSONObject personJSON = person.toJSON();
+			personJSON.put("fitness", (new FitnessScore(person, searchItems).getValue()));
+			arr.put(personJSON);
 		}
 
 		return new ResponseEntity<String>(arr.toString(), HttpStatus.OK);

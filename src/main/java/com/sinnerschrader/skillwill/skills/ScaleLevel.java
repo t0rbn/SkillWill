@@ -12,7 +12,7 @@ public class ScaleLevel {
 		}
 	}
 
-	public int get() {
+	public int getInt() {
 		return this.value;
 	}
 

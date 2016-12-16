@@ -1,5 +1,10 @@
 package com.sinnerschrader.skillwill.mock;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,44 +21,55 @@ import com.sinnerschrader.skillwill.skills.PersonalSkill;
 public class MockData {
 
 	@Autowired
-	SkillsRepository skillRepo;
+	private SkillsRepository skillRepo;
 
 	@Autowired
-	PersonRepository personRepo;
+	private PersonRepository personRepo;
+	
+	@Value("${mockInit}")
+	private String initmock; 
+
+	@Value("${mockSkillFilePath}")
+	private String skillsPath; 
+	
+	@Value("${mockPersonsFilePath}")
+	private String personsPath; 
 
 	@PostConstruct
-	public void fillData() {
-		skillRepo.deleteAll();
-		skillRepo.insert(new KnownSkill("Java"));
-		skillRepo.insert(new KnownSkill("JavaScript"));
-		skillRepo.insert(new KnownSkill("COBOL"));
-		skillRepo.insert(new KnownSkill("CSS"));
-		skillRepo.insert(new KnownSkill("Sketch"));
-		skillRepo.insert(new KnownSkill("AEM"));
-		skillRepo.insert(new KnownSkill("TypeScript"));
-		skillRepo.insert(new KnownSkill("Scrum"));
+	public void init() throws FileNotFoundException, IOException {
+		if (!initmock.equals("true")) {
+			return;
+		}
 
 		personRepo.deleteAll();
+		skillRepo.deleteAll();
 
-		Person a = new Person("alikow", "Alice", "Kowalsky");
-		a.addUpdateSkill(new PersonalSkill("Java",       0, 1));
-		a.addUpdateSkill(new PersonalSkill("JavaScript", 1, 2));
-		a.addUpdateSkill(new PersonalSkill("TypeScript", 2, 1));
-		a.addUpdateSkill(new PersonalSkill("AEM",        3, 0));
-		a.addUpdateSkill(new PersonalSkill("COBOL",      2, 2));
+		InputStreamReader skillsIS = new InputStreamReader(getClass().getResourceAsStream("/mockdata/" + skillsPath));
+		InputStreamReader personsIS = new InputStreamReader(getClass().getResourceAsStream("/mockdata/" + personsPath));
 
-		Person b = new Person("boband", "Bob", "Andrews");
-		b.addUpdateSkill(new PersonalSkill("Sketch",     2, 1));
-		b.addUpdateSkill(new PersonalSkill("Scrum",      2, 3));
+		try (BufferedReader br = new BufferedReader(skillsIS)) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				skillRepo.insert(new KnownSkill(line));
+			}
+		}
 
-
-		Person c = new Person("chacha", "Charlie", "Chaplin");
-		c.addUpdateSkill(new PersonalSkill("Java",       1, 3));
-		c.addUpdateSkill(new PersonalSkill("COBOL",      2, 2));
-		c.addUpdateSkill(new PersonalSkill("Scrum",      3, 1));
-
-		personRepo.insert(a);
-		personRepo.insert(b);
-		personRepo.insert(c);
+		Person curr = null;
+		try (BufferedReader br = new BufferedReader(personsIS)) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (line.equals("====")) {
+					personRepo.insert(curr);
+					curr = null;
+				} else if (curr == null) {
+					String[] split = line.split("\\s*,\\s*");
+					curr = new Person(split[0], split[1], split[2]);
+				} else {
+					String[] split = line.split("\\s*,\\s*");
+					curr.addUpdateSkill(new PersonalSkill(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2]))); 
+				}
+			}
+		}
 	}
+	
 }

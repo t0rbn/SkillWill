@@ -54,12 +54,11 @@ public class KnownSkill {
 		for (SuggestionSkill s : suggestions) {
 			if (s.getName().equals(name)) {
 				s.incrementCount();
+				return;
 			}
-			return;
 		}
 		
-		SuggestionSkill newSkill = new SuggestionSkill(name);
-		newSkill.incrementCount();
+		SuggestionSkill newSkill = new SuggestionSkill(name, 1);
 		suggestions.add(newSkill);
 	}
 

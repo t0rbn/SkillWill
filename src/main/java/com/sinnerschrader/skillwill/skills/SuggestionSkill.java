@@ -10,6 +10,11 @@ public class SuggestionSkill {
 		this.count = 0;
 	}
 
+	public SuggestionSkill() {
+		this.name = null;
+		this.count = 0;
+	}
+
 	public SuggestionSkill(String name, int count) {
 		this.name = name;
 		this.count = count;
@@ -19,8 +24,16 @@ public class SuggestionSkill {
 		return this.name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public int getCount() {
 		return this.count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	public void incrementCount() {

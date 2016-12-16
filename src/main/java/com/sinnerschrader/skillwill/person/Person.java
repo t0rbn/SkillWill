@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Component;
 
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 

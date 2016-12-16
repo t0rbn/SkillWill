@@ -1,7 +1,10 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.skills.KnownSkill;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,6 +29,9 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Skills", description = "Manage all skills")
 @Controller
 public class SkillController {
+
+	@Autowired
+	private SkillsRepository skillRepo;
 
 	/**
 	 * get/suggest skills
@@ -37,17 +47,20 @@ public class SkillController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/skills", method = RequestMethod.GET)
 	public ResponseEntity<String> getSkills(@RequestParam(required = false) String search) {
+		List<KnownSkill> skills;
 		if (StringUtils.isEmpty(search)) {
-			JSONArray allSkills = new JSONArray();
-			allSkills.put("Java");
-			allSkills.put("Javascript");
-			allSkills.put("Ruby");
-			allSkills.put("Buchhaltung");
-			allSkills.put("COBOL");
-			return new ResponseEntity<String>(allSkills.toString(), HttpStatus.OK);
+			skills = skillRepo.findAll();
+		} else {
+			skills = new ArrayList<KnownSkill>();
+			skills.addAll(skillRepo.findFuzzyByName(search));
 		}
 
-		return new ResponseEntity<String>("[\"" + search + "foo\"]", HttpStatus.OK);
+		JSONArray arr = new JSONArray();
+		for (KnownSkill s : skills) {
+			arr.put(s.getName());
+		}
+
+		return new ResponseEntity<String>(arr.toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -65,9 +78,15 @@ public class SkillController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/skills", method = RequestMethod.POST)
 	public ResponseEntity<String> addSkill(@RequestParam String name) {
-		JSONObject returnStatus = new JSONObject();
-		returnStatus.put("status", "success");
-		return new ResponseEntity<String>(returnStatus.toString(), HttpStatus.OK);
+		if (skillRepo.findByName(name) != null) {
+			StatusJSON json = new StatusJSON("skill already exists", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		skillRepo.insert(new KnownSkill(name));
+
+		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
+		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -82,9 +101,16 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteSkill(@PathVariable String skill) {
-		JSONObject returnStatus = new JSONObject();
-		returnStatus.put("status", "success");
-		return new ResponseEntity<String>(returnStatus.toString(), HttpStatus.OK);
+		KnownSkill toRemove = skillRepo.findByName(skill);
+		if (toRemove == null) {
+			StatusJSON json = new StatusJSON("skill does not exist", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		skillRepo.delete(toRemove);
+
+		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
+		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -103,9 +129,29 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.PUT)
 	public ResponseEntity<String> editSkill(@PathVariable String skill, @RequestParam(required = false) String name) {
-		JSONObject returnStatus = new JSONObject();
-		returnStatus.put("status", "success");
-		return new ResponseEntity<String>(returnStatus.toString(), HttpStatus.OK);
+		KnownSkill toEdit = skillRepo.findByName(skill);
+		if (toEdit == null) {
+			StatusJSON json = new StatusJSON("skill does not exist", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		if (skillRepo.findByName(name) != null) {
+			StatusJSON json = new StatusJSON("skill " + name + " already exists", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		skillRepo.delete(toEdit);
+		skillRepo.insert(new KnownSkill(name, toEdit.getSuggestions()));
+
+		// Woohooo, this might be slow as fuck
+		// TODO optimize
+		for (KnownSkill s : skillRepo.findAll()) {
+			s.renameSuggestions(skill, name);
+			skillRepo.save(s);
+		}
+
+		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
+		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}
 
 }

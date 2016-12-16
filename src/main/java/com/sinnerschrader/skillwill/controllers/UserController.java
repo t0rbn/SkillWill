@@ -1,8 +1,12 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sinnerschrader.skillwill.mock.MockData;
+import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.person.Person;
+import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,12 +34,11 @@ import io.swagger.annotations.ApiResponses;
 @Controller
 public class UserController {
 
-	private MockData mockData;
+	@Autowired
+	private PersonRepository personRepo;
 
-	@PostConstruct
-	private void initMock() {
-		this.mockData = new MockData();
-	}
+	@Autowired
+	private SkillsRepository skillRepo;
 
 	/**
 	 *  List all users
@@ -47,11 +54,21 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public ResponseEntity<String> getUsers(@RequestParam(required = false) String search) {
+		List<Person> matches;
+
 		if (StringUtils.isEmpty(search)) {
-			return new ResponseEntity<String>(mockData.allUsers.toString(), HttpStatus.OK);
+			matches = personRepo.findAll();
+		} else {
+			List<String> searchItems = Arrays.asList(search.split("\\s*,\\s*"));
+			matches = personRepo.findBySkillNames(searchItems);
 		}
 
-		return new ResponseEntity<String>(mockData.someUsers.toString(), HttpStatus.OK);
+		JSONArray arr = new JSONArray();
+		for (Person p : matches) {
+			arr.put(p.toJSON());
+		}
+
+		return new ResponseEntity<String>(arr.toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -66,7 +83,7 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}", method = RequestMethod.GET)
 	public ResponseEntity<String> getUser(@PathVariable String user) {
-		return new ResponseEntity<String>(mockData.foobar.toString(), HttpStatus.OK);
+		return new ResponseEntity<String>(personRepo.findById(user).toJSON().toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -88,9 +105,22 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
 	public ResponseEntity<String> modifiySkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,@RequestParam("will_level") String will_level) {
-		JSONObject returnStatus = new JSONObject();
-		returnStatus.put("status", "success");
-		return new ResponseEntity<String>(returnStatus.toString(), HttpStatus.OK);
+		Person person = personRepo.findById(user);
+
+		if (person == null) {
+			StatusJSON json = new StatusJSON("user not found", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		if (skillRepo.findByName(skill) == null) {
+			StatusJSON json = new StatusJSON("skill not known", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		person.addUpdateSkill(new PersonalSkill(skill, Integer.parseInt(skill_level), Integer.parseInt(will_level)));
+
+		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
+		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}
 
 }

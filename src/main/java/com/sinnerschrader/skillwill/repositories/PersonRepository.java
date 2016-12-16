@@ -10,10 +10,7 @@ import com.sinnerschrader.skillwill.person.Person;
 public interface PersonRepository extends MongoRepository<Person, String> {
 	public Person findById(String id);
 
-	@Query("{ skills.name : ?0 }")
-	public List<Person> findBySkillName(String skillName);
-
-	@Query("{ skills.name : ?0 }")
-	public List<Person> findBySkillNames(List<String> names);
+	@Query("{ skills._id : ?0 }")
+	public List<Person> findBySkill(String skillName);
 
 }

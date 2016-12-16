@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -54,13 +55,23 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public ResponseEntity<String> getUsers(@RequestParam(required = false) String search) {
-		List<Person> matches;
+		List<Person> matches = new ArrayList<Person>();
 
 		if (StringUtils.isEmpty(search)) {
 			matches = personRepo.findAll();
 		} else {
-			List<String> searchItems = Arrays.asList(search.split("\\s*,\\s*"));
-			matches = personRepo.findBySkillNames(searchItems);
+			List<String> searchItems = new ArrayList<String>();
+			searchItems.addAll(Arrays.asList(search.split("\\s*,\\s*")));
+
+			String firstItem = searchItems.get(0);
+			searchItems.remove(0);
+
+			for (Person p : personRepo.findBySkill(firstItem)) {
+				if (p.getSkills().stream().filter(s -> searchItems.contains(s.getName())).count() == searchItems.size()) {
+					matches.add(p);
+				}
+			}
+			// TODO sort matches by score
 		}
 
 		JSONArray arr = new JSONArray();

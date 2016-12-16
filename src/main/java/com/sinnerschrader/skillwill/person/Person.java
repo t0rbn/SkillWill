@@ -36,6 +36,10 @@ public class Person {
 		return this.lastName;
 	}
 
+	public List<PersonalSkill> getSkills() {
+		return this.skills;
+	}
+
 	public void addUpdateSkill(PersonalSkill skill) {
 		for (PersonalSkill old : this.skills) {
 			if (old.getName().equals(skill.getName())) {

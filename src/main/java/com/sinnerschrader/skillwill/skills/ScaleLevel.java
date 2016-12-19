@@ -1,5 +1,11 @@
 package com.sinnerschrader.skillwill.skills;
 
+/**
+ * Scale Level => unit of skill level/will level
+ * 
+ * @author torree
+ *
+ */
 public class ScaleLevel {
 
 	private int value;

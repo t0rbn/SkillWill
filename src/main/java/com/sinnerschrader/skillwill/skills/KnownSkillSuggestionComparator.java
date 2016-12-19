@@ -2,6 +2,12 @@ package com.sinnerschrader.skillwill.skills;
 
 import java.util.Comparator;
 
+/**
+ * Compare Known skills so that ones starting with a string (userinput) will be sorted first
+ * 
+ * @author torree
+ *
+ */
 public class KnownSkillSuggestionComparator implements Comparator<KnownSkill> {
 
 	private String userinput;

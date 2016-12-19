@@ -3,6 +3,13 @@ package com.sinnerschrader.skillwill.person;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Compare fitness scores, so that higher ones will be
+ * sorted before lower ones
+ 
+ * @author torree
+ *
+ */
 public class FitnessScoreComparator implements Comparator<Person>{
 
 	List<String> searchItems;

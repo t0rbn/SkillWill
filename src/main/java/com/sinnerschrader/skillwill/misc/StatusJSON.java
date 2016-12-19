@@ -4,6 +4,13 @@ import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * Little helper class encapsulating status JSON
+ * that will be returned in case of errors
+ * 
+ * @author torree
+ *
+ */
 public class StatusJSON {
 
 	private JSONObject json;
@@ -23,4 +30,5 @@ public class StatusJSON {
 	public String toString() {
 		return this.json.toString();
 	}
+
 }

@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,8 +19,17 @@ import com.sinnerschrader.skillwill.repositories.SkillsRepository;
 import com.sinnerschrader.skillwill.skills.KnownSkill;
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
+/**
+ * Reads Mock Data from files specified in application.properties and
+ * inserts it into DB. Handle with care, as this could delete all your data.
+ * 
+ * @author torree
+ *
+ */
 @Component
 public class MockData {
+
+	private static Logger logger = LoggerFactory.getLogger(MockData.class);
 
 	@Autowired
 	private SkillsRepository skillRepo;
@@ -41,6 +52,8 @@ public class MockData {
 			return;
 		}
 
+		logger.info("Mocking is enabled, this will overwrite all data in your DB");
+
 		personRepo.deleteAll();
 		skillRepo.deleteAll();
 
@@ -50,6 +63,7 @@ public class MockData {
 		try (BufferedReader br = new BufferedReader(skillsIS)) {
 			String line;
 			while ((line = br.readLine()) != null) {
+				logger.info("Inserting new skill: " + line);
 				skillRepo.insert(new KnownSkill(line));
 			}
 		}
@@ -59,6 +73,7 @@ public class MockData {
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (line.equals("====")) {
+					logger.info("Inserting new person: " + curr.getFirstName() + " " + curr.getLastName() + " (" + curr.getId() + ")");
 					personRepo.insert(curr);
 					curr = null;
 				} else if (curr == null) {
@@ -71,5 +86,5 @@ public class MockData {
 			}
 		}
 	}
-	
+
 }

@@ -5,7 +5,14 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * A skill known to the system including a list of suggestable skills
+
+ * @author torree
+ *
+ */
 public class KnownSkill {
+
 	@Id
 	private String name;
 	private List<SuggestionSkill> suggestions;
@@ -14,7 +21,7 @@ public class KnownSkill {
 		this.name = name;
 		this.suggestions = new ArrayList<SuggestionSkill>();
 	}
-	
+
 	public KnownSkill(String name, List<SuggestionSkill> suggestions) {
 		this.name = name;
 		this.suggestions = suggestions;
@@ -57,9 +64,17 @@ public class KnownSkill {
 				return;
 			}
 		}
-		
+
 		SuggestionSkill newSkill = new SuggestionSkill(name, 1);
 		suggestions.add(newSkill);
+	}
+
+	public void deleteSuggestion(String name) {
+		for (SuggestionSkill s : suggestions) {
+			if (s.getName().equals(name)) {
+				suggestions.remove(s);
+			}
+		}
 	}
 
 }

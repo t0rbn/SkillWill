@@ -3,6 +3,13 @@ package com.sinnerschrader.skillwill.skills;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 
+/**
+ * A skill owned by a person
+ * includes name, skill level and will level
+ * 
+ * @author torree
+ *
+ */
 public class PersonalSkill {
 
 	@Id

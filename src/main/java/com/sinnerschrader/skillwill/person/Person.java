@@ -10,6 +10,12 @@ import org.springframework.stereotype.Component;
 
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
+/**
+ * Class holding all information about a person
+ *
+ * @author torree
+ *
+ */
 public class Person {
 
 	@Id

@@ -2,13 +2,13 @@ package com.sinnerschrader.skillwill.controllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +36,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * Controller handling /users/{foo}
+ *
+ * @author torree
+ *
+ */
 @Api(tags = "Users", description="User management and search")
 @Controller
 public class UserController {
+
+	private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private PersonRepository personRepo;
@@ -47,7 +55,7 @@ public class UserController {
 	private SkillsRepository skillRepo;
 
 	/**
-	 *  List all users
+	 *  Search for users with specific skills / list all users if no search query is specified
 	 */
 	@ApiOperation(value = "search users", nickname = "search users", notes = "Search users.")
 	@ApiResponses(value = {
@@ -60,18 +68,19 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users", method = RequestMethod.GET)
 	public ResponseEntity<String> getUsers(@RequestParam(required = false) String search) {
+		logger.debug("Searching for users with skills: " + search);
 		List<Person> matches = new ArrayList<Person>();
 
 		if (StringUtils.isEmpty(search)) {
+			logger.debug("Search query is empty, will return all users");
 			matches = personRepo.findAll();
-			
+
 			JSONArray arr = new JSONArray();
 			for (Person person : matches) {
 				arr.put(person.toJSON());
 			}
 
 			return new ResponseEntity<String>(arr.toString(), HttpStatus.OK);
-			
 		}
 
 		List<String> searchItems = new ArrayList<String>(Arrays.asList(search.split("\\s*,\\s*")));
@@ -79,6 +88,7 @@ public class UserController {
 		// Check if all searchItems are known Skills
 		for (String s : searchItems) {
 			if (skillRepo.findByName(s) == null) {
+				logger.error("Error searching for " + s + ": no corresponding skill found");
 				StatusJSON json = new StatusJSON("skill " + s + " not found", HttpStatus.BAD_REQUEST);
 				return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 			}
@@ -131,7 +141,16 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}", method = RequestMethod.GET)
 	public ResponseEntity<String> getUser(@PathVariable String user) {
-		return new ResponseEntity<String>(personRepo.findById(user).toJSON().toString(), HttpStatus.OK);
+		logger.debug("Returning Data for user " + user);
+		Person p = personRepo.findById(user);
+
+		if (p == null) {
+			logger.error("User " + user + " not found; will return 404");
+			StatusJSON json = new StatusJSON("user not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<String>(p.toJSON().toString(), HttpStatus.OK);
 	}
 
 	/**
@@ -153,14 +172,17 @@ public class UserController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
 	public ResponseEntity<String> modifiySkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,@RequestParam("will_level") String will_level) {
+		logger.debug("Add or update skill " + skill + " of user " + user);
 		Person person = personRepo.findById(user);
 
 		if (person == null) {
-			StatusJSON json = new StatusJSON("user not found", HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+			logger.error("User " + user + " not found; returning 404");
+			StatusJSON json = new StatusJSON("user not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.NOT_FOUND);
 		}
 
 		if (skillRepo.findByName(skill) == null) {
+			logger.error("Skill " + skill + " not found; returning 404");
 			StatusJSON json = new StatusJSON("skill not known", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}

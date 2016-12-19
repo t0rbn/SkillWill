@@ -1,5 +1,11 @@
 package com.sinnerschrader.skillwill.skills;
 
+/**
+ * A suggestable skill used by KnownSkill
+ * 
+ * @author torree
+ *
+ */
 public class SuggestionSkill {
 
 	private String name;

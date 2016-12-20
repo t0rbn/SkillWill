@@ -7,6 +7,13 @@ import org.springframework.data.mongodb.repository.Query;
 
 import com.sinnerschrader.skillwill.skills.KnownSkill;
 
+/**
+ * Repository for skills
+ * Collection: knownSkill
+ * 
+ * @author torree
+ *
+ */
 public interface SkillsRepository extends MongoRepository<KnownSkill, String> {
 
 	public KnownSkill findByName(String name);

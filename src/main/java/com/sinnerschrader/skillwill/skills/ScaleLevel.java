@@ -14,7 +14,7 @@ public class ScaleLevel {
 		if (0 <= value && value <= 3) {
 			this.value = value;
 		} else {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Value must be in scale 0-3");
 		}
 	}
 

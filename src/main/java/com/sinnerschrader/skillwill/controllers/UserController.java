@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.sinnerschrader.skillwill.ldap.LDAPEnricher;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.person.FitnessScore;
 import com.sinnerschrader.skillwill.person.FitnessScoreComparator;
 import com.sinnerschrader.skillwill.person.Person;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.session.SessionManager;
 import com.sinnerschrader.skillwill.skills.KnownSkill;
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
@@ -54,6 +56,9 @@ public class UserController {
 	@Autowired
 	private SkillsRepository skillRepo;
 
+	@Autowired
+	private SessionManager sessionManager;
+
 	/**
 	 *  Search for users with specific skills / list all users if no search query is specified
 	 */
@@ -72,8 +77,10 @@ public class UserController {
 		List<Person> matches = new ArrayList<Person>();
 
 		if (StringUtils.isEmpty(search)) {
-			logger.debug("Search query is empty, will return all users");
+			logger.debug("search query is empty, will return all users");
+
 			matches = personRepo.findAll();
+			LDAPEnricher.enrichAll(matches);
 
 			JSONArray arr = new JSONArray();
 			for (Person person : matches) {
@@ -88,7 +95,7 @@ public class UserController {
 		// Check if all searchItems are known Skills
 		for (String s : searchItems) {
 			if (skillRepo.findByName(s) == null) {
-				logger.error("Error searching for " + s + ": no corresponding skill found");
+				logger.debug("Error searching for " + s + ": no corresponding skill found");
 				StatusJSON json = new StatusJSON("skill " + s + " not found", HttpStatus.BAD_REQUEST);
 				return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 			}
@@ -109,6 +116,8 @@ public class UserController {
 		}
 
 		matches.sort(new FitnessScoreComparator(searchItems));
+
+		LDAPEnricher.enrichAll(matches);
 
 		// add the search to the knowledge base => refine next recommendations
 		for (String s : searchItems) {
@@ -165,14 +174,21 @@ public class UserController {
 		@ApiResponse(code = 500, message = "Failure")
 	})
 	@ApiImplicitParams({
+		@ApiImplicitParam(name = "session", value = "users's active session key", paramType="form", required = true),
 		@ApiImplicitParam(name = "skill", value = "Name of skill", paramType="form", required = true),
 		@ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType="form", required = true),
 		@ApiImplicitParam(name = "will_level", value = "Level of will", paramType="form", required = true)
 	})
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
-	public ResponseEntity<String> modifiySkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,@RequestParam("will_level") String will_level) {
+	public ResponseEntity<String> modifiySkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level, @RequestParam("will_level") String will_level, @RequestParam("session") String sessionKey) {
 		logger.debug("Add or update skill " + skill + " of user " + user);
+
+		if (!sessionManager.checkSession(user, sessionKey)) {
+			StatusJSON json = new StatusJSON("user not logged in", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.UNAUTHORIZED);
+		}
+
 		Person person = personRepo.findById(user);
 
 		if (person == null) {
@@ -188,6 +204,7 @@ public class UserController {
 		}
 
 		person.addUpdateSkill(new PersonalSkill(skill, Integer.parseInt(skill_level), Integer.parseInt(will_level)));
+		personRepo.save(person);
 
 		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
 		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);

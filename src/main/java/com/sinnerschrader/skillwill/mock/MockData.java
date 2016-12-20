@@ -22,7 +22,7 @@ import com.sinnerschrader.skillwill.skills.PersonalSkill;
 /**
  * Reads Mock Data from files specified in application.properties and
  * inserts it into DB. Handle with care, as this could delete all your data.
- * 
+ *
  * @author torree
  *
  */
@@ -36,15 +36,15 @@ public class MockData {
 
 	@Autowired
 	private PersonRepository personRepo;
-	
+
 	@Value("${mockInit}")
-	private String initmock; 
+	private String initmock;
 
 	@Value("${mockSkillFilePath}")
-	private String skillsPath; 
-	
+	private String skillsPath;
+
 	@Value("${mockPersonsFilePath}")
-	private String personsPath; 
+	private String personsPath;
 
 	@PostConstruct
 	public void init() throws FileNotFoundException, IOException {
@@ -52,37 +52,41 @@ public class MockData {
 			return;
 		}
 
-		logger.info("Mocking is enabled, this will overwrite all data in your DB");
-
+		logger.warn("Mocking is enabled, this will overwrite all data in your DB");
 		personRepo.deleteAll();
 		skillRepo.deleteAll();
 
 		InputStreamReader skillsIS = new InputStreamReader(getClass().getResourceAsStream("/mockdata/" + skillsPath));
 		InputStreamReader personsIS = new InputStreamReader(getClass().getResourceAsStream("/mockdata/" + personsPath));
 
-		try (BufferedReader br = new BufferedReader(skillsIS)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				logger.info("Inserting new skill: " + line);
-				skillRepo.insert(new KnownSkill(line));
-			}
+		// insert skills
+		// skills file is a list of known Skills
+		// new line -> new skill
+		BufferedReader br = new BufferedReader(skillsIS);
+		String line = "";
+		while ((line = br.readLine()) != null) {
+			logger.info("Inserting new skill: " + line);
+			skillRepo.insert(new KnownSkill(line));
 		}
 
+		// insert person
+		// Structure:
+		// 	* 1st line -> id
+		//  * 2nd - nth line -> skillname, skilllevel, willlevel (i.E "Java, 3, 1")
+		//  * separator "====" (exactly FOUR equal signs)
 		Person curr = null;
-		try (BufferedReader br = new BufferedReader(personsIS)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.equals("====")) {
-					logger.info("Inserting new person: " + curr.getFirstName() + " " + curr.getLastName() + " (" + curr.getId() + ")");
-					personRepo.insert(curr);
-					curr = null;
-				} else if (curr == null) {
-					String[] split = line.split("\\s*,\\s*");
-					curr = new Person(split[0], split[1], split[2]);
-				} else {
-					String[] split = line.split("\\s*,\\s*");
-					curr.addUpdateSkill(new PersonalSkill(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2]))); 
-				}
+		br = new BufferedReader(personsIS);
+		line = "";
+		while ((line = br.readLine()) != null) {
+			if (line.equals("====")) {
+				logger.info("Inserting new person: " + curr.getId());
+				personRepo.insert(curr);
+				curr = null;
+			} else if (curr == null) {
+				curr = new Person(line);
+			} else {
+				String[] split = line.split("\\s*,\\s*");
+				curr.addUpdateSkill(new PersonalSkill(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2])));
 			}
 		}
 	}

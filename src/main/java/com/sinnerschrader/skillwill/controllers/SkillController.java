@@ -49,7 +49,7 @@ public class SkillController {
 
 	/**
 	 * get/suggest skills based on search query
-	 * => can be used for autocompletion when user started typing
+	 * -> can be used for autocompletion when user started typing
 	 */
 	@ApiOperation(value = "suggest skills", nickname = "suggest skills", notes = "suggest skills")
 	@ApiResponses({
@@ -65,10 +65,10 @@ public class SkillController {
 		List<KnownSkill> skills;
 
 		if (StringUtils.isEmpty(search)) {
-			logger.debug("Listing all skills");
+			logger.debug("Suggesting autocompletion for empty search -> returning all skills");
 			skills = skillRepo.findAll();
 		} else {
-			logger.debug("Suggesting skills of query " + search);
+			logger.debug("Suggesting autocomplection for " + search);
 			skills = new ArrayList<KnownSkill>();
 			skills.addAll(skillRepo.findFuzzyByName(search));
 			skills.sort(new KnownSkillSuggestionComparator(search));
@@ -84,7 +84,7 @@ public class SkillController {
 
 	/**
 	 * suggest next skill to enter
-	 * => can be used to suggest user what skill to enter next
+	 * -> can be used to suggest user what skill to enter next
 	 */
 	@ApiOperation(value = "suggest next skill", nickname = "suggest next skill", notes = "suggest next skill")
 	@ApiResponses({
@@ -97,56 +97,70 @@ public class SkillController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/skills/next", method = RequestMethod.GET)
 	public ResponseEntity<String> getNext(@RequestParam(required = true) String q) {
-		logger.debug("Trying to suggest next skill for query " + q);
+		logger.debug("Generating Suggestion for next Skill based on " + q);
+
+		// candidates = all SuggestionSkills including duplicates and crap
 		List<SuggestionSkill> candidates = new ArrayList<SuggestionSkill>();
 
+		// aggregaret = candidates without duplicates/already known skills
+		List<SuggestionSkill> aggregated = new ArrayList<SuggestionSkill>();
+
 		// Create List of all known skills from search query
-		List<String> enteredStrings = new ArrayList<String>(Arrays.asList(q.split("\\s*,\\s*")));
-		List<KnownSkill> enteredSkills = enteredStrings.stream()
+		List<KnownSkill> enteredSkills =
+				new ArrayList<String>(Arrays.asList(q.split("\\s*,\\s*")))
+				.stream()
 				.map(s -> skillRepo.findByName(s))
 				.filter(s -> s != null)
 				.collect(Collectors.toList());
 
+		// Create a list of NAMES of entered skills -> will come in handy
+		final List<String> enteredSkillNames = enteredSkills.stream().map(s -> s.getName()).collect(Collectors.toList());
+
+		// Adding all suggestions of all skills to canditates
+		// -> candidates will contain duplicates and already entered skills
 		for (KnownSkill skill : enteredSkills) {
 			candidates.addAll(skill.getSuggestions());
 		}
 
-		// Remove already entered skills from list of suggestion candidates
+		// Remove already entered skills from candidates
 		candidates = candidates.stream()
-				.filter(s -> !(enteredSkills.stream().map(e -> e.getName()).collect(Collectors.toList()))
-					.contains(s.getName())
-				)
+				.filter(c -> !enteredSkillNames.contains(c.getName()))
 				.collect(Collectors.toList());
 
-		// Aggregate List -> combine suggestion skills with same name
-		List<SuggestionSkill> aggregated = new ArrayList<SuggestionSkill>();
+		// Aggregate candidates -> combine suggestion skills with same name
 		for (SuggestionSkill candidate : candidates) {
+
+			// List of all SuggestionSkills in aggregated mathcing to current candidate
 			List<SuggestionSkill> existing = aggregated.stream()
 					.filter(s -> s.getName().equals(candidate.getName()))
 					.collect(Collectors.toList());
 
 			if (existing.size() > 1) {
+				// More than one element in aggregated matches current candidate
+				// Since this list should hold aggregated SugggestionSkills, this shouldn't happen
 				logger.error("Duplicate free list contains duplicates. Your're fucked");
 				throw new IllegalStateException("Duplicate-Free aggregated list contains duplicates. Your're fucked");
 			}
 
 			if (!existing.isEmpty()) {
+				// There's a matching suggestion -> summing up counts
 				existing.get(0).setCount(existing.get(0).getCount() + candidate.getCount());
 			} else {
+				// No match found, add new SuggestionSkill
 				aggregated.add(candidate);
 			}
 		}
 
-		logger.debug("Generated suggestions for " + q + ": " + aggregated.toString());
-
+		// Current top match SuggestionSkill
 		SuggestionSkill recommended = new SuggestionSkill("", -1);
+
+		// Finding SuggestionSkill with highest count in aggregated
+		// -> this will be the final recommendation
 		for (SuggestionSkill max : aggregated) {
 			if (max.getCount() > recommended.getCount()) {
 				recommended = max;
 			}
 		}
-
-		logger.debug("Will suggest " + recommended.getName() + " for query " + q);
 
 		return new ResponseEntity<String>(recommended.getName(), HttpStatus.OK);
 	}
@@ -166,7 +180,7 @@ public class SkillController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/skills", method = RequestMethod.POST)
 	public ResponseEntity<String> addSkill(@RequestParam String name) {
-		logger.debug("Creating new skill " + name);
+		logger.info("Creating new skill " + name);
 
 		if (skillRepo.findByName(name) != null) {
 			logger.error("Error creating skill " + name + ": already existing; returning BAD_REQUEST");
@@ -192,8 +206,10 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteSkill(@PathVariable String skill) {
-		logger.debug("Removing skill" + skill);
+		logger.info("Removing skill" + skill);
+
 		KnownSkill toRemove = skillRepo.findByName(skill);
+
 		if (toRemove == null) {
 			logger.info("Error removing " + skill + ": does not exist");
 			StatusJSON json = new StatusJSON("skill does not exist", HttpStatus.BAD_REQUEST);
@@ -228,16 +244,18 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.PUT)
 	public ResponseEntity<String> editSkill(@PathVariable String skill, @RequestParam(required = false) String name) {
-		logger.debug("Renaming skill " + skill + " to " + name);
+		logger.info("Renaming skill " + skill + " to " + name);
+
 		KnownSkill toEdit = skillRepo.findByName(skill);
+
 		if (toEdit == null) {
-			logger.info("Error renaming skill" + skill + ": does not exist");
+			logger.debug("Error renaming skill" + skill + ": does not exist");
 			StatusJSON json = new StatusJSON("skill does not exist", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		if (skillRepo.findByName(name) != null) {
-			logger.info("Error renaming skill" + skill + ": new name already exists");
+			logger.debug("Error renaming skill" + skill + ": new name already exists");
 			StatusJSON json = new StatusJSON("skill " + name + " already exists", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
@@ -245,11 +263,9 @@ public class SkillController {
 		skillRepo.delete(toEdit);
 		skillRepo.insert(new KnownSkill(name, toEdit.getSuggestions()));
 
-		// Woohooo, this might be slow as fuck
-		// Better check performance
-		logger.debug("Renaming " + skill + "as suggestions from other skills");
+		logger.debug("Renaming " + skill + "in suggestions of other skills");
 		for (KnownSkill s : skillRepo.findAll()) {
-			s.renameSuggestions(skill, name);
+			s.renameSuggestion(skill, name);
 			skillRepo.save(s);
 		}
 

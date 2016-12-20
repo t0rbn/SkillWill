@@ -3,9 +3,6 @@ package com.sinnerschrader.skillwill.person;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
 /**

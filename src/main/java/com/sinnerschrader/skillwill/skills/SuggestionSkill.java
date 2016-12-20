@@ -2,7 +2,7 @@ package com.sinnerschrader.skillwill.skills;
 
 /**
  * A suggestable skill used by KnownSkill
- * 
+ *
  * @author torree
  *
  */

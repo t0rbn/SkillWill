@@ -7,6 +7,13 @@ import org.springframework.data.mongodb.repository.Query;
 
 import com.sinnerschrader.skillwill.person.Person;
 
+/**
+ * MongoRepository for Persons
+ * Collection: person
+ *
+ * @author torree
+ *
+ */
 public interface PersonRepository extends MongoRepository<Person, String> {
 	public Person findById(String id);
 

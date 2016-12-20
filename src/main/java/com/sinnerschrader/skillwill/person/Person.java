@@ -2,12 +2,14 @@ package com.sinnerschrader.skillwill.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
-import org.springframework.stereotype.Component;
+import org.springframework.data.annotation.Transient;
 
+import com.sinnerschrader.skillwill.ldap.PersonalLDAPDetails;
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
 /**
@@ -20,47 +22,51 @@ public class Person {
 
 	@Id
 	private String id;
-	private String firstName;
-	private String lastName;
 	private List<PersonalSkill> skills;
 
-	public Person(String id, String firstName, String lastName) {
+	// LDAP Details won't be stored but retrieved dynamically
+	@Transient
+	private PersonalLDAPDetails ldapDetails;
+
+	public Person(String id) {
 		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
 		this.skills = new ArrayList<PersonalSkill>();
+		this.ldapDetails = null;
 	}
 
 	public String getId() {
 		return this.id;
 	}
 
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
 	public List<PersonalSkill> getSkills() {
 		return this.skills;
 	}
 
+	public void setLDAPDetails(PersonalLDAPDetails ldapDetails) {
+		this.ldapDetails = ldapDetails;
+	}
+
 	public void addUpdateSkill(PersonalSkill skill) {
-		for (PersonalSkill old : this.skills) {
-			if (old.getName().equals(skill.getName())) {
-				skills.remove(old);
-			}
-		}
+		// Remove old skill if existing...
+		this.skills = skills.stream()
+				.filter(s -> !s.getName().equals(skill.getName()))
+				.collect(Collectors.toList());
+
+		// ...insert new one with updates/new values
 		this.skills.add(skill);
 	}
 
 	public JSONObject toJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("id", this.id);
-		obj.put("firstName", this.firstName);
-		obj.put("lastName", this.lastName);
+
+		if (this.ldapDetails != null) {
+			obj.put("firstName", ldapDetails.getFirstName());
+			obj.put("lastName", ldapDetails.getLastName());
+			obj.put("mail", ldapDetails.getMail());
+			obj.put("phone", ldapDetails.getPhone());
+			obj.put("location", ldapDetails.getLocation());
+		}
 
 		JSONArray skills = new JSONArray();
 		for (PersonalSkill s : this.skills) {

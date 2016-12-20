@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 /**
  * A skill owned by a person
  * includes name, skill level and will level
- * 
+ *
  * @author torree
  *
  */
@@ -26,7 +26,7 @@ public class PersonalSkill {
 		this.skillLevel = skillLevel;
 		this.willLevel = willLevel;
 	}
-	
+
 	public PersonalSkill() {
 		this.name = null;
 		this.skillLevel = null;

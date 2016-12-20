@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 
 /**
  * A skill known to the system including a list of suggestable skills
-
+ *
  * @author torree
  *
  */
@@ -48,33 +48,43 @@ public class KnownSkill {
 		this.suggestions = suggestions;
 	}
 
-	public void renameSuggestions(String oldName, String newName) {
-		for (SuggestionSkill s : this.suggestions) {
-			if (s.getName().equals(oldName)) {
-				this.suggestions.remove(s);
-				this.suggestions.add(new SuggestionSkill(newName, s.getCount()));
-			}
+	private SuggestionSkill getSuggestionByName(String name) {
+		return this.suggestions.stream()
+				.filter(s -> s.getName().equals(name))
+				.findFirst()
+				.get();
+	}
+
+	public void renameSuggestion(String oldName, String newName) {
+		SuggestionSkill suggestion = getSuggestionByName(oldName);
+
+		if (suggestion == null) {
+			// no suggestion to rename
+			return;
 		}
+
+		suggestion.setName(newName);
 	}
 
 	public void incrementSuggestion(String name) {
-		for (SuggestionSkill s : suggestions) {
-			if (s.getName().equals(name)) {
-				s.incrementCount();
-				return;
-			}
-		}
+		SuggestionSkill suggestion = getSuggestionByName(name);
 
-		SuggestionSkill newSkill = new SuggestionSkill(name, 1);
-		suggestions.add(newSkill);
+		if (suggestion != null) {
+			suggestion.incrementCount();
+		} else {
+			suggestions.add(new SuggestionSkill(name, 1));
+		}
 	}
 
 	public void deleteSuggestion(String name) {
-		for (SuggestionSkill s : suggestions) {
-			if (s.getName().equals(name)) {
-				suggestions.remove(s);
-			}
+		SuggestionSkill suggestion = getSuggestionByName(name);
+
+		if (suggestion == null) {
+			// no suggestion to rename
+			return;
 		}
+
+		this.suggestions.remove(suggestion);
 	}
 
 }

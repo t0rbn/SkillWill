@@ -2,6 +2,7 @@ package com.sinnerschrader.skillwill.skills;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.annotation.Id;
 
@@ -49,10 +50,10 @@ public class KnownSkill {
 	}
 
 	private SuggestionSkill getSuggestionByName(String name) {
-		return this.suggestions.stream()
+		Optional<SuggestionSkill> found = this.suggestions.stream()
 				.filter(s -> s.getName().equals(name))
-				.findFirst()
-				.get();
+				.findFirst();
+		return found.isPresent() ? found.get() : null;
 	}
 
 	public void renameSuggestion(String oldName, String newName) {

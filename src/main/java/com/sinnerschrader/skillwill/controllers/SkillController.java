@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(tags = "Skills", description = "Manage all skills")
 @Controller
+@Scope("prototype")
 public class SkillController {
 
 	private static Logger logger = LoggerFactory.getLogger(SkillController.class);
@@ -68,7 +70,7 @@ public class SkillController {
 			logger.debug("Suggesting autocompletion for empty search -> returning all skills");
 			skills = skillRepo.findAll();
 		} else {
-			logger.debug("Suggesting autocomplection for " + search);
+			logger.debug("Suggesting autocomplection for {}", search);
 			skills = new ArrayList<KnownSkill>();
 			skills.addAll(skillRepo.findFuzzyByName(search));
 			skills.sort(new KnownSkillSuggestionComparator(search));
@@ -92,22 +94,22 @@ public class SkillController {
 		@ApiResponse(code = 500, message = "Failure")
 	})
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "q", value = "Names of skills already entered, separated by comma", paramType="query", required = true),
+		@ApiImplicitParam(name = "search", value = "Names of skills already entered, separated by comma", paramType="query", required = true),
 	})
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/skills/next", method = RequestMethod.GET)
-	public ResponseEntity<String> getNext(@RequestParam(required = true) String q) {
-		logger.debug("Generating Suggestion for next Skill based on " + q);
+	public ResponseEntity<String> getNext(@RequestParam(required = true) String search) {
+		logger.debug("Suggestion next skill for {} ", search);
 
 		// candidates = all SuggestionSkills including duplicates and crap
 		List<SuggestionSkill> candidates = new ArrayList<SuggestionSkill>();
 
-		// aggregaret = candidates without duplicates/already known skills
+		// aggregated = candidates without duplicates/already known skills
 		List<SuggestionSkill> aggregated = new ArrayList<SuggestionSkill>();
 
 		// Create List of all known skills from search query
 		List<KnownSkill> enteredSkills =
-				new ArrayList<String>(Arrays.asList(q.split("\\s*,\\s*")))
+				new ArrayList<String>(Arrays.asList(search.split("\\s*,\\s*")))
 				.stream()
 				.map(s -> skillRepo.findByName(s))
 				.filter(s -> s != null)
@@ -180,16 +182,21 @@ public class SkillController {
 	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/skills", method = RequestMethod.POST)
 	public ResponseEntity<String> addSkill(@RequestParam String name) {
-		logger.info("Creating new skill " + name);
-
 		if (skillRepo.findByName(name) != null) {
-			logger.info("Error creating skill " + name + ": already existing; returning BAD_REQUEST");
+			logger.info("Error creating skill {}: already existing", name);
 			StatusJSON json = new StatusJSON("skill already exists", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		if (StringUtils.isEmpty(name)) {
+			logger.info("Error creating skill with empty name");
+			StatusJSON json = new StatusJSON("skill cannot be empty", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		skillRepo.insert(new KnownSkill(name));
 
+		logger.info("Successfully created skill {}: already existing", name);
 		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
 		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}
@@ -206,24 +213,28 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteSkill(@PathVariable String skill) {
-		logger.info("Removing skill" + skill);
+		if (StringUtils.isEmpty(skill)) {
+			logger.info("Error creating skill with empty name");
+			StatusJSON json = new StatusJSON("skill cannot be empty", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
 
 		KnownSkill toRemove = skillRepo.findByName(skill);
 
 		if (toRemove == null) {
-			logger.info("Error removing " + skill + ": does not exist");
+			logger.info("Failed to remove skill {}: skill does not exist", skill);
 			StatusJSON json = new StatusJSON("skill does not exist", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		skillRepo.delete(toRemove);
 
-		logger.debug("Removing " + skill + "as suggestions from other skills");
 		for (KnownSkill s : skillRepo.findAll()) {
 			s.deleteSuggestion(skill);
 			skillRepo.save(s);
 		}
 
+		logger.info("Successfully removed skill {}", skill);
 		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
 		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}
@@ -244,18 +255,22 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.PUT)
 	public ResponseEntity<String> editSkill(@PathVariable String skill, @RequestParam(required = false) String name) {
-		logger.info("Renaming skill " + skill + " to " + name);
+		if (StringUtils.isEmpty(skill) || StringUtils.isEmpty(name)) {
+			logger.info("Error renaming skill: empty skill or name");
+			StatusJSON json = new StatusJSON("skill or name cannot be empty", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
 
 		KnownSkill toEdit = skillRepo.findByName(skill);
 
 		if (toEdit == null) {
-			logger.debug("Error renaming skill" + skill + ": does not exist");
+			logger.debug("Failed to rename skill {}: does not exist", skill);
 			StatusJSON json = new StatusJSON("skill does not exist", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		if (skillRepo.findByName(name) != null) {
-			logger.debug("Error renaming skill" + skill + ": new name already exists");
+			logger.debug("Failed to rename skill {}: new name already exists", skill);
 			StatusJSON json = new StatusJSON("skill " + name + " already exists", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
@@ -263,12 +278,12 @@ public class SkillController {
 		skillRepo.delete(toEdit);
 		skillRepo.insert(new KnownSkill(name, toEdit.getSuggestions()));
 
-		logger.debug("Renaming " + skill + "in suggestions of other skills");
 		for (KnownSkill s : skillRepo.findAll()) {
 			s.renameSuggestion(skill, name);
 			skillRepo.save(s);
 		}
 
+		logger.debug("Successfully renamed {} to {}", skill, name);
 		StatusJSON json = new StatusJSON("success", HttpStatus.OK);
 		return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 	}

@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class LDAPUtils {
+public class LdapUtils {
 
-	private static Logger logger = LoggerFactory.getLogger(LDAPUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(LdapUtils.class);
 
 	private static String ldapUrl;
 
@@ -41,9 +41,8 @@ public class LDAPUtils {
 			env.put(Context.PROVIDER_URL, ldapUrl);
 			env.put(Context.REFERRAL, "follow");
 			ctx = new InitialLdapContext(env, null);
-		} catch (NamingException nex) {
-			logger.error("LDAP Naming Error");
-			nex.printStackTrace();
+		} catch (NamingException e) {
+			logger.error("Failed creating LDAP Context: Naming Error", e);
 		}
 		return ctx;
 	}
@@ -51,7 +50,7 @@ public class LDAPUtils {
 	public static SearchControls getSearchControls() {
 		SearchControls cons = new SearchControls();
 		cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		String[] attrIDs = { "mail", "l", "telephoneNumber", "sn", "givenName" };
+		String[] attrIDs = { "mail", "l", "telephoneNumber", "sn", "givenName", "title" };
 		cons.setReturningAttributes(attrIDs);
 		return cons;
 	}

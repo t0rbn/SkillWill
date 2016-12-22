@@ -1,0 +1,32 @@
+version: 1
+
+#######################
+# One Basic Test User #
+#######################
+
+dn: dc=sinnerschrader,dc=com
+objectClass: top
+objectClass: domain
+dc: server
+
+dn: ou=users,dc=sinnerschrader,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: SinnerSchrader Users
+ou: users
+
+dn: uid=foobar,ou=users,dc=sinnerschrader,dc=com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Fooberius
+uid: foobar
+sn: Barblub
+mail: fooberius.barblub@sinnerschrader.com
+userPassword:  fleischcreme
+title: Macht was mit Internet
+l: Hamburg
+telephoneNumber: +49 666 666 666

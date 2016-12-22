@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class LDAPLogin {
+public class LdapLogin {
 
-	private static Logger logger = LoggerFactory.getLogger(LDAPLogin.class);
+	private static Logger logger = LoggerFactory.getLogger(LdapLogin.class);
 
 	private static String ldapUrl;
 
@@ -42,7 +42,7 @@ public class LDAPLogin {
 	}
 
 	public static boolean canAuthenticate(String username, String password) {
-		// ctx is never really used.
+		// ctx is never used.
 		// It will be assigned a new InitialLdapContext
 		// If this assigment does not fail, the credentails are correct
 		LdapContext ctx = null;
@@ -57,14 +57,13 @@ public class LDAPLogin {
 			env.put(Context.SECURITY_CREDENTIALS, password);
 			ctx = new InitialLdapContext(env, null);
 			ctx.close();
-			logger.debug("Successfully authenticated user " + username);
+			logger.debug("Successfully authenticated user {}" ,username);
 			return true;
 		} catch (AuthenticationException auth) {
-			logger.debug("Could not authenticate user " + username);
+			logger.debug("Failed to authenticate user {}", username);
 			return false;
 		} catch (Exception e) {
-			logger.error("General LDAP error trying to authenticate");
-			e.printStackTrace();
+			logger.error("Failed to authenticate: LDAP Error", e);
 			return false;
 		}
 	}

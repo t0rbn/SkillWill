@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.misc;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @Controller
+@Scope("prototype")
 public class SwaggerForward {
 
 	@ApiOperation(value = "redirect to swagger", notes = "redirect to swagger", hidden = true)

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.sinnerschrader.skillwill.ldap.LdapSync;
 import com.sinnerschrader.skillwill.person.Person;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
@@ -37,6 +38,9 @@ public class MockData {
 	@Autowired
 	private PersonRepository personRepo;
 
+	@Autowired
+	private LdapSync ldapSync;
+
 	@Value("${mockInit}")
 	private String initmock;
 
@@ -47,7 +51,7 @@ public class MockData {
 	private String personsPath;
 
 	@PostConstruct
-	public void init() throws FileNotFoundException, IOException {
+	public void init() throws IOException {
 		if (!initmock.equals("true")) {
 			return;
 		}
@@ -65,7 +69,7 @@ public class MockData {
 		BufferedReader br = new BufferedReader(skillsIS);
 		String line = "";
 		while ((line = br.readLine()) != null) {
-			logger.info("Inserting new skill: " + line);
+			logger.info("Inserting new skill {}", line);
 			skillRepo.insert(new KnownSkill(line));
 		}
 
@@ -76,11 +80,11 @@ public class MockData {
 		//  * separator "====" (exactly FOUR equal signs)
 		Person curr = null;
 		br = new BufferedReader(personsIS);
-		line = "";
 		while ((line = br.readLine()) != null) {
 			if (line.equals("====")) {
-				logger.info("Inserting new person: " + curr.getId());
 				personRepo.insert(curr);
+				ldapSync.syncUser(curr);
+				logger.info("Inserted mock person {}", curr.getId());
 				curr = null;
 			} else if (curr == null) {
 				curr = new Person(line);

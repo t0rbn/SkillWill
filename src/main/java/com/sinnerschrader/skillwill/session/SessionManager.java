@@ -48,7 +48,7 @@ public class SessionManager {
 		sessionRepo.insert(session);
 		renewSession(session);
 
-		logger.debug("Created new session for " + username);
+		logger.debug("Created new session for {}", username);
 
 		return session.getKey();
 	}
@@ -57,23 +57,23 @@ public class SessionManager {
 		Session session = sessionRepo.findByKey(sessionKey);
 		
 		if (session == null) {
-			logger.debug("Error checking session " + sessionKey + ": not found in DB");
+			logger.debug("Failed checking session {}: not in DB (expired/logged out and already removed)", sessionKey);
 			return false;
 		}
 
 		if (!session.getUsername().equals(username)) {
-			logger.debug("Error checking session " + sessionKey + ": username does not match key");
+			logger.debug("Failed checking session {}: username does not match key", sessionKey);
 			return false;
 		}
 
 		if (session.isExpired()) {
-			logger.debug("Session " + sessionKey + " is expired, will remove from DB");
+			logger.debug("Failed checking session {}:  expired; will remove from DB", sessionKey);
 			sessionRepo.delete(session);
 			return false;
 		}
 
 		renewSession(session);
-		logger.debug("Successfully checked session " + sessionKey);
+		logger.debug("Successfully checked session {}", sessionKey);
 
 		return true;
 	}
@@ -89,7 +89,7 @@ public class SessionManager {
 	}
 
 	private void renewSession(Session session) {
-		logger.debug("renewing session " + session.getKey());
+		logger.debug("Renewed session {}", session.getKey());
 		session.renewSession(expireDuration);
 		sessionRepo.save(session);
 	}
@@ -98,7 +98,7 @@ public class SessionManager {
 	// but not logged out properly
 	@Scheduled(cron = "${sessionCleanUpCron}")
 	public void cleanUp() {
-		logger.info("Performing scheduled session cleanup");
+		logger.info("Starting regular session cleanup, this may take a while");
 		List<Session> expiredSessions = sessionRepo.findAll().stream()
 				.filter(s -> s.isExpired())
 				.collect(Collectors.toList());
@@ -106,6 +106,7 @@ public class SessionManager {
 		for (Session s : expiredSessions) {
 			sessionRepo.delete(s);
 		}
+		logger.info("Finished regular session cleanup");
 	}
 
 }

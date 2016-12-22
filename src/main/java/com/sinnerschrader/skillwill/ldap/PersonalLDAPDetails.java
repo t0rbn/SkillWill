@@ -13,13 +13,15 @@ public class PersonalLDAPDetails {
 	private String mail;
 	private String phone;
 	private String location;
+	private String title;
 
-	public PersonalLDAPDetails(String firstName, String lastName, String mail, String telephone, String location) {
+	public PersonalLDAPDetails(String firstName, String lastName, String mail, String telephone, String location, String title) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.mail = mail;
 		this.phone = telephone;
 		this.location = location;
+		this.title = title;
 	}
 
 	public PersonalLDAPDetails() {
@@ -68,6 +70,14 @@ public class PersonalLDAPDetails {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

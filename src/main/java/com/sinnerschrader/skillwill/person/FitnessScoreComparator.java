@@ -23,7 +23,7 @@ public class FitnessScoreComparator implements Comparator<Person>{
 	public int compare(Person a, Person b) {
 		double scoreA = (new FitnessScore(a, searchItems)).getValue();
 		double scoreB = (new FitnessScore(b, searchItems)).getValue();
-		return scoreA < scoreB ? -1 : 1;
+		return scoreA > scoreB ? -1 : 1;
 	}
 
 }

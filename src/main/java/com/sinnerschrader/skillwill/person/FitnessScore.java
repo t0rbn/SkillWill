@@ -18,11 +18,12 @@ public class FitnessScore {
 
 	// total score => weighted average of all factors.
 	public FitnessScore(Person person, List<String> searchItems) {
-		this.value =
-				0.5 * (getAverageSearchedSkills(person, searchItems) / 3) +
-				0.25 * (getAverageSearchedWills(person, searchItems) / 3) +
-				0.125 * getSpecializationSkills(person, searchItems) +
-				0.125 * getSpecializationWills(person, searchItems);
+		double weightedAverageSearchedSkills = 0.5  * (getAverageSearchedSkills(person, searchItems) > 0 ? getAverageSearchedSkills(person, searchItems) / 3 : 0);
+		double weightedAverageSearchedWills = 0.25  * (getAverageSearchedWills(person, searchItems) > 0 ? getAverageSearchedWills(person, searchItems) / 3 : 0);
+		double weightedSpecializationSkills = 0.125 * getSpecializationSkills(person, searchItems);
+		double weightedSpecializationWills = 0.125 * getSpecializationWills(person, searchItems);
+
+		this.value = weightedAverageSearchedSkills + weightedAverageSearchedWills + weightedSpecializationSkills + weightedSpecializationWills;
 	}
 
 	public double getValue() {
@@ -30,44 +31,63 @@ public class FitnessScore {
 	}
 
 	// Helper method finding the intersection of the person's and the searched skill set
-	private static List<PersonalSkill> commonSkills(Person person, List<String> searchItems) {
+	private static List<PersonalSkill> searchedSkillsInPerson(Person person, List<String> searchItems) {
 		return person.getSkills().stream()
 				.filter(skill -> searchItems.contains(skill.getName()))
 				.collect(Collectors.toList());
 	}
 
+	private static List<PersonalSkill> unsearchedSkillsInPerson(Person person, List<String> searchItems) {
+		return person.getSkills().stream()
+				.filter(skill -> !searchItems.contains(skill.getName()))
+				.collect(Collectors.toList());
+	}
+
+
 	// Average skill level of person regarding searched items
 	private static double getAverageSearchedSkills(Person person, List<String> searchItems) {
-		List <PersonalSkill> commonSkills = commonSkills(person, searchItems);
-		int count = commonSkills.size();
-		int sum = commonSkills.stream().mapToInt(skill -> skill.getSkillLevel().getInt()).sum();
-
-		return sum/count;
+		List <PersonalSkill> relevantSkills = searchedSkillsInPerson(person, searchItems);
+		int count = relevantSkills.size();
+		int sum = relevantSkills.stream().mapToInt(skill -> skill.getSkillLevel().getInt()).sum();
+		return count > 0 ? (double) sum/count : 0;
 	}
 
 	// Average will level of person regarding searched items
 	private static double getAverageSearchedWills(Person person, List<String> searchItems) {
-		List <PersonalSkill> commonSkills = commonSkills(person, searchItems);
-		int count = commonSkills.size();
-		int sum = commonSkills.stream().mapToInt(skill -> skill.getWillLevel().getInt()).sum();
-
-		return sum/count;
+		List <PersonalSkill> relevantSkills = searchedSkillsInPerson(person, searchItems);
+		int count = relevantSkills.size();
+		int sum = relevantSkills.stream().mapToInt(skill -> skill.getWillLevel().getInt()).sum();
+		return count > 0 ? (double) sum/count : 0;
 	}
 
+	// Average skill level of person regarding searched items
+	private static double getAverageUnsearchedSkills(Person person, List<String> searchItems) {
+		List <PersonalSkill> relevantSkills = unsearchedSkillsInPerson(person, searchItems);
+		int count = relevantSkills.size();
+		int sum = relevantSkills.stream().mapToInt(skill -> skill.getSkillLevel().getInt()).sum();
+		return count > 0 ? (double) sum/count : 0;
+	}
+
+	// Average will level of person regarding searched items
+	private static double getAverageUnsearchedWills(Person person, List<String> searchItems) {
+		List <PersonalSkill> relevantSkills = unsearchedSkillsInPerson(person, searchItems);
+		int count = relevantSkills.size();
+		int sum = relevantSkills.stream().mapToInt(skill -> skill.getWillLevel().getInt()).sum();
+		return count > 0 ? (double) sum/count : 0;
+	}
+	
 	// Specialization in skill level of person regarding searched items (0: worst; 1: best)
 	private static double getSpecializationSkills(Person person, List<String> searchItems) {
 		double searchedAverage = getAverageSearchedSkills(person, searchItems);
-		double personAverage = person.getSkills().stream().mapToInt(s -> s.getSkillLevel().getInt()).sum() / person.getSkills().size();
-
-		return (3 + searchedAverage - personAverage) / 6;
+		double unsearchedAverage = getAverageUnsearchedSkills(person, searchItems);
+		return (3 + searchedAverage - unsearchedAverage) / 6;
 	}
 
 	// Specialization in will level of person regarding searched items (0: worst; 1: best)
 	private static double getSpecializationWills(Person person, List<String> searchItems) {
 		double searchedAverage = getAverageSearchedWills(person, searchItems);
-		double personAverage = person.getSkills().stream().mapToInt(s -> s.getWillLevel().getInt()).sum() / person.getSkills().size();
-
-		return (3 + searchedAverage - personAverage) / 6;
+		double unsearchedAverage = getAverageUnsearchedWills(person, searchItems);
+		return (3 + searchedAverage - unsearchedAverage) / 6;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.misc;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(hidden = true)
 @Controller
+@Scope("prototype")
 public class HTCPCPImpl {
 
 	@ApiOperation(value = "HTCPCP Implementation", notes = "HTCPCP", hidden = true)

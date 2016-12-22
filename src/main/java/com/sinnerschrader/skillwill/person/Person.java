@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
+import com.sinnerschrader.skillwill.ldap.LdapSync;
 import com.sinnerschrader.skillwill.ldap.PersonalLDAPDetails;
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
 
@@ -24,8 +25,7 @@ public class Person {
 	private String id;
 	private List<PersonalSkill> skills;
 
-	// LDAP Details won't be stored but retrieved dynamically
-	@Transient
+	// LDAP Details will be updates regularly
 	private PersonalLDAPDetails ldapDetails;
 
 	public Person(String id) {
@@ -42,8 +42,12 @@ public class Person {
 		return this.skills;
 	}
 
-	public void setLDAPDetails(PersonalLDAPDetails ldapDetails) {
+	public void setLdapDetails(PersonalLDAPDetails ldapDetails) {
 		this.ldapDetails = ldapDetails;
+	}
+
+	public PersonalLDAPDetails getLdapDetails() {
+		return this.ldapDetails;
 	}
 
 	public void addUpdateSkill(PersonalSkill skill) {
@@ -66,6 +70,8 @@ public class Person {
 			obj.put("mail", ldapDetails.getMail());
 			obj.put("phone", ldapDetails.getPhone());
 			obj.put("location", ldapDetails.getLocation());
+			obj.put("title", ldapDetails.getTitle());
+
 		}
 
 		JSONArray skills = new JSONArray();

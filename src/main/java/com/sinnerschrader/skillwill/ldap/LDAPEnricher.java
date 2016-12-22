@@ -63,7 +63,7 @@ public class LDAPEnricher {
 
 				person.setLDAPDetails(ldapDetails);
 			} else {
-				logger.error("User " + person.getId() + " not found in LDAP");
+				logger.info("User " + person.getId() + " not found in LDAP");
 				System.out.println("user not found.");
 			}
 		} catch (NamingException e) {

@@ -154,7 +154,7 @@ public class UserController {
 		Person p = personRepo.findById(user);
 
 		if (p == null) {
-			logger.error("User " + user + " not found; will return 404");
+			logger.info("User " + user + " not found; will return 404");
 			StatusJSON json = new StatusJSON("user not found", HttpStatus.NOT_FOUND);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.NOT_FOUND);
 		}
@@ -192,18 +192,25 @@ public class UserController {
 		Person person = personRepo.findById(user);
 
 		if (person == null) {
-			logger.error("User " + user + " not found; returning 404");
+			logger.info("User " + user + " not found; returning 404");
 			StatusJSON json = new StatusJSON("user not found", HttpStatus.NOT_FOUND);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.NOT_FOUND);
 		}
 
 		if (skillRepo.findByName(skill) == null) {
-			logger.error("Skill " + skill + " not found; returning 404");
+			logger.info("Skill " + skill + " not found; returning 404");
 			StatusJSON json = new StatusJSON("skill not known", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}
 
-		person.addUpdateSkill(new PersonalSkill(skill, Integer.parseInt(skill_level), Integer.parseInt(will_level)));
+		try {
+			person.addUpdateSkill(new PersonalSkill(skill, Integer.parseInt(skill_level), Integer.parseInt(will_level)));
+		} catch (IllegalArgumentException e) {
+			logger.info("Skill/Will level was not in range 0-3,");
+			StatusJSON json = new StatusJSON("skill/will level must be in range 0-3", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
+		}
+
 		personRepo.save(person);
 
 		StatusJSON json = new StatusJSON("success", HttpStatus.OK);

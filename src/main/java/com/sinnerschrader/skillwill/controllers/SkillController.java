@@ -183,7 +183,7 @@ public class SkillController {
 		logger.info("Creating new skill " + name);
 
 		if (skillRepo.findByName(name) != null) {
-			logger.error("Error creating skill " + name + ": already existing; returning BAD_REQUEST");
+			logger.info("Error creating skill " + name + ": already existing; returning BAD_REQUEST");
 			StatusJSON json = new StatusJSON("skill already exists", HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
 		}

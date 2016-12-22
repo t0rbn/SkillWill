@@ -63,7 +63,7 @@ public class LDAPLogin {
 			logger.debug("Could not authenticate user " + username);
 			return false;
 		} catch (Exception e) {
-			logger.error("Error trying to authenticate");
+			logger.error("General LDAP error trying to authenticate");
 			e.printStackTrace();
 			return false;
 		}

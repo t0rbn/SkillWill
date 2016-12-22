@@ -61,7 +61,7 @@ public class LoginController {
 	@RequestMapping(path = "/login", method = RequestMethod.POST)
 	public ResponseEntity<String> login(@RequestParam("username") String username, @RequestParam("password") String password) {
 		if (!LDAPLogin.canAuthenticate(username, password)) {
-			logger.info("cannot " + username + " login: username/password incorrect");
+			logger.info("cannot login " + username + ": username/password incorrect");
 			StatusJSON json = new StatusJSON("cannot login: username/password incorrect", HttpStatus.UNAUTHORIZED);
 			return new ResponseEntity<String>(json.toString(), HttpStatus.UNAUTHORIZED);
 		}

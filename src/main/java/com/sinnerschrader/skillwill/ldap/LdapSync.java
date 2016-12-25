@@ -24,63 +24,62 @@ import com.sinnerschrader.skillwill.repositories.PersonRepository;
  * to Persons
  *
  * @author torree
- *
  */
 @Component
 public class LdapSync {
 
-	private static Logger logger = LoggerFactory.getLogger(LdapSync.class);
+    private static Logger logger = LoggerFactory.getLogger(LdapSync.class);
 
-	private String ldapBaseDN;
+    private String ldapBaseDN;
 
-	@Autowired
-	private PersonRepository personRepo;
+    @Autowired
+    private PersonRepository personRepo;
 
-	// @Value on static String does not work
-	// -> non-static setter works
-	@Value("${ldapBaseDN}")
-	private void setLdapBaseDN(String ldapBaseDN) {
-		this.ldapBaseDN = ldapBaseDN;
-	}
+    // @Value on static String does not work
+    // -> non-static setter works
+    @Value("${ldapBaseDN}")
+    private void setLdapBaseDN(String ldapBaseDN) {
+        this.ldapBaseDN = ldapBaseDN;
+    }
 
-	public void syncUser(Person person) {
-		PersonalLDAPDetails ldapDetails = null;
-		NamingEnumeration<SearchResult> answer;
-		LdapContext ctx = LdapUtils.getLdapContext();
+    public void syncUser(Person person) {
+        PersonalLDAPDetails ldapDetails = null;
+        NamingEnumeration<SearchResult> answer;
+        LdapContext ctx = LdapUtils.getLdapContext();
 
-		try {
-			answer = ctx.search(ldapBaseDN, "uid=" + person.getId(), LdapUtils.getSearchControls());
-			if (answer.hasMore()) {
-				Attributes attrs = answer.next().getAttributes();
-				ldapDetails = new PersonalLDAPDetails();
-				ldapDetails.setFirstName(attrs.get("givenName").get().toString());
-				ldapDetails.setLastName(attrs.get("sn").get().toString());
-				ldapDetails.setMail(attrs.get("mail").get().toString());
-				ldapDetails.setLocation(attrs.get("l").get().toString());
-				ldapDetails.setPhone(attrs.get("telephoneNumber").get().toString());
-				ldapDetails.setTitle(attrs.get("title").get().toString());
+        try {
+            answer = ctx.search(ldapBaseDN, "uid=" + person.getId(), LdapUtils.getSearchControls());
+            if (answer.hasMore()) {
+                Attributes attrs = answer.next().getAttributes();
+                ldapDetails = new PersonalLDAPDetails();
+                ldapDetails.setFirstName(attrs.get("givenName").get().toString());
+                ldapDetails.setLastName(attrs.get("sn").get().toString());
+                ldapDetails.setMail(attrs.get("mail").get().toString());
+                ldapDetails.setLocation(attrs.get("l").get().toString());
+                ldapDetails.setPhone(attrs.get("telephoneNumber").get().toString());
+                ldapDetails.setTitle(attrs.get("title").get().toString());
 
-				person.setLdapDetails(ldapDetails);
-				personRepo.save(person);
-			} else {
-				logger.error("Failed to find user {} with LDAP details, but user is in DB", person.getId());
-			}
-		} catch (NamingException e) {
-			logger.error("Faied to retrieve Information from LDAP: Naming Error");
-		}
-	}
+                person.setLdapDetails(ldapDetails);
+                personRepo.save(person);
+            } else {
+                logger.error("Failed to find user {} with LDAP details, but user is in DB", person.getId());
+            }
+        } catch (NamingException e) {
+            logger.error("Faied to retrieve Information from LDAP: Naming Error");
+        }
+    }
 
-	public void syncUsers(List<Person> persons) {
-		for (Person p : persons) {
-			syncUser(p);
-		}
-	}
+    public void syncUsers(List<Person> persons) {
+        for (Person p : persons) {
+            syncUser(p);
+        }
+    }
 
-	@Scheduled(cron = "${ldapSyncCron}")
-	private void syncAll() {
-		logger.info("Starting regular LDAP sync, this may take a while");
-		syncUsers(personRepo.findAll());
-		logger.info("Finished regular LDAP sync");
-	}
+    @Scheduled(cron = "${ldapSyncCron}")
+    private void syncAll() {
+        logger.info("Starting regular LDAP sync, this may take a while");
+        syncUsers(personRepo.findAll());
+        logger.info("Finished regular LDAP sync");
+    }
 
 }

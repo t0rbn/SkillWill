@@ -19,94 +19,93 @@ import com.sinnerschrader.skillwill.repositories.SessionRepository;
  * Manage all sessions
  * NOTE: there can be multiple sessions
  * for one username
- * 
- * @author torree
  *
+ * @author torree
  */
 @Component
 @EnableScheduling
 public class SessionManager {
 
-	private static Logger logger = LoggerFactory.getLogger(SessionManager.class);
+    private static Logger logger = LoggerFactory.getLogger(SessionManager.class);
 
-	// Minutes of inactivity before the session is destroyed
-	@Value("${sessionExpireDuration}")
-	private int expireDuration;
+    // Minutes of inactivity before the session is destroyed
+    @Value("${sessionExpireDuration}")
+    private int expireDuration;
 
-	@Autowired
-	private SessionRepository sessionRepo;
+    @Autowired
+    private SessionRepository sessionRepo;
 
-	public String login(String username) {
-		String key = null;
-		do {
-			key = UUID.randomUUID().toString().replaceAll("-", "");
-		} while (key == null || sessionRepo.findByKey(key) != null);
+    public String login(String username) {
+        String key = null;
+        do {
+            key = UUID.randomUUID().toString().replaceAll("-", "");
+        } while (key == null || sessionRepo.findByKey(key) != null);
 
-		// Session is initialized with expire date = now
-		// renew to set initial expiration date
-		Session session = new Session(key, username, new Date());
-		sessionRepo.insert(session);
-		renewSession(session);
+        // Session is initialized with expire date = now
+        // renew to set initial expiration date
+        Session session = new Session(key, username, new Date());
+        sessionRepo.insert(session);
+        renewSession(session);
 
-		logger.debug("Created new session for {}", username);
+        logger.debug("Created new session for {}", username);
 
-		return session.getKey();
-	}
+        return session.getKey();
+    }
 
-	public boolean checkSession(String username, String sessionKey) {
-		Session session = sessionRepo.findByKey(sessionKey);
-		
-		if (session == null) {
-			logger.debug("Failed checking session {}: not in DB (expired/logged out and already removed)", sessionKey);
-			return false;
-		}
+    public boolean checkSession(String username, String sessionKey) {
+        Session session = sessionRepo.findByKey(sessionKey);
 
-		if (!session.getUsername().equals(username)) {
-			logger.debug("Failed checking session {}: username does not match key", sessionKey);
-			return false;
-		}
+        if (session == null) {
+            logger.debug("Failed checking session {}: not in DB (expired/logged out and already removed)", sessionKey);
+            return false;
+        }
 
-		if (session.isExpired()) {
-			logger.debug("Failed checking session {}:  expired; will remove from DB", sessionKey);
-			sessionRepo.delete(session);
-			return false;
-		}
+        if (!session.getUsername().equals(username)) {
+            logger.debug("Failed checking session {}: username does not match key", sessionKey);
+            return false;
+        }
 
-		renewSession(session);
-		logger.debug("Successfully checked session {}", sessionKey);
+        if (session.isExpired()) {
+            logger.debug("Failed checking session {}:  expired; will remove from DB", sessionKey);
+            sessionRepo.delete(session);
+            return false;
+        }
 
-		return true;
-	}
+        renewSession(session);
+        logger.debug("Successfully checked session {}", sessionKey);
 
-	public void logout(String username, String sessionKey) {
-		Session session = sessionRepo.findByKey(sessionKey);
+        return true;
+    }
 
-		if (session == null || !session.getUsername().equals(username)) {
-			throw new IllegalArgumentException("session key not found or username not matching");
-		}
+    public void logout(String username, String sessionKey) {
+        Session session = sessionRepo.findByKey(sessionKey);
 
-		sessionRepo.delete(session);
-	}
+        if (session == null || !session.getUsername().equals(username)) {
+            throw new IllegalArgumentException("session key not found or username not matching");
+        }
 
-	private void renewSession(Session session) {
-		logger.debug("Renewed session {}", session.getKey());
-		session.renewSession(expireDuration);
-		sessionRepo.save(session);
-	}
+        sessionRepo.delete(session);
+    }
 
-	// Regularly clean up expired sessions that have been inactive
-	// but not logged out properly
-	@Scheduled(cron = "${sessionCleanUpCron}")
-	public void cleanUp() {
-		logger.info("Starting regular session cleanup, this may take a while");
-		List<Session> expiredSessions = sessionRepo.findAll().stream()
-				.filter(s -> s.isExpired())
-				.collect(Collectors.toList());
+    private void renewSession(Session session) {
+        logger.debug("Renewed session {}", session.getKey());
+        session.renewSession(expireDuration);
+        sessionRepo.save(session);
+    }
 
-		for (Session s : expiredSessions) {
-			sessionRepo.delete(s);
-		}
-		logger.info("Finished regular session cleanup");
-	}
+    // Regularly clean up expired sessions that have been inactive
+    // but not logged out properly
+    @Scheduled(cron = "${sessionCleanUpCron}")
+    public void cleanUp() {
+        logger.info("Starting regular session cleanup, this may take a while");
+        List<Session> expiredSessions = sessionRepo.findAll().stream()
+                .filter(s -> s.isExpired())
+                .collect(Collectors.toList());
+
+        for (Session s : expiredSessions) {
+            sessionRepo.delete(s);
+        }
+        logger.info("Finished regular session cleanup");
+    }
 
 }

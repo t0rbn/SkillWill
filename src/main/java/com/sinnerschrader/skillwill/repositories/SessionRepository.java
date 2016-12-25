@@ -9,12 +9,11 @@ import com.sinnerschrader.skillwill.session.Session;
  * Collection: session
  *
  * @author torree
- *
  */
 public interface SessionRepository extends MongoRepository<Session, String> {
 
-	public Session findByKey(String key);
+    public Session findByKey(String key);
 
-	public Session findByUsername(String username);
+    public Session findByUsername(String username);
 
 }

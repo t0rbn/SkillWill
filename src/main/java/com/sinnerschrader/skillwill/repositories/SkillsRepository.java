@@ -10,15 +10,14 @@ import com.sinnerschrader.skillwill.skills.KnownSkill;
 /**
  * Repository for skills
  * Collection: knownSkill
- * 
- * @author torree
  *
+ * @author torree
  */
 public interface SkillsRepository extends MongoRepository<KnownSkill, String> {
 
-	public KnownSkill findByName(String name);
+    public KnownSkill findByName(String name);
 
-	@Query("{ _id : {'$regex': ?0, $options: 'i'} }")
-	public List<KnownSkill> findFuzzyByName(String name);
+    @Query("{ _id : {'$regex': ?0, $options: 'i'} }")
+    public List<KnownSkill> findFuzzyByName(String name);
 
 }

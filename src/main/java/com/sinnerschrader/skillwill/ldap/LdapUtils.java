@@ -15,44 +15,43 @@ import org.springframework.stereotype.Component;
 
 /**
  * Utility Class for LDAP
- * 
- * @author torree
  *
+ * @author torree
  */
 @Component
 public class LdapUtils {
 
-	private static Logger logger = LoggerFactory.getLogger(LdapUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(LdapUtils.class);
 
-	private static String ldapUrl;
+    private static String ldapUrl;
 
-	@SuppressWarnings("static-access")
-	@Value("${ldapUrl}")
-	private void setLdapUrl(String ldapUrl) {
-		this.ldapUrl = ldapUrl;
-	}
+    @SuppressWarnings("static-access")
+    @Value("${ldapUrl}")
+    private void setLdapUrl(String ldapUrl) {
+        this.ldapUrl = ldapUrl;
+    }
 
-	public static LdapContext getLdapContext() {
-		LdapContext ctx = null;
-		try {
-			Hashtable<String, String> env = new Hashtable<String, String>();
-			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-			env.put(Context.SECURITY_AUTHENTICATION, "Simple");
-			env.put(Context.PROVIDER_URL, ldapUrl);
-			env.put(Context.REFERRAL, "follow");
-			ctx = new InitialLdapContext(env, null);
-		} catch (NamingException e) {
-			logger.error("Failed creating LDAP Context: Naming Error", e);
-		}
-		return ctx;
-	}
+    public static LdapContext getLdapContext() {
+        LdapContext ctx = null;
+        try {
+            Hashtable<String, String> env = new Hashtable<String, String>();
+            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.SECURITY_AUTHENTICATION, "Simple");
+            env.put(Context.PROVIDER_URL, ldapUrl);
+            env.put(Context.REFERRAL, "follow");
+            ctx = new InitialLdapContext(env, null);
+        } catch (NamingException e) {
+            logger.error("Failed to create LDAP Context: Naming Error", e);
+        }
+        return ctx;
+    }
 
-	public static SearchControls getSearchControls() {
-		SearchControls cons = new SearchControls();
-		cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		String[] attrIDs = { "mail", "l", "telephoneNumber", "sn", "givenName", "title" };
-		cons.setReturningAttributes(attrIDs);
-		return cons;
-	}
+    public static SearchControls getSearchControls() {
+        SearchControls cons = new SearchControls();
+        cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        String[] attrIDs = {"mail", "l", "telephoneNumber", "sn", "givenName", "title"};
+        cons.setReturningAttributes(attrIDs);
+        return cons;
+    }
 
 }

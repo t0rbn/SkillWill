@@ -9,7 +9,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Unit test for FitnessScoreComparator
+ *
+ * @author torree
+ *
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
 public class FitnessScoreComparatorTest {
 
 	private Person pGood;

@@ -15,19 +15,18 @@ import io.swagger.annotations.ApiOperation;
  * I'm not a coffe maker!
  *
  * @author torree
- *
  */
 @Api(hidden = true)
 @Controller
 @Scope("prototype")
 public class HTCPCPImpl {
 
-	@ApiOperation(value = "HTCPCP Implementation", notes = "HTCPCP", hidden = true)
-	@CrossOrigin("http://localhost:8888")
-	@RequestMapping(path = "/coffee", method = RequestMethod.GET)
-	public ResponseEntity<String> coffee() {
-		StatusJSON json = new StatusJSON("I'm a teapot \u2615", HttpStatus.I_AM_A_TEAPOT);
-		return new ResponseEntity<String>(json.toString(), HttpStatus.I_AM_A_TEAPOT);
-	}
+    @ApiOperation(value = "HTCPCP Implementation", notes = "HTCPCP", hidden = true)
+    @CrossOrigin("http://localhost:8888")
+    @RequestMapping(path = "/coffee", method = RequestMethod.GET)
+    public ResponseEntity<String> coffee() {
+        StatusJSON json = new StatusJSON("I'm a teapot \u2615", HttpStatus.I_AM_A_TEAPOT);
+        return new ResponseEntity<String>(json.toString(), HttpStatus.I_AM_A_TEAPOT);
+    }
 
 }

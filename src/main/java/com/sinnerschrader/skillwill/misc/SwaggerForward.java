@@ -11,16 +11,15 @@ import io.swagger.annotations.ApiOperation;
  * Forward / to /swagger-ui.html
  *
  * @author torree
- *
  */
 @Controller
 @Scope("prototype")
 public class SwaggerForward {
 
-	@ApiOperation(value = "redirect to swagger", notes = "redirect to swagger", hidden = true)
-	@RequestMapping(path = "/", method = RequestMethod.GET)
-	public String redirectRoot() {
-		return "redirect:/swagger-ui.html";
-	}
+    @ApiOperation(value = "redirect to swagger", notes = "redirect to swagger", hidden = true)
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String redirectRoot() {
+        return "redirect:/swagger-ui.html";
+    }
 
 }

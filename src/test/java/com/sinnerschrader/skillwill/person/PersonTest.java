@@ -6,7 +6,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sinnerschrader.skillwill.skills.PersonalSkill;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Partial unit tests for Person
+ *
+ * @author torree
+ *
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
 public class PersonTest {
 
 	public Person person;
@@ -22,7 +33,8 @@ public class PersonTest {
 		person.addUpdateSkill(new PersonalSkill("new skill", 2, 3));
 		assertEquals(2, person.getSkills().size());
 	}
-	
+
+	@Test
 	public void testAddUpdateKnownSkill() {
 		person.addUpdateSkill(new PersonalSkill("skillname", 0, 1));
 		assertEquals(1, person.getSkills().size());

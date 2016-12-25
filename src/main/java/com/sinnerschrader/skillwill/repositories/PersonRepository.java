@@ -12,12 +12,11 @@ import com.sinnerschrader.skillwill.person.Person;
  * Collection: person
  *
  * @author torree
- *
  */
 public interface PersonRepository extends MongoRepository<Person, String> {
-	public Person findById(String id);
+    public Person findById(String id);
 
-	@Query("{ skills._id : ?0 }")
-	public List<Person> findBySkill(String skillName);
+    @Query("{ skills._id : ?0 }")
+    public List<Person> findBySkill(String skillName);
 
 }

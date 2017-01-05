@@ -1,7 +1,7 @@
 package com.sinnerschrader.skillwill.controllers;
 
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
-import com.sinnerschrader.skillwill.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.testinfrastructure.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
 import org.json.JSONArray;
@@ -17,13 +17,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Integration test for SkillController
  *
  * @author torree
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -58,7 +58,7 @@ public class SkillControllerTest {
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
 		JSONArray resJSON = new JSONArray(res.getBody());
 		assertTrue(resJSON.length() == 1);
-		assertTrue(resJSON.getString(0).equals("COBOL"));
+		assertEquals("COBOL", resJSON.getString(0));
 	}
 
 	@Test
@@ -67,8 +67,8 @@ public class SkillControllerTest {
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
 		JSONArray resJSON = new JSONArray(res.getBody());
 		assertTrue(resJSON.length() == 2);
-		assertTrue(resJSON.get(0).equals("Java"));
-		assertTrue(resJSON.get(1).equals("COBOL"));
+		assertEquals("Java", resJSON.get(0));
+		assertEquals("COBOL", resJSON.get(1));
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class SkillControllerTest {
 	public void testGetNextValid() {
 		ResponseEntity<String> res = skillController.getNext("Java");
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
-		assertTrue(res.getBody().equals("COBOL"));
+		assertEquals("COBOL", res.getBody());
 	}
 
 
@@ -91,27 +91,25 @@ public class SkillControllerTest {
 	public void testgetNextDoubleSearch() {
 		ResponseEntity<String> res = skillController.getNext("Java, COBOL");
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
-		assertTrue(res.getBody().equals(""));
+		assertEquals("", res.getBody());
 	}
 
 	@Test
 	public void testGetNextEmptySearch() {
 		ResponseEntity<String> res = skillController.getNext("");
-		assertTrue(res.getStatusCode() == HttpStatus.OK);
-		assertTrue(res.getBody().equals(""));
+		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 	}
 
 	@Test
 	public void testGetNextUnknownSearch() {
-		ResponseEntity<String> res = skillController.getNext("I am Unknown");
-		assertTrue(res.getStatusCode() == HttpStatus.OK);
-		assertTrue(res.getBody().equals(""));
+		ResponseEntity<String> res = skillController.getNext("IAmUnknown");
+		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 	}
 
 	@Test
 	public void testAddSkillValid() throws JSONException {
 		assertTrue(skillController.addSkill("foo").getStatusCode() == HttpStatus.OK);
-		assertTrue(new JSONArray(skillController.getSkills("fo").getBody()).getString(0).equals("foo"));
+		assertEquals("foo", new JSONArray(skillController.getSkills("fo").getBody()).getString(0));
 	}
 
 	@Test
@@ -127,7 +125,7 @@ public class SkillControllerTest {
 	@Test
 	public void testDeleteValid() {
 		assertTrue(skillController.deleteSkill("Java").getStatusCode() == HttpStatus.OK);
-		assertTrue(skillController.getNext("COBOL").getBody().equals(""));
+		assertEquals("", skillController.getNext("COBOL").getBody());
 	}
 
 	@Test
@@ -143,7 +141,7 @@ public class SkillControllerTest {
 	@Test
 	public void testEditSkillValid() {
 		assertTrue(skillController.editSkill("COBOL", "foo").getStatusCode() == HttpStatus.OK);
-		assertTrue(skillController.getNext("Java").getBody().equals("foo"));
+		assertEquals("foo", skillController.getNext("Java").getBody());
 	}
 
 	@Test
@@ -154,7 +152,7 @@ public class SkillControllerTest {
 	@Test
 	public void testEditSkilEmptyName() {
 		assertTrue(skillController.editSkill("Java", "").getStatusCode() == HttpStatus.BAD_REQUEST);
-		assertTrue(skillController.getNext("COBOL").getBody().equals("Java"));
+		assertEquals("Java", skillController.getNext("COBOL").getBody());
 	}
 
 	@Test
@@ -165,8 +163,8 @@ public class SkillControllerTest {
 	@Test
 	public void testEditSkillToExisting() {
 		assertTrue(skillController.editSkill("Java", "COBOL").getStatusCode() == HttpStatus.BAD_REQUEST);
-		assertTrue(skillController.getNext("Java").getBody().equals("COBOL"));
-		assertTrue(skillController.getNext("COBOL").getBody().equals("Java"));
+		assertEquals("COBOL", skillController.getNext("Java").getBody());
+		assertEquals("Java", skillController.getNext("COBOL").getBody());
 	}
 
 }

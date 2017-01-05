@@ -1,4 +1,4 @@
-package com.sinnerschrader.skillwill.skills;
+package com.sinnerschrader.skillwill.domain.skills;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,14 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Partial unit tests for KnownSkill
  *
  * @author torree
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

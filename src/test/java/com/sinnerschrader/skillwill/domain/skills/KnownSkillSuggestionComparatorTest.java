@@ -1,27 +1,26 @@
-package com.sinnerschrader.skillwill.skills;
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.sinnerschrader.skillwill.domain.skills;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * Unit test for KnownSkikllSuggestionComparator
  *
  * @author torree
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class KnownSkillSuggestionComparatorTest {
 
 	@Test
-	public void testNoneStarts () {
+	public void testNoneStarts() {
 		KnownSkill a = new KnownSkill("Wurstwasser");
 		KnownSkill b = new KnownSkill("foo");
 
@@ -59,7 +58,7 @@ public class KnownSkillSuggestionComparatorTest {
 		toSort.sort(new KnownSkillSuggestionComparator("wurst"));
 
 		assertEquals(b, toSort.get(0));
-		assertEquals(a, toSort.get(1));		
+		assertEquals(a, toSort.get(1));
 	}
 
 	@Test
@@ -75,9 +74,9 @@ public class KnownSkillSuggestionComparatorTest {
 		toSort.sort(new KnownSkillSuggestionComparator("wurst"));
 
 		assertEquals(b, toSort.get(0));
-		assertEquals(a, toSort.get(1));	
-		assertEquals(c, toSort.get(2));	
-		
+		assertEquals(a, toSort.get(1));
+		assertEquals(c, toSort.get(2));
+
 	}
 
 }

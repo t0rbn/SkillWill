@@ -1,11 +1,10 @@
 package com.sinnerschrader.skillwill.repositories;
 
-import java.util.List;
-
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.sinnerschrader.skillwill.skills.KnownSkill;
+import java.util.List;
 
 /**
  * Repository for skills
@@ -15,9 +14,12 @@ import com.sinnerschrader.skillwill.skills.KnownSkill;
  */
 public interface SkillsRepository extends MongoRepository<KnownSkill, String> {
 
-    public KnownSkill findByName(String name);
+	KnownSkill findByName(String name);
 
-    @Query("{ _id : {'$regex': ?0, $options: 'i'} }")
-    public List<KnownSkill> findFuzzyByName(String name);
+	@Query("{ _id : {'$regex': ?0, $options: 'i'} }")
+	List<KnownSkill> findFuzzyByName(String name);
+
+	@Query("{ suggestions.name : ?0 }")
+	List<KnownSkill> findBySuggestion(String suggestion);
 
 }

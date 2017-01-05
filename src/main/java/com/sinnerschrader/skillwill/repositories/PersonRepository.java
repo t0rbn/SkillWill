@@ -1,11 +1,10 @@
 package com.sinnerschrader.skillwill.repositories;
 
-import java.util.List;
-
+import com.sinnerschrader.skillwill.domain.person.Person;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.sinnerschrader.skillwill.person.Person;
+import java.util.List;
 
 /**
  * MongoRepository for Persons
@@ -14,9 +13,9 @@ import com.sinnerschrader.skillwill.person.Person;
  * @author torree
  */
 public interface PersonRepository extends MongoRepository<Person, String> {
-    public Person findById(String id);
+	Person findById(String id);
 
-    @Query("{ skills._id : ?0 }")
-    public List<Person> findBySkill(String skillName);
+	@Query("{ skills._id : ?0 }")
+	List<Person> findBySkill(String skillName);
 
 }

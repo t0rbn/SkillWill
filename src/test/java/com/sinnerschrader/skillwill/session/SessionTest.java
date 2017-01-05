@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
  * Partial unit tests for Session
  *
  * @author torree
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

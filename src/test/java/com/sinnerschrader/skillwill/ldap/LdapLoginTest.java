@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.ldap;
 
+import com.sinnerschrader.skillwill.services.LdapService;
 import com.sinnerschrader.skillwill.testinfrastructure.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
 import org.junit.Before;
@@ -18,7 +19,6 @@ import static org.junit.Assert.assertTrue;
  * Unit test for LdapLogin
  *
  * @author torree
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -27,6 +27,9 @@ public class LdapLoginTest {
 	@Autowired
 	private EmbeddedLdap ldap;
 
+	@Autowired
+	private LdapService ldapService;
+
 	@Before
 	public void setUp() throws IOException, LDAPException {
 		ldap.reset();
@@ -34,17 +37,17 @@ public class LdapLoginTest {
 
 	@Test
 	public void testValidCredentials() {
-		assertTrue(LdapLogin.canAuthenticate("foobar", "fleischcreme"));
+		assertTrue(ldapService.canAuthenticate("foobar", "fleischcreme"));
 	}
 
 	@Test
 	public void testInvalidUser() {
-		assertFalse(LdapLogin.canAuthenticate("IAmUnknown", "fleischcreme"));
+		assertFalse(ldapService.canAuthenticate("IAmUnknown", "fleischcreme"));
 	}
 
 	@Test
 	public void testInvalidPassword() {
-		assertFalse(LdapLogin.canAuthenticate("foobar", "cremefleisch"));
+		assertFalse(ldapService.canAuthenticate("foobar", "cremefleisch"));
 	}
 
 }

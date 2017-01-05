@@ -1,7 +1,6 @@
 package com.sinnerschrader.skillwill.misc;
 
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
 
 /**
  * Little helper class encapsulating status JSON
@@ -11,22 +10,21 @@ import org.springframework.http.HttpStatus;
  */
 public class StatusJSON {
 
-    private JSONObject json;
+	private JSONObject json;
 
-    public StatusJSON(String message, HttpStatus status) {
-        JSONObject obj = new JSONObject();
-        obj.put("message", message);
-        obj.put("httpStatus", status.value());
-        this.json = obj;
-    }
+	public StatusJSON(String message) {
+		JSONObject obj = new JSONObject();
+		obj.put("message", message);
+		this.json = obj;
+	}
 
-    public JSONObject getJSON() {
-        return this.json;
-    }
+	public JSONObject getJSON() {
+		return this.json;
+	}
 
-    @Override
-    public String toString() {
-        return this.json.toString();
-    }
+	@Override
+	public String toString() {
+		return this.json.toString();
+	}
 
 }

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
  * of the Hyper Text Coffee Pot Control Protocol
  *
  * @author torree
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

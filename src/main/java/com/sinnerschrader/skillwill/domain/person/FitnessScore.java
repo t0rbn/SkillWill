@@ -1,9 +1,6 @@
 package com.sinnerschrader.skillwill.domain.person;
 
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,12 +15,8 @@ public class FitnessScore {
 
 	private double value;
 
-	private FitnessScoreProperties fitnessScoreProperties;
-
 	// total score => weighted average of all factors.
 	public FitnessScore(Person person, List<String> searchItems, FitnessScoreProperties fitnessScoreProperties) {
-		this.fitnessScoreProperties = fitnessScoreProperties;
-
 		double weightedAverageSearchedSkills = fitnessScoreProperties.weightAverageSkills * (getAverageSearchedSkills(person, searchItems) > 0 ? getAverageSearchedSkills(person, searchItems) / 3 : 0);
 		double weightedAverageSearchedWills = fitnessScoreProperties.weightAverageWills * (getAverageSearchedWills(person, searchItems) > 0 ? getAverageSearchedWills(person, searchItems) / 3 : 0);
 		double weightedSpecializationSkills = fitnessScoreProperties.weightSpecializationSkills * getSpecializationSkills(person, searchItems);

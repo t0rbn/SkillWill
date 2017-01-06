@@ -130,12 +130,12 @@ public class SkillControllerTest {
 
 	@Test
 	public void testDeleteEmpty() {
-		assertTrue(skillController.deleteSkill("").getStatusCode() == HttpStatus.BAD_REQUEST);
+		assertTrue(skillController.deleteSkill("").getStatusCode() == HttpStatus.NOT_FOUND);
 	}
 
 	@Test
 	public void testDeleteUnknown() {
-		assertTrue(skillController.deleteSkill("foo").getStatusCode() == HttpStatus.BAD_REQUEST);
+		assertTrue(skillController.deleteSkill("foo").getStatusCode() == HttpStatus.NOT_FOUND);
 	}
 
 	@Test
@@ -146,7 +146,7 @@ public class SkillControllerTest {
 
 	@Test
 	public void testEditSkillEmptyName() {
-		assertTrue(skillController.editSkill("", "foo").getStatusCode() == HttpStatus.BAD_REQUEST);
+		assertTrue(skillController.editSkill("", "foo").getStatusCode() == HttpStatus.NOT_FOUND);
 	}
 
 	@Test
@@ -157,7 +157,7 @@ public class SkillControllerTest {
 
 	@Test
 	public void testEditSkillUnknown() {
-		assertTrue(skillController.editSkill("foo", "bar").getStatusCode() == HttpStatus.BAD_REQUEST);
+		assertTrue(skillController.editSkill("foo", "bar").getStatusCode() == HttpStatus.NOT_FOUND);
 	}
 
 	@Test

@@ -118,7 +118,7 @@ public class SkillService {
 	public void renameSkill(String name, String newName) throws IllegalArgumentException, DuplicateSkillException {
 		if (skillsRepository.findByName(name) == null) {
 			logger.debug("Failed to rename skill {}: not found", name);
-			throw new IllegalArgumentException("skill not found");
+			throw new SkillNotFoundException("skill not found");
 		}
 
 		if (skillsRepository.findByName(newName) != null) {
@@ -157,7 +157,7 @@ public class SkillService {
 	public void deleteSkill(String name) {
 		if (skillsRepository.findByName(name) == null) {
 			logger.debug("Failed to delete skill {}: not found", name);
-			throw new IllegalArgumentException("skill not found");
+			throw new SkillNotFoundException("skill not found");
 		}
 
 		// delete from known skills

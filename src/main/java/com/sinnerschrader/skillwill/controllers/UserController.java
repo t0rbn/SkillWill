@@ -114,7 +114,7 @@ public class UserController {
 	/**
 	 * modify users's skills
 	 */
-	@ApiOperation(value = "modify skills", nickname = "modify skills", notes = "Create or edit a skill of a user")
+	@ApiOperation(value = "modify skill", nickname = "modify skills", notes = "Create or edit a skill of a user")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 400, message = "Bad Request"),
@@ -137,6 +137,38 @@ public class UserController {
 
 		try {
 			userService.modifyUsersSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level));
+			return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+		} catch (UserNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/**
+	 * delete user's skill
+	 */
+	@ApiOperation(value = "remove skill", nickname = "remove skills", notes = "remove a skill from a user")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 400, message = "Bad Request"),
+			@ApiResponse(code = 401, message = "Unauthorized"),
+			@ApiResponse(code = 404, message = "Not Found"),
+			@ApiResponse(code = 500, message = "Failure")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
+			@ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
+	})
+	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
+	public ResponseEntity<String> removeSkill(@PathVariable String user, @RequestParam("skill") String skill,  @RequestParam("session") String sessionKey) {
+		if (!sessionService.checkSession(user, sessionKey)) {
+			logger.debug("Failed to modify {}'s skills: not logged in", user);
+			return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
+		}
+
+		try {
+			userService.removeUsersSkill(user, skill);
 			return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
 		} catch (UserNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

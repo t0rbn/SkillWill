@@ -106,15 +106,25 @@ public class SkillController {
 	@ApiOperation(value = "delete skill", nickname = "delete skill", notes = "parameter must be a valid skill Id")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Success"),
-			@ApiResponse(code = 401, message = "Unauthorized"),
+			@ApiResponse(code = 400, message = "Bad Request"),
 			@ApiResponse(code = 404, message = "Not Found"),
 			@ApiResponse(code = 500, message = "Failure")
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteSkill(@PathVariable String skill) {
+		if (skill == null || StringUtils.isEmpty(skill)) {
+			return new ResponseEntity<>(new StatusJSON("skill must not be empty").toString(), HttpStatus.NOT_FOUND);
+		}
+
+		if (skill == null || StringUtils.isEmpty(skill)) {
+			return new ResponseEntity<>(new StatusJSON("search must not be empty").toString(), HttpStatus.BAD_REQUEST);
+		}
+
 		try {
 			skillService.deleteSkill(skill);
 			return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+		} catch (SkillNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -127,7 +137,6 @@ public class SkillController {
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 400, message = "Bad Request"),
-			@ApiResponse(code = 401, message = "Unauthorized"),
 			@ApiResponse(code = 404, message = "Not Found"),
 			@ApiResponse(code = 500, message = "Failure")
 	})
@@ -136,9 +145,19 @@ public class SkillController {
 	})
 	@RequestMapping(path = "/skills/{skill}", method = RequestMethod.PUT)
 	public ResponseEntity<String> editSkill(@PathVariable String skill, @RequestParam(required = false) String name) {
+		if (skill == null || StringUtils.isEmpty(skill)) {
+			return new ResponseEntity<>(new StatusJSON("skill must not be empty").toString(), HttpStatus.NOT_FOUND);
+		}
+
+		if (name == null || StringUtils.isEmpty(name)) {
+			return new ResponseEntity<>(new StatusJSON("name must not be empty").toString(), HttpStatus.BAD_REQUEST);
+		}
+
 		try {
 			skillService.renameSkill(skill, name);
 			return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+		} catch (SkillNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		} catch (DuplicateSkillException | IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

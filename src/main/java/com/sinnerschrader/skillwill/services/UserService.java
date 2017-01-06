@@ -104,7 +104,7 @@ public class UserService {
 		return p;
 	}
 
-	public void modifyUsersSkills(String username, String skillName, int skillLevel, int willLevel) throws IllegalArgumentException {
+	public void modifyUsersSkills(String username, String skillName, int skillLevel, int willLevel) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");
 			throw new EmptyArgumentException("arguments must not be empty or null");
@@ -131,6 +131,28 @@ public class UserService {
 		personRepository.save(person);
 
 		logger.info("Successfully updated {}'s skill {}", username, skillName);
+	}
+
+	public void removeUsersSkill(String username, String skillName) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
+		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
+			logger.debug("Failed to modify skills: username or skillName empty");
+			throw new EmptyArgumentException("arguments must not be empty or null");
+		}
+
+		Person person = personRepository.findById(username);
+
+		if (person == null) {
+			logger.debug("Failed to remove {}'s skills: user not found", username);
+			throw new UserNotFoundException("user not found");
+		}
+
+		if (skillsRepository.findByName(skillName) == null) {
+			logger.debug("Failed to remove {}'s skill {}: skill not found", username, skillName);
+			throw new SkillNotFoundException("skill not found");
+		}
+
+		person.removeSkill(skillName);
+		personRepository.save(person);
 	}
 
 	private boolean isValidLevel(int level) {

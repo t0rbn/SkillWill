@@ -1,7 +1,7 @@
 package com.sinnerschrader.skillwill.domain.person;
 
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
+import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Class holding all information about a person
@@ -68,6 +67,15 @@ public class Person {
 		} else {
 			this.skills.add(new PersonalSkill(name, skillLevel, willLevel));
 		}
+	}
+
+	public void removeSkill(String name) {
+		Optional<PersonalSkill> skill = skills.stream().filter(s -> s.getName().equals(name)).findAny();
+		if (!skill.isPresent()) {
+			throw new SkillNotFoundException("user does not have skill");
+		}
+
+		skills.remove(skill.get());
 	}
 
 	public JSONObject toJSON() {

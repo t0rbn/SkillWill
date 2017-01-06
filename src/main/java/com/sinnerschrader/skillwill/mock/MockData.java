@@ -5,7 +5,6 @@ import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

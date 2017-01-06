@@ -1,6 +1,5 @@
 package com.sinnerschrader.skillwill.domain.person;
 
-import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class PersonTest {
 
-	public Person person;
+	private Person person;
 
 	@Before
 	public void init() {

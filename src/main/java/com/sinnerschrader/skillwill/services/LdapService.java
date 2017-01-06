@@ -117,7 +117,7 @@ public class LdapService {
 		}
 	}
 
-	public LdapContext getLdapContext() {
+	private LdapContext getLdapContext() {
 		LdapContext ctx = null;
 		try {
 			Hashtable<String, String> env = new Hashtable<String, String>();
@@ -132,7 +132,7 @@ public class LdapService {
 		return ctx;
 	}
 
-	public SearchControls getSearchControls() {
+	private SearchControls getSearchControls() {
 		SearchControls cons = new SearchControls();
 		cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		String[] attrIDs = {"mail", "l", "telephoneNumber", "sn", "givenName", "title"};

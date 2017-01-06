@@ -6,7 +6,6 @@ import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import com.sinnerschrader.skillwill.testinfrastructure.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
 import org.json.JSONArray;
@@ -37,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class UserControllerTest {
-	public static Logger logger = LoggerFactory.getLogger(LoginControllerTest.class);
+	private static Logger logger = LoggerFactory.getLogger(LoginControllerTest.class);
 
 	@Autowired
 	private UserController userController;
@@ -203,11 +202,39 @@ public class UserControllerTest {
 
 	@Test
 	public void testModifySkillsWillLevelOutOfRange() {
-		logger.debug("Testing UserController: modift skill with will out of range");
+		logger.debug("Testing UserController: modify skill with will out of range");
 		ResponseEntity<String> res = userController.modifiySkills("foobar", "Java", "0", "5", "abc123");
 		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 		assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
+	}
+
+	@Test
+	public void testRemoveSkill() {
+		logger.debug("Testing UserController: remove skill");
+		ResponseEntity<String> res = userController.removeSkill("foobar", "Java", "abc123");
+		assertTrue(res.getStatusCode() == HttpStatus.OK);
+	}
+
+	@Test
+	public void testRemoveSkillSkillUnknown() {
+		logger.debug("Testing UserController: remove skill");
+		ResponseEntity<String> res = userController.removeSkill("foobar", "UNKNOWN", "abc123");
+		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+	}
+
+	@Test
+	public void testRemoveSkillUserUnknown() {
+		logger.debug("Testing UserController: remove skill");
+		ResponseEntity<String> res = userController.removeSkill("IAmUnknown", "Java", "abc123");
+		assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+	}
+
+	@Test
+	public void testRemoveSkillUserUnauthorized() {
+		logger.debug("Testing UserController: remove skill");
+		ResponseEntity<String> res = userController.removeSkill("foobar", "Java", "IAmUnknown");
+		assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
 	}
 
 }

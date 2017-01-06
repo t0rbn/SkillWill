@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
  * @author torree
  */
 @Service
+@EnableRetry
 public class SessionService {
 
 	private static Logger logger = LoggerFactory.getLogger(SessionService.class);
@@ -32,6 +36,7 @@ public class SessionService {
 	@Autowired
 	private SessionRepository sessionRepo;
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public String createSession(String username) {
 		String key = null;
 		do {
@@ -84,6 +89,7 @@ public class SessionService {
 		sessionRepo.delete(session);
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	private void renewSession(Session session) {
 		logger.debug("Renewed session {}", session.getKey());
 		session.renewSession(expireDuration);

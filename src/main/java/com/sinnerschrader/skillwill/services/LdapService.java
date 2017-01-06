@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
  * @author torree
  */
 @Service
+@EnableRetry
 public class LdapService {
 
 	private static Logger logger = LoggerFactory.getLogger(LdapService.class);
@@ -52,6 +56,7 @@ public class LdapService {
 		this.ldapBaseDN = ldapBaseDN;
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void syncUser(Person person) {
 		PersonalLDAPDetails newLdapDetails = null;
 		NamingEnumeration<SearchResult> answer;

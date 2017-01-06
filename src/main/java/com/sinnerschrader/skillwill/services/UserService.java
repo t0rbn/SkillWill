@@ -13,8 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
  * @author torree
  */
 @Service
+@EnableRetry
 public class UserService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -104,6 +108,7 @@ public class UserService {
 		return p;
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void modifyUsersSkills(String username, String skillName, int skillLevel, int willLevel) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");
@@ -133,6 +138,7 @@ public class UserService {
 		logger.info("Successfully updated {}'s skill {}", username, skillName);
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void removeUsersSkill(String username, String skillName) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");

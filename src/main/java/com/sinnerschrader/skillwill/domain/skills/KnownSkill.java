@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,9 @@ public class KnownSkill {
 	@Id
 	private String name;
 	private List<SuggestionSkill> suggestions;
+
+	@Version
+	Long version;
 
 	public KnownSkill(String name) {
 		this.name = name;

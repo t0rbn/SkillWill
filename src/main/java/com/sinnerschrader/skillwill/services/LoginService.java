@@ -6,6 +6,10 @@ import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @author torree
  */
 @Service
+@EnableRetry
 public class LoginService {
 
 	private final Logger logger = LoggerFactory.getLogger(LoginService.class);
@@ -28,6 +33,7 @@ public class LoginService {
 	@Autowired
 	private SessionService sessionService;
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public String login(String username, String password) {
 		if (!ldapService.canAuthenticate(username, password)) {
 			logger.info("Failed to login user {}", username);
@@ -37,10 +43,15 @@ public class LoginService {
 		// Insert User if not already exisitng
 		// So a user does not need to create an account fist
 		if (personRepo.findById(username) == null) {
-			Person newPerson = new Person(username);
-			personRepo.insert(newPerson);
-			ldapService.syncUser(newPerson);
-			logger.info("Successfully created new user {}", username);
+			try {
+				Person newPerson = new Person(username);
+				personRepo.insert(newPerson);
+				ldapService.syncUser(newPerson);
+				logger.info("Successfully created new user {}", username);
+			} catch (DuplicateKeyException e) {
+				// User has been created by another process while trying to create.
+				// Ignore and continue
+			}
 		}
 
 		logger.info("Successfully logged in {}", username);

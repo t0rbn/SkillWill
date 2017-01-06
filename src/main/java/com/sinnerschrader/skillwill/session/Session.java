@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.session;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -17,6 +18,9 @@ public class Session {
 	private String key;
 	private String username;
 	private Date expireDate;
+
+	@Version
+	Long version;
 
 	public Session(String key, String username, Date expireDate) {
 		this.key = key;

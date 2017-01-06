@@ -13,6 +13,10 @@ import com.sinnerschrader.skillwill.repositories.SkillsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +30,7 @@ import java.util.Optional;
  * @author torree
  */
 @Service
+@EnableRetry
 public class SkillService {
 
 	private static Logger logger = LoggerFactory.getLogger(SkillService.class);
@@ -47,7 +52,7 @@ public class SkillService {
 	private List<KnownSkill> getAutocompleteSkills(String input) {
 		List<KnownSkill> skills = skillsRepository.findFuzzyByName(input);
 		skills.sort(new KnownSkillSuggestionComparator(input));
-		logger.debug("Successfully got autocompletion for {}: {}", input, skills.toString());
+		logger.debug("Successfully got {} autocompletions for : {}", skills.size(), input);
 		return skills;
 	}
 
@@ -87,6 +92,7 @@ public class SkillService {
 		return currentmax == null ? "" : currentmax.getName();
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void registerSkillSearch(List<String> searchitems) throws IllegalArgumentException {
 		for (String skillName : searchitems) {
 			KnownSkill current = skillsRepository.findByName(skillName);
@@ -100,6 +106,7 @@ public class SkillService {
 		logger.info("Successfully registered search for {}", searchitems);
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void createSkill(String name) throws EmptyArgumentException, DuplicateSkillException {
 		if (StringUtils.isEmpty(name)) {
 			logger.debug("Failed to create skill {}: name is empty", name);
@@ -111,10 +118,16 @@ public class SkillService {
 			throw new DuplicateSkillException("skill already existing");
 		}
 
-		skillsRepository.insert(new KnownSkill(name));
-		logger.info("Successfully created skill {}", name);
+		try {
+			skillsRepository.insert(new KnownSkill(name));
+			logger.info("Successfully created skill {}", name);
+		} catch (DuplicateKeyException e) {
+			throw new DuplicateSkillException("skill already existing");
+		}
+
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void renameSkill(String name, String newName) throws IllegalArgumentException, DuplicateSkillException {
 		if (skillsRepository.findByName(name) == null) {
 			logger.debug("Failed to rename skill {}: not found", name);
@@ -132,10 +145,14 @@ public class SkillService {
 		}
 
 		// Rename in skills Repo
-		KnownSkill skill = skillsRepository.findByName(name);
-		KnownSkill newSkill = new KnownSkill(newName, skill.getSuggestions());
-		skillsRepository.delete(skill);
-		skillsRepository.insert(newSkill);
+		try {
+			KnownSkill skill = skillsRepository.findByName(name);
+			KnownSkill newSkill = new KnownSkill(newName, skill.getSuggestions());
+			skillsRepository.delete(skill);
+			skillsRepository.insert(newSkill);
+		} catch (DuplicateSkillException e) {
+			throw new DuplicateSkillException("skill already exists");
+		}
 
 		// rename in suggestion
 		for (KnownSkill knownSkill : skillsRepository.findBySuggestion(name)) {
@@ -154,6 +171,7 @@ public class SkillService {
 		logger.info("Successfully renamed skill {} to {}", name, newName);
 	}
 
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void deleteSkill(String name) {
 		if (skillsRepository.findByName(name) == null) {
 			logger.debug("Failed to delete skill {}: not found", name);

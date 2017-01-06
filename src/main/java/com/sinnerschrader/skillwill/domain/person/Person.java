@@ -5,6 +5,7 @@ import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,9 @@ public class Person {
 	@Id
 	private String id;
 	private List<PersonalSkill> skills;
+
+	@Version
+	Long version;
 
 	// LDAP Details will be updates regularly
 	private PersonalLDAPDetails ldapDetails;

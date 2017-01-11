@@ -1,7 +1,7 @@
 package com.sinnerschrader.skillwill.ldap;
 
 import com.sinnerschrader.skillwill.services.LdapService;
-import com.sinnerschrader.skillwill.testinfrastructure.EmbeddedLdap;
+import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
 import org.junit.Before;
 import org.junit.Test;

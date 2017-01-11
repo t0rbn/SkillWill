@@ -8,11 +8,12 @@ You'll need the following things:
 # Build
 * Have a local maven installation? `mvn clean install`
 * Wanna use the maven wrapper? `./mvnw clean install`
-* You want to use an embedded MongoDB? `mvn clean install -P embedmongo`
+* You want to use an embedded MongoDB? `mvn clean install -P embeddedMongo`
 
 # Start
 * `java -jar target/skillwill.jar`
 * If you chose to embed the MongoDB, the file is called `skillwill-embeddedmongo.jar`
+* To start for production, start with production profile `java -jar -Dspring.profiles.active=production target/skillwill.jar`
 
 # API Docs
 * Start the application

@@ -78,7 +78,6 @@ public class MockData {
 		while ((line = br.readLine()) != null) {
 			if (line.equals("====")) {
 				personRepo.insert(curr);
-				ldapService.syncUser(curr);
 				logger.info("Successfully inserted mock person {}", curr.getId());
 				curr = null;
 			} else if (curr == null) {

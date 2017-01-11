@@ -76,7 +76,7 @@ public class UserService {
 		}
 
 		// sync needed to search for location
-		ldapService.syncUsers(candidates, false);
+		candidates = ldapService.syncUsers(candidates, false);
 		candidates = filterByLocation(candidates, location);
 
 		logger.debug("Successfully found {} users for search skill={} location={}", candidates.size(), skills, location);

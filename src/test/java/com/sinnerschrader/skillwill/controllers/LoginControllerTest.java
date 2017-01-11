@@ -1,6 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.testinfrastructure.EmbeddedLdap;
+import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
 import org.json.JSONException;
 import org.json.JSONObject;

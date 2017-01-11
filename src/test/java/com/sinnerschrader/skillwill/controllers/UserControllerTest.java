@@ -6,7 +6,7 @@ import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillsRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.testinfrastructure.EmbeddedLdap;
+import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
 import org.json.JSONArray;
 import org.json.JSONException;

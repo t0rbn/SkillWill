@@ -16,10 +16,9 @@ public interface SkillsRepository extends MongoRepository<KnownSkill, String> {
 
 	KnownSkill findByName(String name);
 
-	@Query("{ _id : {'$regex': ?0, $options: 'i'} }")
-	List<KnownSkill> findFuzzyByName(String name);
+	List<KnownSkill> findByNameLike(String name);
 
-	@Query("{ suggestions.name : ?0 }")
+	@Query("{ 'suggestions.name' : '?0' }")
 	List<KnownSkill> findBySuggestion(String suggestion);
 
 }

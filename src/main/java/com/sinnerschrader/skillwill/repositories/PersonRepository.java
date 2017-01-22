@@ -15,7 +15,7 @@ import java.util.List;
 public interface PersonRepository extends MongoRepository<Person, String> {
 	Person findById(String id);
 
-	@Query("{ skills._id : ?0 }")
+	@Query("{ 'skills._id' : '?0' }")
 	List<Person> findBySkill(String skillName);
 
 }

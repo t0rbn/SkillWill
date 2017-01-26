@@ -8,7 +8,7 @@ You'll need the following things:
 # Build
 * Have a local maven installation? `mvn clean install`
 * Wanna use the maven wrapper? `./mvnw clean install`
-* You want to use an embedded MongoDB? `mvn clean install -P embeddedMongo`
+* You want to use an embedded MongoDB? `mvn clean install -PmongoEmbedded`
 
 # Start
 * `java -jar target/skillwill.jar`

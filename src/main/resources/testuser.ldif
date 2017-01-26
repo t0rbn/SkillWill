@@ -13524,7 +13524,7 @@ mail: barbora.sopkova@sinnerschrader.com
 ou: Beratung
 szzMailStatus: active
 szzEntryDay: 1
-l: Prag
+l: Frankfurt
 cn: Barbora Sopkova
 szzStatus: active
 homeDirectory: /export/home/barsop
@@ -14438,7 +14438,7 @@ szzEntryYear: 2013
 sambaPasswordHistory: 00000000000000000000000000000000000000000000000000000000
  00000000
 gidNumber: 100
-l: Prag
+l: Frankfurt
 givenName: Veronika
 cn: Veronika Volgemutova
 szzEntryMonth: 3
@@ -14478,7 +14478,7 @@ mail: petr.janda@sinnerschrader.com
 sambaPasswordHistory: 00000000000000000000000000000000000000000000000000000000
  00000000
 gidNumber: 100
-l: Prag
+l: Frankfurt
 loginShell: /bin/false
 ou: Kreation
 szzMailStatus: active
@@ -14705,7 +14705,7 @@ title: Account Management
 loginShell: /bin/false
 ou: Beratung
 szzEntryDay: 1
-l: Prag
+l: Frankfurt
 homeDirectory: /export/home/julgem
 sambaSID: S-1-5-21-1517199603-1739104038-1321870143-2204
 uid: julgem
@@ -15252,7 +15252,7 @@ title: Editor
 loginShell: /bin/false
 mail: nick.hudac@sinnerschrader.com
 ou: Kreation
-l: Prag
+l: Frankfurt
 cn: Nick Hudac
 homeDirectory: /export/home/nichud
 sambaSID: S-1-5-21-1517199603-1739104038-1321870143-2300
@@ -15495,7 +15495,7 @@ szzBirthMonth: 9
 ou: kreation
 description: Mitarbeiter
 employeeNumber: 70cf92ca-0bd4-4f87-b4c3-68540bd918c5
-l: Prag
+l: Frankfurt
 title: Creative Department
 szzEntryMonth: 7
 szzEntryYear: 2013
@@ -15835,7 +15835,7 @@ loginShell: /bin/false
 mail: milan.krajc@sinnerschrader.com
 ou: Strategy & Business Dev.
 szzEntryDay: 19
-l: Prag
+l: Frankfurt
 cn: Milan Krajc
 telephoneNumber: +49 40 398855 0
 homeDirectory: /export/home/milkra
@@ -16600,7 +16600,7 @@ szzPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDd4v8psBYKW41XUPbl29vGxbZj
  rlWvFYpK0pAN+OQPP4ckohOxHlx5agILJZbJkDbFHm6TyfI4tcctrQDkBwPTeZKWkMc09Gd2nXZ5/
  rvZGaM/r
 mobile: +420608863205
-l: Prag
+l: Frankfurt
 szzEntryMonth: 10
 szzEntryYear: 2013
 szzExitDay: 6
@@ -20294,7 +20294,7 @@ szzPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCd7S8Tn5b+1DtQUG50JZQGyPkD
 telephoneNumber: +00000000
 mobile: +420777167824
 employeeNumber: 278530ca-9c13-4e7c-a667-e5c4dccf014b
-l: Prag
+l: Frankfurt
 szzEntryMonth: 3
 szzEntryYear: 2014
 szzStatus: inactive
@@ -21317,7 +21317,7 @@ mobile: +49 171 7700404
 dn: uid=vinpha,ou=users,dc=sinnerschrader,dc=com
 gecos: Vinh Phong Pham
 displayName: Vinh Phong Pham
-l: Prag
+l: Frankfurt
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -23229,7 +23229,7 @@ szzPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDYwq5WE9HFxqDVGhMwjVG6mkDD
  PymHwq1jJyfi63Ta2RbWCFzXDsmvqUPvz+so/W3eEF9XTHLaZzHQ95t/OL9bq/FTyH8VpjWAHjJla
  au2Uaskfg+jgC/O3K4UDTJC4+fnjZ6V57R1f37sdyw==
 employeeNumber: 4d9b58a3-5922-49ea-b435-12b6420f5ef9
-l: Prag
+l: Frankfurt
 szzEntryMonth: 8
 szzEntryYear: 2014
 szzExitDay: 31
@@ -23781,7 +23781,7 @@ dn: uid=joszaj,ou=users,dc=sinnerschrader,dc=com
 sambaAcctFlags: [U          ]
 gecos: Josef Zajac
 gidNumber: 100
-l: Prag
+l: Frankfurt
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -23883,7 +23883,7 @@ dn: uid=jakcer,ou=users,dc=sinnerschrader,dc=com
 sambaAcctFlags: [U          ]
 gecos: Jakub Cerny
 gidNumber: 100
-l: Prag
+l: Frankfurt
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -24946,7 +24946,7 @@ employeeNumber: eed7858c-67d3-40c2-9f37-fc366bc36778
 telephoneNumber: +420 234 253 422
 mobile: +420 77 57 55 209
 szzLastPassStatus: inactive
-l: Prag
+l: Frankfurt
 ou: Beratung
 title: Executive Director
 sambaNTPassword: testuser
@@ -25960,7 +25960,7 @@ szzMailStatus: inactive
 # davros, users, sinnerschrader.com
 dn: uid=davros,ou=users,dc=sinnerschrader,dc=com
 gecos: David Rosa
-l: Prag
+l: Frankfurt
 givenName: David
 homeDirectory: /export/home/davros
 szzStatus: active
@@ -26781,7 +26781,7 @@ cn: Jana Kasakova
 displayName: Jana Kasakova
 mail: jana.kasakova@sinnerschrader.com
 title: Development
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Mitarbeiter
 telephoneNumber: +420 228 881 405
@@ -27659,7 +27659,7 @@ displayName: Petr Enin
 mail: petr.enin@sinnerschrader.com
 szzMailAlias: p.enin@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +420 776 774 727
@@ -28517,7 +28517,7 @@ displayName: Tomas Reichmann
 mail: tomas.reichmann@sinnerschrader.com
 szzMailAlias: t.reichmann@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -29740,7 +29740,7 @@ cn: Christian Kadner
 displayName: Christian Kadner
 mail: christian.kadner@sinnerschrader.com
 szzMailAlias: c.kadner@sinnerschrader.de
-l: Prag
+l: Frankfurt
 description: Freelancer
 telephoneNumber: +49 40 398855 0
 gecos: Christian Kadner
@@ -29783,7 +29783,7 @@ cn:: TmljbyBNw7ZocmluZw==
 displayName:: TmljbyBNw7ZocmluZw==
 mail: nico.moehring@sinnerschrader.com
 szzMailAlias: n.moehring@sinnerschrader.de
-l: Prag
+l: Frankfurt
 ou: Analyse
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -29826,7 +29826,7 @@ cn: Sebastian Budde
 displayName: Sebastian Budde
 mail: sebastian.budde@sinnerschrader.com
 szzMailAlias: s.budde@sinnerschrader.de
-l: Prag
+l: Frankfurt
 ou: Analyse
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -33120,7 +33120,7 @@ displayName: Matti Daniels
 mail: matti.daniels@sinnerschrader.com
 szzMailAlias: m.daniels@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -33163,7 +33163,7 @@ displayName: Marianna Zawolek
 mail: marianna.zawolek@sinnerschrader.com
 szzMailAlias: m.zawolek@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -34287,7 +34287,7 @@ displayName: Julie-Anne Sievers
 mail: julie-anne.sievers@sinnerschrader.com
 szzMailAlias: j.sievers@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 description: Freelancer
 telephoneNumber: +49 40 398855 0
 gecos: Julie-Anne Sievers
@@ -37525,7 +37525,7 @@ displayName: Anne Reimo
 mail: anne.reimo@sinnerschrader.com
 szzMailAlias: a.reimo@sinnerschrader.de
 title: Internship
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Praktikant
 gecos: Anne Reimo
@@ -37709,7 +37709,7 @@ cn: Vsevolod Vlasenko
 displayName: Vsevolod Vlasenko
 mail: vsevolod.vlasenko@sinnerschrader.com
 szzMailAlias: v.vlasenko@sinnerschrader.de
-l: Prag
+l: Frankfurt
 ou: Kreation
 gecos: Vsevolod Vlasenko
 szzEntryDay: 1
@@ -37753,7 +37753,7 @@ cn: Jiri Langer
 displayName: Jiri Langer
 mail: jiri.langer@sinnerschrader.com
 szzMailAlias: j.langer@sinnerschrader.de
-l: Prag
+l: Frankfurt
 ou: Kreation
 gecos: Jiri Langer
 szzEntryDay: 1
@@ -38339,7 +38339,7 @@ displayName: Lukas Jecha
 mail: lukas.jecha@sinnerschrader.com
 szzMailAlias: l.jecha@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -38831,7 +38831,7 @@ displayName: Anna Kokhan
 mail: anna.kokhan@sinnerschrader.com
 szzMailAlias: a.kokhan@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +420776774727
@@ -38874,7 +38874,7 @@ displayName: Richard Kalab
 mail: richard.kalab@sinnerschrader.com
 szzMailAlias: r.kalab@sinnerschrader.de
 title: Freelancer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +420 234 253 423
@@ -39116,7 +39116,7 @@ displayName:: w5ZtZXIgQXlkb2dkdQ==
 mail: oemer.aydogdu@sinnerschrader.com
 szzMailAlias: o.aydogdu@sinnerschrader.de
 title: Creation
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Mitarbeiter
 telephoneNumber: +420 234 253 423
@@ -39560,7 +39560,7 @@ displayName: Oleg Ivaniv
 mail: oleg.ivaniv@sinnerschrader.com
 szzMailAlias: o.ivaniv@sinnerschrader.de
 title: Development
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Mitarbeiter
 telephoneNumber: +49 40 398855 0
@@ -41143,7 +41143,7 @@ displayName: Ivan Sikyr
 mail: ivan.sikyr@sinnerschrader.com
 szzMailAlias: i.sikyr@sinnerschrader.de
 title: Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -41324,7 +41324,7 @@ displayName: Karolina Kubesova
 mail: karolina.kubesova@sinnerschrader.com
 szzMailAlias: k.kubesova@sinnerschrader.de
 title: Creative
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -42057,7 +42057,7 @@ displayName: Tomas Melichar
 mail: tomas.melichar@sinnerschrader.com
 szzMailAlias: t.melichar@sinnerschrader.de
 title: Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Freelancer
 gecos: Tomas Melichar
@@ -42317,7 +42317,7 @@ displayName: Erika Dobesova
 mail: erika.dobesova@sinnerschrader.com
 szzMailAlias: e.dobesova@sinnerschrader.de
 title: Client Service
-l: Prag
+l: Frankfurt
 ou: Team Client Services 1
 description: Freelancer
 gecos: Erika Dobesova
@@ -42362,7 +42362,7 @@ displayName: Loren Smits
 mail: loren.smits@sinnerschrader.com
 szzMailAlias: l.smits@sinnerschrader.de
 title: Kreation
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Praktikant
 gecos: Loren Smits
@@ -42857,7 +42857,7 @@ displayName: Alexandros Chouliaras
 mail: alexandros.chouliaras@sinnerschrader.com
 szzMailAlias: a.chouliaras@sinnerschrader.de
 title: Senior Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Mitarbeiter
 gecos: Alexandros Chouliaras
@@ -43173,7 +43173,7 @@ displayName: Gleb Kostyunin
 mail: gleb.kostyunin@sinnerschrader.com
 szzMailAlias: g.kostyunin@sinnerschrader.de
 title: Frontend Developer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +49 40 398855 0
@@ -43664,7 +43664,7 @@ displayName: Lukas Mikovec
 mail: lukas.mikovec@sinnerschrader.com
 szzMailAlias: l.mikovec@sinnerschrader.de
 title: Junior Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 gecos: Lukas Mikovec
 szzBirthDay: 4
@@ -44068,7 +44068,7 @@ displayName: Jakub Siller
 mail: jakub.siller@sinnerschrader.com
 szzMailAlias: j.siller@sinnerschrader.de
 title: Technik
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Student
 telephoneNumber: +49 40 398855 0
@@ -44809,7 +44809,7 @@ displayName: Tereza Bondyova
 mail: tereza.bondyova@sinnerschrader.com
 szzMailAlias: t.bondyova@sinnerschrader.de
 title: Office Manager
-l: Prag
+l: Frankfurt
 ou: Office Management
 description: Mitarbeiter
 telephoneNumber: +49 40 398855 0
@@ -44854,7 +44854,7 @@ displayName: Alexander Clavien
 mail: alexander.clavien@sinnerschrader.com
 szzMailAlias: a.clavien@sinnerschrader.de
 title: Client Service
-l: Prag
+l: Frankfurt
 ou: Team Client Services 1
 description: Mitarbeiter
 gecos: Alexander Clavien
@@ -45935,7 +45935,7 @@ displayName: Julie Ditetova
 mail: julie.ditetova@sinnerschrader.com
 szzMailAlias: j.ditetova@sinnerschrader.de
 title: Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Freelancer
 gecos: Julie Ditetova
@@ -46108,7 +46108,7 @@ displayName: Jesse Baker
 mail: jesse.baker@sinnerschrader.com
 szzMailAlias: j.baker@sinnerschrader.de
 title: Frontend Devoloper
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Mitarbeiter
 gecos: Jesse Baker
@@ -46546,7 +46546,7 @@ displayName: MIchal Novacek
 mail: michal.novacek@sinnerschrader.com
 szzMailAlias: m.novacek@sinnerschrader.de
 title: Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Mitarbeiter
 gecos: MIchal Novacek
@@ -46720,7 +46720,7 @@ displayName: Klara Michalska
 mail: klara.michalska@sinnerschrader.com
 szzMailAlias: k.michalska@sinnerschrader.de
 title: Designer
-l: Prag
+l: Frankfurt
 ou: Kreation
 description: Mitarbeiter
 telephoneNumber: +49 40 398855 0
@@ -47115,7 +47115,7 @@ displayName: Mihai Batista
 mail: mihai.batista@sinnerschrader.com
 szzMailAlias: m.batista@sinnerschrader.de
 title: Developer
-l: Prag
+l: Frankfurt
 ou: Technik
 description: Freelancer
 telephoneNumber: +49 40 398855 0

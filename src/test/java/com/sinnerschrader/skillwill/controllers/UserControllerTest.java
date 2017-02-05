@@ -27,6 +27,7 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Integration test for UserController
@@ -152,7 +153,7 @@ public class UserControllerTest {
 	@Test
 	public void testModifySkillsValid() {
 		logger.debug("Testing UserController: modify skill");
-		ResponseEntity<String> res = userController.modifiySkills("foobar", "Java", "0", "0", "abc123");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "abc123");
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
 		assertEquals(0, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(0, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
@@ -161,7 +162,7 @@ public class UserControllerTest {
 	@Test
 	public void testModifySkillsSessionInvalid() {
 		logger.debug("Testing UserController: modify user with invalid session");
-		ResponseEntity<String> res = userController.modifiySkills("foobar", "Java", "0", "0", "InvalidSession");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "InvalidSession");
 		assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
 		assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
@@ -176,7 +177,7 @@ public class UserControllerTest {
 		session.renewSession(60);
 		sessionRepo.insert(session);
 
-		ResponseEntity<String> res = userController.modifiySkills("IAmUnknown", "Java", "0", "0", "2342");
+		ResponseEntity<String> res = userController.updateSkills("IAmUnknown", "Java", "0", "0", "2342");
 		assertTrue(res.getStatusCode() == HttpStatus.NOT_FOUND);
 		assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
@@ -185,7 +186,7 @@ public class UserControllerTest {
 	@Test
 	public void testModifySkillsSkillUnknown() {
 		logger.debug("Testing UserController: modify skill for unknown skill");
-		ResponseEntity<String> res = userController.modifiySkills("foobar", "UnknownSkill", "0", "0", "abc123");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "UnknownSkill", "0", "0", "abc123");
 		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 		assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
@@ -194,7 +195,7 @@ public class UserControllerTest {
 	@Test
 	public void testModifySkillsSkillLevelOutOfRange() {
 		logger.debug("Testing UserController: modify skill with skill out of range");
-		ResponseEntity<String> res = userController.modifiySkills("foobar", "Java", "5", "0", "abc123");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "5", "0", "abc123");
 		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 		assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
@@ -203,7 +204,7 @@ public class UserControllerTest {
 	@Test
 	public void testModifySkillsWillLevelOutOfRange() {
 		logger.debug("Testing UserController: modify skill with will out of range");
-		ResponseEntity<String> res = userController.modifiySkills("foobar", "Java", "0", "5", "abc123");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "5", "abc123");
 		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 		assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
@@ -237,4 +238,52 @@ public class UserControllerTest {
 		assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
 	}
 
+	@Test
+	public void testSetCommentValid() throws JSONException {
+		logger.debug("Testing Usercontroller: set valid comment");
+		ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "insert comment here");
+		assertTrue(res.getStatusCode() == HttpStatus.OK);
+
+		res = userController.getUser("foobar");
+		assertEquals("insert comment here", new JSONObject(res.getBody()).getString("comment"));
+	}
+
+	@Test
+	public void testSetCommentUnicode() throws JSONException {
+		logger.debug("Testing Usercontroller: set unicode comment");
+		ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "本产品可能含有网络的痕迹");
+		assertTrue(res.getStatusCode() == HttpStatus.OK);
+
+		res = userController.getUser("foobar");
+		assertEquals("本产品可能含有网络的痕迹", new JSONObject(res.getBody()).getString("comment"));
+	}
+
+	@Test
+	public void testSetCommentEmpty() throws JSONException {
+		logger.debug("Testing Usercontroller: set empty comment");
+		ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "");
+		assertTrue(res.getStatusCode() == HttpStatus.OK);
+
+		res = userController.getUser("foobar");
+		assertFalse(new JSONObject(res.getBody()).has("comment"));
+	}
+
+	@Test
+	public void testSetCommentNull() throws JSONException {
+		logger.debug("Testing Usercontroller: update details, ignore null");
+		userController.updateDetails("foobar", "abc123", "insert comment here");
+		ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", null);
+		assertTrue(res.getStatusCode() == HttpStatus.OK);
+
+		res = userController.getUser("foobar");
+		assertFalse(new JSONObject(res.getBody()).has("comment"));
+	}
+
+	@Test
+	public void testSetCommentUserNotLoggedIn() {
+		logger.debug("Testing Usercontroller: update details with unauthorized user");
+		ResponseEntity<String> res = userController.updateDetails("foobar", "ThisIsNotAsessionKey", "comment");
+		assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+	}
+	
 }

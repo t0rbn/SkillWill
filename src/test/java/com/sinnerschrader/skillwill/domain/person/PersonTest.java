@@ -1,5 +1,7 @@
 package com.sinnerschrader.skillwill.domain.person;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Partial unit tests for Person
@@ -37,6 +40,41 @@ public class PersonTest {
 		assertEquals(1, person.getSkills().size());
 		assertEquals(0, person.getSkills().get(0).getSkillLevel());
 		assertEquals(1, person.getSkills().get(0).getWillLevel());
+	}
+
+	@Test
+	public void testToJson() throws JSONException {
+		person.setComment("comment");
+		person.setLdapDetails(
+				new PersonalLDAPDetails(
+						"Fooberius",
+						"Barblub",
+						"fooberius.barblub@sinnerschrader.com",
+						"+49 666 666",
+						"Hamburg",
+						"Senior Web Unicorn"
+				)
+		);
+		JSONObject obj = person.toJSON();
+
+		assertEquals("foobar", obj.getString("id"));
+		assertEquals("comment", obj.getString("comment"));
+		assertEquals("Fooberius", obj.getString("firstName"));
+		assertEquals("Barblub", obj.getString("lastName"));
+		assertEquals("+49 666 666", obj.getString("phone"));
+		assertEquals("Senior Web Unicorn", obj.getString("title"));
+		assertEquals("Hamburg", obj.getString("location"));
+		assertEquals("fooberius.barblub@sinnerschrader.com", obj.getString("mail"));
+		assertEquals("skillname", obj.getJSONArray("skills").getJSONObject(0).getString("name"));
+		assertEquals(2, obj.getJSONArray("skills").getJSONObject(0).getInt("skillLevel"));
+		assertEquals(3, obj.getJSONArray("skills").getJSONObject(0).getInt("willLevel"));
+	}
+
+	@Test
+	public void testToJsonCommentEmpty() {
+		// If set to empty string or null, the comment will not be included in the JSON
+		person.setComment("");
+		assertFalse(person.toJSON().has("comment"));
 	}
 
 }

@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Person {
 	@Id
 	private String id;
 	private List<PersonalSkill> skills;
+	private String comment;
 
 	@Version
 	Long version;
@@ -82,9 +84,18 @@ public class Person {
 		skills.remove(skill.get());
 	}
 
+	public void setComment(String comment) {
+		this.comment = StringUtils.isEmpty(comment) ? null : comment;
+	}
+
+	public String getComment() {
+		return this.comment;
+	}
+
 	public JSONObject toJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("id", this.id);
+		obj.put("comment", this.comment);
 
 		if (this.ldapDetails != null) {
 			obj.put("firstName", ldapDetails.getFirstName());
@@ -93,7 +104,6 @@ public class Person {
 			obj.put("phone", ldapDetails.getPhone());
 			obj.put("location", ldapDetails.getLocation());
 			obj.put("title", ldapDetails.getTitle());
-
 		}
 
 		JSONArray skills = new JSONArray();

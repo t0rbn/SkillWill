@@ -14,6 +14,7 @@ public class FitnessScoreProperties {
 	public double weightAverageWills;
 	public double weightSpecializationSkills;
 	public double weightSpecializationWills;
+	public int maxLevelValue;
 	
 	@Value("${weightAverageSkills}")
 	public void setWeightAverageSkills(String propString) {
@@ -34,5 +35,9 @@ public class FitnessScoreProperties {
 	public void setWeightSpecializationWills(String propString) {
 		weightSpecializationWills = Double.valueOf(propString);
 	}
-	
+
+	@Value("${maxLevelValue}")
+	public void setMaxLevelValue(int maxLevelValue) {
+		this.maxLevelValue = maxLevelValue;
+	}
 }

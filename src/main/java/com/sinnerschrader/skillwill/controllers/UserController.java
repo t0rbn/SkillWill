@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
@@ -129,14 +130,14 @@ public class UserController {
 			@ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true)
 	})
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
-	public ResponseEntity<String> modifiySkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level, @RequestParam("will_level") String will_level, @RequestParam("session") String sessionKey) {
-		if (!sessionService.checkSession(user, sessionKey)) {
+	public ResponseEntity<String> updateSkills(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level, @RequestParam("will_level") String will_level, @RequestParam("session") String sessionKey) {
+		if (!sessionService.isValidSession(user, sessionKey)) {
 			logger.debug("Failed to modify {}'s skills: not logged in", user);
 			return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
-			userService.modifyUsersSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level));
+			userService.updateSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level));
 			return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
 		} catch (UserNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -162,19 +163,58 @@ public class UserController {
 	})
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
 	public ResponseEntity<String> removeSkill(@PathVariable String user, @RequestParam("skill") String skill,  @RequestParam("session") String sessionKey) {
-		if (!sessionService.checkSession(user, sessionKey)) {
+		if (!sessionService.isValidSession(user, sessionKey)) {
 			logger.debug("Failed to modify {}'s skills: not logged in", user);
 			return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
-			userService.removeUsersSkill(user, skill);
+			userService.removeSkills(user, skill);
+			logger.info("Successfully deleted {}'s skill {}", user, skill);
 			return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
 		} catch (UserNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	/**
+	 * Add or update user's details
+	 */
+	/**
+	 * delete user's skill
+	 */
+	@ApiOperation(value = "update details", nickname = "edit user's details", notes = "edit only the non-LDAP details of a user")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 400, message = "Bad Request"),
+			@ApiResponse(code = 401, message = "Unauthorized"),
+			@ApiResponse(code = 404, message = "Not Found"),
+			@ApiResponse(code = 500, message = "Failure")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
+			@ApiImplicitParam(name = "comment", value = "new comment", paramType = "query"),
+	})
+	@RequestMapping(path = "/users/{user}/details", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateDetails(@PathVariable String user, @RequestParam("session") String sessionKey, @RequestParam(value = "comment", required = false) String comment) {
+		if (!sessionService.isValidSession(user, sessionKey)) {
+			logger.debug("Failed to modify {}'s details: not logged in", user);
+			return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
+		}
+
+		// Comment may be empty string (set to empty) -> no check if empty
+		try {
+			userService.updateDetails(user, comment);
+			logger.info("Successfully updated {}'s comment", user);
+		} catch (UserNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (EmptyArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
 	}
 
 }

@@ -54,7 +54,7 @@ public class SessionService {
 		return session.getKey();
 	}
 
-	public boolean checkSession(String username, String sessionKey) {
+	public boolean isValidSession(String username, String sessionKey) {
 		Session session = sessionRepo.findByKey(sessionKey);
 
 		if (session == null) {

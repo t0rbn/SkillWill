@@ -109,7 +109,7 @@ public class UserService {
 	}
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
-	public void modifyUsersSkills(String username, String skillName, int skillLevel, int willLevel) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
+	public void updateSkills(String username, String skillName, int skillLevel, int willLevel) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");
 			throw new EmptyArgumentException("arguments must not be empty or null");
@@ -139,7 +139,7 @@ public class UserService {
 	}
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
-	public void removeUsersSkill(String username, String skillName) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
+	public void removeSkills(String username, String skillName) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");
 			throw new EmptyArgumentException("arguments must not be empty or null");
@@ -159,6 +159,30 @@ public class UserService {
 
 		person.removeSkill(skillName);
 		personRepository.save(person);
+	}
+
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	public void updateDetails(String username, String comment) throws EmptyArgumentException, UserNotFoundException {
+		if (StringUtils.isEmpty(username)) {
+			logger.debug("Failed to update comment: username or empty");
+			throw new EmptyArgumentException("username must not be empty");
+		}
+
+		Person person = personRepository.findById(username);
+
+		if (person == null) {
+			logger.debug("Failed to modify {}'s comment: user not found", username);
+			throw new UserNotFoundException("user not found");
+		}
+
+		// if parameter is empty string, comment will be set to null in person class
+		person.setComment(comment);
+
+		// Add more details to update here
+
+		personRepository.save(person);
+
+		logger.info("Successfully updated {}'s comment", username);
 	}
 
 	private boolean isValidLevel(int level) {

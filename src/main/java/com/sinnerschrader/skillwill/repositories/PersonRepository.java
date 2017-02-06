@@ -18,4 +18,7 @@ public interface PersonRepository extends MongoRepository<Person, String> {
 	@Query("{ 'skills._id' : '?0' }")
 	List<Person> findBySkill(String skillName);
 
+	@Query("{ 'skills._id' : { $all : ?0 } }")
+	List<Person> findBySkills(List<String> skillNames);
+
 }

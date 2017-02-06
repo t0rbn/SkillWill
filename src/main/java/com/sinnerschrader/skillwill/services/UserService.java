@@ -3,6 +3,7 @@ package com.sinnerschrader.skillwill.services;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreComparator;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.LevelOutOfRangeException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
@@ -20,7 +21,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -58,20 +61,13 @@ public class UserService {
 		if (skills == null || skills.isEmpty()) {
 			candidates = personRepository.findAll();
 		} else {
-			if (!skillService.skillExists(skills.get(0))) {
-				logger.debug("Failed to get users with skill {}: skill not found", skills.get(0));
-				throw new SkillNotFoundException("skill not found");
-			}
-			candidates = new ArrayList<>(personRepository.findBySkill(skills.get(0)));
-
-			// Go through all searched skills and remove candidates that do not have this skill
-			for (String name : skills) {
-				if (!skillService.skillExists(name)) {
-					logger.debug("Failed to get users with skill {}: skill not found", name);
-					throw new SkillNotFoundException("skill not found");
+			for (String s : skills) {
+				if (!skillService.skillExists(s)) {
+					throw new SkillNotFoundException("skill " + s + " not found");
 				}
-				candidates.removeIf(c -> c.getSkill(name) == null);
-			}
+ 			}
+
+			candidates = personRepository.findBySkills(skills);
 			candidates.sort(new FitnessScoreComparator(skills, fitnessScoreProperties));
 		}
 
@@ -187,6 +183,15 @@ public class UserService {
 
 	private boolean isValidLevel(int level) {
 		return 0 <= level && level <= maxLevelValue;
+	}
+
+	public List<Person> getSimilarUsers(String username, int max) {
+		Person reference = personRepository.findById(username);
+		List<Person> others = personRepository.findAll();
+		others.remove(reference);
+
+
+
 	}
 
 }

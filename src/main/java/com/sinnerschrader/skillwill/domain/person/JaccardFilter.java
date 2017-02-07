@@ -24,14 +24,10 @@ public class JaccardFilter {
 	}
 
 	private static double getJaccardIndex(Person a, Person b) {
-		Set<String> aSkillNames = a.getSkills().stream().map(s -> s.getName()).collect(Collectors.toSet());
-		Set<String> bSkillNames = b.getSkills().stream().map(s -> s.getName()).collect(Collectors.toSet());
+		double intersectionCount = a.getSkills().stream().filter(s -> b.getSkill(s.getName()) != null).count();
+		double unionCount = a.getSkills().size() + b.getSkills().size() - intersectionCount;
 
-		Set<String> intersection = aSkillNames.stream().filter(s -> bSkillNames.contains(s)).collect(Collectors.toSet());
-		Set<String> union = aSkillNames;
-		union.addAll(bSkillNames);
-
-		return (double) intersection.size() / (double) union.size();
+		return intersectionCount / unionCount;
 	}
 
 	private class JaccardIndexComparator implements Comparator<Person> {

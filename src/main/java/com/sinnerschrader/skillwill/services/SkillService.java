@@ -122,6 +122,7 @@ public class SkillService {
 			skillsRepository.insert(new KnownSkill(name));
 			logger.info("Successfully created skill {}", name);
 		} catch (DuplicateKeyException e) {
+			logger.debug("Failed to create skill {}: already exists");
 			throw new DuplicateSkillException("skill already existing");
 		}
 

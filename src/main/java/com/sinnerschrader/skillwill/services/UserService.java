@@ -2,8 +2,8 @@ package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreComparator;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
 import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.LevelOutOfRangeException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
@@ -14,16 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,6 +62,7 @@ public class UserService {
 		} else {
 			for (String s : skills) {
 				if (!skillService.skillExists(s)) {
+					logger.debug("Failed to search for skill {}: not found", s);
 					throw new SkillNotFoundException("skill " + s + " not found");
 				}
  			}
@@ -171,13 +171,12 @@ public class UserService {
 			throw new UserNotFoundException("user not found");
 		}
 
-		// if parameter is empty string, comment will be set to null in person class
+		// if parameter is empty string, comment will default to null
 		person.setComment(comment);
 
 		// Add more details to update here
 
 		personRepository.save(person);
-
 		logger.info("Successfully updated {}'s comment", username);
 	}
 
@@ -185,13 +184,21 @@ public class UserService {
 		return 0 <= level && level <= maxLevelValue;
 	}
 
-	public List<Person> getSimilarUsers(String username, int max) {
-		Person reference = personRepository.findById(username);
-		List<Person> others = personRepository.findAll();
-		others.remove(reference);
+	public List<Person> getSimilar(String username, int count) throws UserNotFoundException {
+		if (count < 0) {
+			throw new IllegalArgumentException("count must be a positive integer");
+		}
 
+		List<Person> toSearch = personRepository.findAll();
+		Optional<Person> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
 
+		if (!person.isPresent()) {
+			logger.debug("Failed to get users similar to {}: user not found", username);
+			throw new UserNotFoundException("user not found");
+		}
 
+		toSearch.remove(person.get());
+		return ldapService.syncUsers(new JaccardFilter(person.get()).getFrom(toSearch, count), false);
 	}
 
 }

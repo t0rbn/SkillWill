@@ -1,40 +1,51 @@
 package com.sinnerschrader.skillwill.domain.person;
 
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Compare Persons by the jaccard index of their skill sets
+ * Get n Persons that are similar to the reference person
+ * similar = high jaccard index when comparing skill sets
  *
+ * @author torree
  */
 public class JaccardFilter {
 
-	public static List<Person> getSimilar(Person reference, List<Person> all, int max) {
-		return null;
+	Person reference;
+
+	public JaccardFilter(Person reference) {
+		this.reference = reference;
+	}
+
+	public List<Person> getFrom(List<Person> all, int max) {
+		return all.stream().sorted(new JaccardIndexComparator(reference)).limit(max).collect(Collectors.toList());
 	}
 
 	private static double getJaccardIndex(Person a, Person b) {
-		Set<String> intersection = new HashSet<>(a.getSkills().stream().map(s -> s.getName()).filter(s -> b.getSkill(s) != null).collect(Collectors.toList()));
+		Set<String> aSkillNames = a.getSkills().stream().map(s -> s.getName()).collect(Collectors.toSet());
+		Set<String> bSkillNames = b.getSkills().stream().map(s -> s.getName()).collect(Collectors.toSet());
 
-		Set<String> union = new HashSet<>(a.getSkills().stream().map(s -> s.getName()).collect(Collectors.toList()));
-		union.addAll(b.getSkills().stream().map(s -> s.getName()).collect(Collectors.toList()));
+		Set<String> intersection = aSkillNames.stream().filter(s -> bSkillNames.contains(s)).collect(Collectors.toSet());
+		Set<String> union = aSkillNames;
+		union.addAll(bSkillNames);
 
-		return (double) (intersection.size() / union.size());
+		return (double) intersection.size() / (double) union.size();
 	}
 
-	private class JaccardIndexedPerson {
+	private class JaccardIndexComparator implements Comparator<Person> {
 
-		Person person;
-		double index;
+		Person reference;
 
-		public  JaccardIndexedPerson(Person person, double index) {
-			this.person = person;
-			this.index = index;
+		public JaccardIndexComparator(Person reference) {
+			this.reference = reference;
 		}
 
+		@Override
+		public int compare(Person a, Person b) {
+			return -1 * Double.compare(getJaccardIndex(a, reference), getJaccardIndex(b, reference));
+		}
 	}
 
 }

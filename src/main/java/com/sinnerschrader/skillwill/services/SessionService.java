@@ -83,6 +83,7 @@ public class SessionService {
 		Session session = sessionRepo.findByKey(sessionKey);
 
 		if (session == null) {
+			logger.debug("Failed to log out session with key {}: no session found", sessionKey);
 			throw new IllegalArgumentException("session key not found or username not matching");
 		}
 

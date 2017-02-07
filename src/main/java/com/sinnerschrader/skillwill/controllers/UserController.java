@@ -19,12 +19,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller handling /users/{foo}
@@ -182,9 +185,6 @@ public class UserController {
 	/**
 	 * Add or update user's details
 	 */
-	/**
-	 * delete user's skill
-	 */
 	@ApiOperation(value = "update details", nickname = "edit user's details", notes = "edit only the non-LDAP details of a user")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Success"),
@@ -215,6 +215,38 @@ public class UserController {
 		}
 
 		return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+	}
+
+	/**
+	 * Get users with similar skill sets
+	 */
+	@ApiOperation(value = "get similar", nickname = "get similar",notes = "get users with similar skills sets")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 404, message = "Not Found"),
+			@ApiResponse(code = 400, message = "Bad Request"),
+			@ApiResponse(code = 500, message = "Failure")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "count", value = "number of users to find (max)", paramType = "query", defaultValue = "10"),
+	})
+	@RequestMapping(path = "/users/{user}/similar", method = RequestMethod.GET)
+	public ResponseEntity<String> getSimilar(@PathVariable String user, @RequestParam(value = "count", required = false, defaultValue = "10") int count) {
+		List<Person> similar;
+
+		try {
+			similar = userService.getSimilar(user, count);
+		} catch (UserNotFoundException e) {
+			logger.debug("Failed to get users similar to {}: user not found", user);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (IllegalArgumentException e) {
+			logger.debug("Failed to get users similar to {}: illegal parameter", user);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+
+		JSONArray arr = new JSONArray(similar.stream().map(p -> p.toJSON()).collect(Collectors.toList()));
+		logger.debug("Successfully found {} users similar to {}", arr.length(), user);
+		return new ResponseEntity<>(arr.toString(), HttpStatus.OK);
 	}
 
 }

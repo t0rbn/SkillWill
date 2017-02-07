@@ -282,8 +282,46 @@ public class UserControllerTest {
 	@Test
 	public void testSetCommentUserNotLoggedIn() {
 		logger.debug("Testing Usercontroller: update details with unauthorized user");
-		ResponseEntity<String> res = userController.updateDetails("foobar", "ThisIsNotAsessionKey", "comment");
+		ResponseEntity<String> res = userController.updateDetails("foobar", "ThisIsNotASessionKey", "comment");
 		assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+	}
+
+	@Test
+	public void testGetSimilarUser() throws JSONException {
+		logger.debug("Testing Usercontroller: get similar users");
+
+		Person p1 = new Person("abc");
+		p1.addUpdateSkill("Java", 1, 2);
+		p1.addUpdateSkill(".NET", 3, 2);
+		p1.addUpdateSkill("Text", 1, 3);
+		personRepo.insert(p1);
+
+		Person p2 = new Person("def");
+		p2.addUpdateSkill("Java", 3, 2);
+		personRepo.insert(p2);
+
+		Person p3 = new Person("ghi");
+		p3.addUpdateSkill("Java", 1, 0);
+		p3.addUpdateSkill(".NET", 3, 2);
+		personRepo.insert(p3);
+
+		ResponseEntity<String> res = userController.getSimilar("abc", 1);
+		assertEquals(1, new JSONArray(res.getBody()).length());
+		assertEquals("ghi", new JSONArray(res.getBody()).getJSONObject(0).getString("id"));
+	}
+
+	@Test
+	public void testGetSimilarUserNotFound() {
+		logger.debug("Testing Usercontroller: get similar users for unknown user");
+		ResponseEntity<String> res = userController.getSimilar("IAmUnknown", 42);
+		assertTrue(res.getStatusCode() == HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	public void  testGetSimilarUserCountNegative() {
+		logger.debug("Testing Usercontroller: get similar users with negative count");
+		ResponseEntity<String> res = userController.getSimilar("foobar", -1);
+		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 	}
 	
 }

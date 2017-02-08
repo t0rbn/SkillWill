@@ -59,7 +59,7 @@ public class UserControllerTest {
 		embeddedLdap.reset();
 
 		skillRepo.deleteAll();
-		skillRepo.insert(new KnownSkill("Java"));
+		skillRepo.insert(new KnownSkill("Java", "icon descriptor"));
 
 		sessionRepo.deleteAll();
 		Session session = new Session("abc123", "foobar", new Date());

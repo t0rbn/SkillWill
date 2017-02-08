@@ -22,7 +22,7 @@ public class KnownSkillTest {
 
 	@Before
 	public void setUp() {
-		skill = new KnownSkill("Java");
+		skill = new KnownSkill("Java", "icon descriptor");
 		skill.incrementSuggestion("COBOL");
 	}
 

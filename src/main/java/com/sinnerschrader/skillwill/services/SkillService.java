@@ -19,10 +19,10 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sun.rmi.server.InactiveGroupException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Services handling skills management (create, rename, suggest, delete, ...)
@@ -60,11 +60,19 @@ public class SkillService {
 		return StringUtils.isEmpty(search) ? getAllSkills() : getAutocompleteSkills(search);
 	}
 
-	public String getSuggestedSkillName(List<String> enteredNames) {
-		List<SuggestionSkill> allSuggestions = new ArrayList<>();
+	public KnownSkill getSkillByName(String name) {
+		return skillsRepository.findByName(name);
+	}
+
+	public List<String> getSuggestionNames(List<String> references, int count) {
+		List<SuggestionSkill> suggestions = new ArrayList<>();
 		SuggestionSkill currentmax = null;
 
-		for (String name : enteredNames) {
+		if (count < 0) {
+			throw new IllegalArgumentException("count must be a positive integer");
+		}
+
+		for (String name : references) {
 			KnownSkill skill = skillsRepository.findByName(name);
 			if (skill == null) {
 				logger.debug("Failed to find suggestions for {}: skill not found", name);
@@ -72,24 +80,24 @@ public class SkillService {
 			}
 
 			for (SuggestionSkill suggestion : skill.getSuggestions()) {
-				Optional<SuggestionSkill> existing = allSuggestions.stream().filter(s -> s.getName().equals(suggestion.getName())).findFirst();
-				if (existing.isPresent() && !enteredNames.contains(existing.get().getName())) {
+				Optional<SuggestionSkill> existing = suggestions.stream().filter(s -> s.getName().equals(suggestion.getName())).findFirst();
+				if (existing.isPresent() && !references.contains(existing.get().getName())) {
 					existing.get().incrementCount(suggestion.getCount());
-				} else if (!enteredNames.contains(suggestion.getName())) {
-					allSuggestions.add(suggestion);
+				} else if (!references.contains(suggestion.getName())) {
+					suggestions.add(suggestion);
 				}
 			}
 
 		}
 
-		for (SuggestionSkill s : allSuggestions) {
-			if (currentmax == null || s.getCount() > currentmax.getCount()) {
-				currentmax = s;
-			}
-		}
+		List<String> suggestionNames = suggestions.stream()
+				.sorted(Comparator.comparingInt(s -> s.getCount()))
+				.limit(count)
+				.map(s -> s.getName())
+				.collect(Collectors.toList());
 
-		logger.debug("Successfully got next suggestions for {}: {}", enteredNames, currentmax != null ? currentmax.getName() : "no suggestion");
-		return currentmax == null ? "" : currentmax.getName();
+		logger.debug("Successfully got {} suggestions for {}", suggestionNames.size(), references);
+		return suggestionNames;
 	}
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
@@ -107,7 +115,7 @@ public class SkillService {
 	}
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
-	public void createSkill(String name) throws EmptyArgumentException, DuplicateSkillException {
+	public void createSkill(String name, String iconDescriptor) throws EmptyArgumentException, DuplicateSkillException {
 		if (StringUtils.isEmpty(name)) {
 			logger.debug("Failed to create skill {}: name is empty", name);
 			throw new EmptyArgumentException("name is empty");
@@ -119,7 +127,7 @@ public class SkillService {
 		}
 
 		try {
-			skillsRepository.insert(new KnownSkill(name));
+			skillsRepository.insert(new KnownSkill(name, iconDescriptor));
 			logger.info("Successfully created skill {}", name);
 		} catch (DuplicateKeyException e) {
 			logger.debug("Failed to create skill {}: already exists");
@@ -129,48 +137,62 @@ public class SkillService {
 	}
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
-	public void renameSkill(String name, String newName) throws IllegalArgumentException, DuplicateSkillException {
+	public void updateSkill(String name, String newName, String iconDescriptor) throws IllegalArgumentException, DuplicateSkillException {
 		if (skillsRepository.findByName(name) == null) {
 			logger.debug("Failed to rename skill {}: not found", name);
 			throw new SkillNotFoundException("skill not found");
 		}
 
-		if (skillsRepository.findByName(newName) != null) {
+		if (!name.equals(newName) && skillsRepository.findByName(newName) != null) {
 			logger.debug("Failed to rename skill {}: new name {} already exists", name, newName);
 			throw new DuplicateSkillException("skill already exists");
 		}
 
-		if (StringUtils.isEmpty(newName)) {
-			logger.debug("Failed to rename skill {}: new name must not be empty", name);
+		// icondescriptor may be empty string!
+		if (StringUtils.isEmpty(newName) || iconDescriptor == null) {
+			logger.debug("Failed to rename skill {}: name and iconDescriptor must not be empty", name);
 			throw new EmptyArgumentException("new name must not be empty");
 		}
 
-		// Rename in skills Repo
+		// update in skills Repo
 		try {
 			KnownSkill skill = skillsRepository.findByName(name);
-			KnownSkill newSkill = new KnownSkill(newName, skill.getSuggestions());
+			KnownSkill newSkill = new KnownSkill(newName, iconDescriptor, skill.getSuggestions());
 			skillsRepository.delete(skill);
 			skillsRepository.insert(newSkill);
 		} catch (DuplicateSkillException e) {
 			throw new DuplicateSkillException("skill already exists");
 		}
 
-		// rename in suggestion
+		// rename in suggestions and persons
+		if (!name.equals(newName)) {
+			renameSkillinPersons(name, newName);
+			renameSkillInSuggestions(name, newName);
+		}
+
+		logger.info("Successfully renamed skill {} to {}", name, newName);
+	}
+
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	private void renameSkillInSuggestions(String name, String newName) {
+		logger.debug("Renaming Skill {} to {} in skill suggestions", name, newName);
 		for (KnownSkill knownSkill : skillsRepository.findBySuggestion(name)) {
 			knownSkill.renameSuggestion(name, newName);
 			skillsRepository.save(knownSkill);
 		}
+	}
 
-		// rename in persons
+	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	private void renameSkillinPersons(String name, String newName) {
+		logger.debug("Renaming Skill {} to {} in persons", name, newName);
 		for (Person person : personRepository.findBySkill(name)) {
 			PersonalSkill oldSkill = person.getSkill(name);
 			person.addUpdateSkill(newName, oldSkill.getSkillLevel(), oldSkill.getWillLevel());
 			person.deleteSkill(name);
 			personRepository.save(person);
 		}
-
-		logger.info("Successfully renamed skill {} to {}", name, newName);
 	}
+
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void deleteSkill(String name) {

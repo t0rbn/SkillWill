@@ -64,7 +64,7 @@ public class MockData {
 		BufferedReader br = new BufferedReader(skillsIS);
 		String line = "";
 		while ((line = br.readLine()) != null) {
-			skillRepo.insert(new KnownSkill(line));
+			skillRepo.insert(new KnownSkill(line, "put icon descriptor here"));
 			logger.info("Successfully inserted mock skill {}", line);
 		}
 

@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
+import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
@@ -16,25 +17,27 @@ public class KnownSkill {
 
 	@Id
 	private String name;
+	private String iconDescriptor;
 	private List<SuggestionSkill> suggestions;
 
 	@Version
 	Long version;
 
-	public KnownSkill(String name) {
+	public KnownSkill(String name, String iconDescriptor) {
 		this.name = name;
+		this.iconDescriptor = iconDescriptor;
 		this.suggestions = new ArrayList<SuggestionSkill>();
 	}
 
-	public KnownSkill(String name, List<SuggestionSkill> suggestions) {
-		this.name = name;
+	public KnownSkill(String name, String iconDescriptor, List<SuggestionSkill> suggestions) {
+		this(name, iconDescriptor);
 		this.suggestions = suggestions;
 	}
 
 	public KnownSkill() {
-		this.name = null;
-		this.suggestions = null;
+		this("", "", null);
 	}
+
 
 	public void setName(String name) {
 		this.name = name;
@@ -42,6 +45,14 @@ public class KnownSkill {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public String getIconDescriptor() {
+		return this.iconDescriptor;
+	}
+
+	public void setIconDescriptor(String iconDescriptor) {
+		this.iconDescriptor = iconDescriptor;
 	}
 
 	public List<SuggestionSkill> getSuggestions() {
@@ -89,6 +100,13 @@ public class KnownSkill {
 		}
 
 		this.suggestions.remove(suggestion);
+	}
+
+	public JSONObject toJSON() {
+		JSONObject obj = new JSONObject();
+		obj.put("name", this.name);
+		obj.put("iconDescriptor", this.iconDescriptor);
+		return obj;
 	}
 
 }

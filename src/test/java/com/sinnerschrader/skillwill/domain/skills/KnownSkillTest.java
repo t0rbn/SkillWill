@@ -1,5 +1,7 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +50,14 @@ public class KnownSkillTest {
 	public void testDeleteSuggestion() {
 		skill.deleteSuggestion("COBOL");
 		assertTrue(skill.getSuggestions().isEmpty());
+	}
+
+	@Test
+	public void testToJSON() throws JSONException {
+		JSONObject obj = skill.toJSON();
+		assertEquals(2, obj.length());
+		assertEquals("Java", obj.getString("name"));
+		assertEquals("icon descriptor", obj.getString("iconDescriptor"));
 	}
 
 }

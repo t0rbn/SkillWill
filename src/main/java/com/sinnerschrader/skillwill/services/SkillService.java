@@ -91,7 +91,7 @@ public class SkillService {
 		}
 
 		List<String> suggestionNames = suggestions.stream()
-				.sorted(Comparator.comparingInt(s -> s.getCount()))
+				.sorted(Comparator.comparingInt(SuggestionSkill::getCount).reversed())
 				.limit(count)
 				.map(s -> s.getName())
 				.collect(Collectors.toList());

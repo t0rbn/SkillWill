@@ -2,7 +2,7 @@ package com.sinnerschrader.skillwill.mock;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
-import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class MockData {
 	private static Logger logger = LoggerFactory.getLogger(MockData.class);
 
 	@Autowired
-	private SkillsRepository skillRepo;
+	private SkillRepository skillRepo;
 
 	@Autowired
 	private PersonRepository personRepo;

@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author torree
  */
-public interface SkillsRepository extends MongoRepository<KnownSkill, String> {
+public interface SkillRepository extends MongoRepository<KnownSkill, String> {
 
 	KnownSkill findByName(String name);
 

@@ -9,7 +9,7 @@ import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
-import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sun.rmi.server.InactiveGroupException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,21 +35,21 @@ public class SkillService {
 	private static Logger logger = LoggerFactory.getLogger(SkillService.class);
 
 	@Autowired
-	private SkillsRepository skillsRepository;
+	private SkillRepository skillRepository;
 
 	@Autowired
 	private PersonRepository personRepository;
 
 	private List<KnownSkill> getAllSkills() {
-		return skillsRepository.findAll();
+		return skillRepository.findAll();
 	}
 
 	public boolean skillExists(String name) {
-		return skillsRepository.findByName(name) != null;
+		return skillRepository.findByName(name) != null;
 	}
 
 	private List<KnownSkill> getAutocompleteSkills(String input) {
-		List<KnownSkill> skills = skillsRepository.findByNameLike(input);
+		List<KnownSkill> skills = skillRepository.findByNameLike(input);
 		skills.sort(new KnownSkillSuggestionComparator(input));
 		logger.debug("Successfully got {} autocompletions for : {}", skills.size(), input);
 		return skills;
@@ -61,7 +60,7 @@ public class SkillService {
 	}
 
 	public KnownSkill getSkillByName(String name) {
-		return skillsRepository.findByName(name);
+		return skillRepository.findByName(name);
 	}
 
 	public List<String> getSuggestionNames(List<String> references, int count) {
@@ -73,7 +72,7 @@ public class SkillService {
 		}
 
 		for (String name : references) {
-			KnownSkill skill = skillsRepository.findByName(name);
+			KnownSkill skill = skillRepository.findByName(name);
 			if (skill == null) {
 				logger.debug("Failed to find suggestions for {}: skill not found", name);
 				throw new SkillNotFoundException("skill does not exist");
@@ -103,13 +102,13 @@ public class SkillService {
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void registerSkillSearch(List<String> searchitems) throws IllegalArgumentException {
 		for (String skillName : searchitems) {
-			KnownSkill current = skillsRepository.findByName(skillName);
+			KnownSkill current = skillRepository.findByName(skillName);
 			if (current == null) {
 				logger.debug("Failed to register search for {}: not found", skillName);
 				throw new IllegalArgumentException("skill not found");
 			}
 			searchitems.stream().filter(s -> !s.equals(current.getName())).forEach(s -> current.incrementSuggestion(s));
-			skillsRepository.save(current);
+			skillRepository.save(current);
 		}
 		logger.info("Successfully registered search for {}", searchitems);
 	}
@@ -121,13 +120,13 @@ public class SkillService {
 			throw new EmptyArgumentException("name is empty");
 		}
 
-		if (skillsRepository.findByName(name) != null) {
+		if (skillRepository.findByName(name) != null) {
 			logger.debug("Failed to create skill {}: already exists", name);
 			throw new DuplicateSkillException("skill already existing");
 		}
 
 		try {
-			skillsRepository.insert(new KnownSkill(name, iconDescriptor));
+			skillRepository.insert(new KnownSkill(name, iconDescriptor));
 			logger.info("Successfully created skill {}", name);
 		} catch (DuplicateKeyException e) {
 			logger.debug("Failed to create skill {}: already exists");
@@ -138,12 +137,12 @@ public class SkillService {
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void updateSkill(String name, String newName, String iconDescriptor) throws IllegalArgumentException, DuplicateSkillException {
-		if (skillsRepository.findByName(name) == null) {
+		if (skillRepository.findByName(name) == null) {
 			logger.debug("Failed to rename skill {}: not found", name);
 			throw new SkillNotFoundException("skill not found");
 		}
 
-		if (!name.equals(newName) && skillsRepository.findByName(newName) != null) {
+		if (!name.equals(newName) && skillRepository.findByName(newName) != null) {
 			logger.debug("Failed to rename skill {}: new name {} already exists", name, newName);
 			throw new DuplicateSkillException("skill already exists");
 		}
@@ -156,10 +155,10 @@ public class SkillService {
 
 		// update in skills Repo
 		try {
-			KnownSkill skill = skillsRepository.findByName(name);
+			KnownSkill skill = skillRepository.findByName(name);
 			KnownSkill newSkill = new KnownSkill(newName, iconDescriptor, skill.getSuggestions());
-			skillsRepository.delete(skill);
-			skillsRepository.insert(newSkill);
+			skillRepository.delete(skill);
+			skillRepository.insert(newSkill);
 		} catch (DuplicateSkillException e) {
 			throw new DuplicateSkillException("skill already exists");
 		}
@@ -176,9 +175,9 @@ public class SkillService {
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	private void renameSkillInSuggestions(String name, String newName) {
 		logger.debug("Renaming Skill {} to {} in skill suggestions", name, newName);
-		for (KnownSkill knownSkill : skillsRepository.findBySuggestion(name)) {
+		for (KnownSkill knownSkill : skillRepository.findBySuggestion(name)) {
 			knownSkill.renameSuggestion(name, newName);
-			skillsRepository.save(knownSkill);
+			skillRepository.save(knownSkill);
 		}
 	}
 
@@ -196,18 +195,18 @@ public class SkillService {
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
 	public void deleteSkill(String name) {
-		if (skillsRepository.findByName(name) == null) {
+		if (skillRepository.findByName(name) == null) {
 			logger.debug("Failed to delete skill {}: not found", name);
 			throw new SkillNotFoundException("skill not found");
 		}
 
 		// delete from known skills
-		skillsRepository.delete(skillsRepository.findByName(name));
+		skillRepository.delete(skillRepository.findByName(name));
 
 		// delete in suggestion
-		for (KnownSkill knownSkill : skillsRepository.findBySuggestion(name)) {
+		for (KnownSkill knownSkill : skillRepository.findBySuggestion(name)) {
 			knownSkill.deleteSuggestion(name);
-			skillsRepository.save(knownSkill);
+			skillRepository.save(knownSkill);
 		}
 
 		// delete from persons

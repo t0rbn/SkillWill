@@ -28,7 +28,7 @@ public class Person {
 	Long version;
 
 	// LDAP Details will be updates regularly
-	private PersonalLDAPDetails ldapDetails;
+	private PersonalLdapDetails ldapDetails;
 
 	public Person(String id) {
 		this.id = id;
@@ -56,11 +56,11 @@ public class Person {
 		}
 	}
 
-	public void setLdapDetails(PersonalLDAPDetails ldapDetails) {
+	public void setLdapDetails(PersonalLdapDetails ldapDetails) {
 		this.ldapDetails = ldapDetails;
 	}
 
-	public PersonalLDAPDetails getLdapDetails() {
+	public PersonalLdapDetails getLdapDetails() {
 		return this.ldapDetails;
 	}
 

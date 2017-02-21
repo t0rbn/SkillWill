@@ -46,7 +46,7 @@ public class PersonTest {
 	public void testToJson() throws JSONException {
 		person.setComment("comment");
 		person.setLdapDetails(
-				new PersonalLDAPDetails(
+				new PersonalLdapDetails(
 						"Fooberius",
 						"Barblub",
 						"fooberius.barblub@sinnerschrader.com",

@@ -5,7 +5,7 @@ package com.sinnerschrader.skillwill.domain.person;
  *
  * @author torree
  */
-public class PersonalLDAPDetails {
+public class PersonalLdapDetails {
 
 	private final String firstName;
 	private final String lastName;
@@ -14,7 +14,7 @@ public class PersonalLDAPDetails {
 	private final String location;
 	private final String title;
 
-	public PersonalLDAPDetails(String firstName, String lastName, String mail, String telephone, String location, String title) {
+	public PersonalLdapDetails(String firstName, String lastName, String mail, String telephone, String location, String title) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.mail = mail;
@@ -23,7 +23,7 @@ public class PersonalLDAPDetails {
 		this.title = title;
 	}
 
-	public PersonalLDAPDetails() {
+	public PersonalLdapDetails() {
 		this(null, null, null, null, null, null);
 	}
 
@@ -57,7 +57,7 @@ public class PersonalLDAPDetails {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		PersonalLDAPDetails that = (PersonalLDAPDetails) o;
+		PersonalLdapDetails that = (PersonalLdapDetails) o;
 
 		if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
 		if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;

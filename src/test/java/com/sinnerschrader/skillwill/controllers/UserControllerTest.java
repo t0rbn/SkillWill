@@ -3,7 +3,7 @@ package com.sinnerschrader.skillwill.controllers;
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
-import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
@@ -47,7 +47,7 @@ public class UserControllerTest {
 	private PersonRepository personRepo;
 
 	@Autowired
-	private SkillsRepository skillRepo;
+	private SkillRepository skillRepo;
 
 	@Autowired
 	private SessionRepository sessionRepo;

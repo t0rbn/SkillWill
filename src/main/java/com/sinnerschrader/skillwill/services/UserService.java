@@ -9,7 +9,7 @@ import com.sinnerschrader.skillwill.exceptions.LevelOutOfRangeException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
-import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class UserService {
 	private SkillService skillService;
 
 	@Autowired
-	private SkillsRepository skillsRepository;
+	private SkillRepository skillRepository;
 
 	@Autowired
 	private FitnessScoreProperties fitnessScoreProperties;
@@ -118,7 +117,7 @@ public class UserService {
 			throw new UserNotFoundException("user not found");
 		}
 
-		if (skillsRepository.findByName(skillName) == null) {
+		if (skillRepository.findByName(skillName) == null) {
 			logger.debug("Failed to modify {}'s skill {}: skill not found", username, skillName);
 			throw new SkillNotFoundException("skill not found");
 		}
@@ -148,7 +147,7 @@ public class UserService {
 			throw new UserNotFoundException("user not found");
 		}
 
-		if (skillsRepository.findByName(skillName) == null) {
+		if (skillRepository.findByName(skillName) == null) {
 			logger.debug("Failed to remove {}'s skill {}: skill not found", username, skillName);
 			throw new SkillNotFoundException("skill not found");
 		}

@@ -1,6 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.repositories.SkillsRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -34,7 +34,7 @@ public class SkillControllerTest {
 	private SkillController skillController;
 
 	@Autowired
-	private SkillsRepository skillRepo;
+	private SkillRepository skillRepo;
 
 	@Autowired
 	private EmbeddedLdap embeddedLdap;

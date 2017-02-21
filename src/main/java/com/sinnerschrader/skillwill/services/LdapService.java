@@ -2,7 +2,7 @@ package com.sinnerschrader.skillwill.services;
 
 
 import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.PersonalLDAPDetails;
+import com.sinnerschrader.skillwill.domain.person.PersonalLdapDetails;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.unboundid.ldap.sdk.*;
@@ -128,7 +128,7 @@ public class LdapService {
 			for (Person person : updatablePersons) {
 				SearchResultEntry entry = res.getSearchEntry("uid=" + person.getId() + "," + ldapBaseDN);
 				try {
-					PersonalLDAPDetails newDetails = new PersonalLDAPDetails(
+					PersonalLdapDetails newDetails = new PersonalLdapDetails(
 							entry.getAttributeValue("givenName"),
 							entry.getAttributeValue("sn"),
 							entry.getAttributeValue("mail"),

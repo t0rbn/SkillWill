@@ -98,7 +98,6 @@ public class LdapService {
 		}
 
 		try {
-
 			if (ldapSsl) {
 				SSLUtil sslUtil = new SSLUtil(new TrustAllTrustManager());
 				SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
@@ -108,7 +107,7 @@ public class LdapService {
 			}
 			ldapConnection.connect(ldapUrl, ldapPort);
 		} catch (LDAPException | GeneralSecurityException e) {
-			logger.error("Failed to connect to LDAP", e.getStackTrace());
+			logger.error("Failed to connect to LDAP", e);
 		}
 
 	}
@@ -128,7 +127,14 @@ public class LdapService {
 	}
 
 	public List<Person> syncUsers(List<Person> persons, boolean forceUpdate) {
+		try {
+			ldapConnection.bind(new SimpleBindRequest("uid=abbgil," + ldapBaseDN, "testuser"));
+		} catch (LDAPException e) {
+			logger.error("Failed to sync users: bind exception", e);
+		}
+
 		List<Person> updatablePersons;
+		List<Person> returnPersons = new ArrayList<>(persons);
 
 		if (forceUpdate) {
 			updatablePersons = persons;
@@ -164,13 +170,14 @@ public class LdapService {
 				} catch (NullPointerException e) {
 					logger.info("Failed to sync user {}: will remove from DB", person.getId());
 					personRepo.delete(person);
+					returnPersons.remove(person);
 				}
 			}
 		} catch (LDAPException e) {
 			logger.error("Failed to sync with LDAP: LDAP error", e);
 		}
 
-		return persons;
+		return returnPersons;
 	}
 
 	public boolean canAuthenticate(String username, String password) {

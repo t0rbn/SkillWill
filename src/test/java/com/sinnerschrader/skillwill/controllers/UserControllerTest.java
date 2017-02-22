@@ -117,6 +117,13 @@ public class UserControllerTest {
 	}
 
 	@Test
+	public void testGetUsersNoFitnessInEmotySearch() throws JSONException {
+		logger.debug("Testing UserController: get users with empty skills -> no fitness in JSON");
+		ResponseEntity<String> res = userController.getUsers("", "Hamburg");
+		assertFalse(new JSONArray(res.getBody()).getJSONObject(0).has("fitness"));
+	}
+
+	@Test
 	public void testGetUsersLocationEmpty() throws JSONException {
 		logger.debug("Testing UserController: get users for empty location");
 		ResponseEntity<String> res = userController.getUsers("Java", "");

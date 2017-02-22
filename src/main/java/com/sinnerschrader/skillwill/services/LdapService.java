@@ -6,6 +6,8 @@ import com.sinnerschrader.skillwill.domain.person.PersonalLdapDetails;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.unboundid.ldap.sdk.*;
+import com.unboundid.util.ssl.SSLUtil;
+import com.unboundid.util.ssl.TrustAllTrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +48,8 @@ public class LdapService {
 	private static boolean ldapEmbeded;
 
 	private static LDAPConnection ldapConnection;
+
+	private static boolean ldapSsl;
 
 	@Autowired
 	private PersonRepository personRepo;
@@ -75,6 +81,12 @@ public class LdapService {
 		ldapEmbeded = propString.equals("true");
 	}
 
+	@SuppressWarnings("static-access")
+	@Value("${ldapSsl}")
+	public void setLdapSsl(String propString) {
+		ldapSsl = Boolean.parseBoolean(propString);
+	}
+
 	@PostConstruct
 	private void setup() {
 		if (ldapEmbeded) {
@@ -86,10 +98,19 @@ public class LdapService {
 		}
 
 		try {
-			ldapConnection = new LDAPConnection(ldapUrl, 1338);
-		} catch (LDAPException e) {
-			logger.error("Failed to connect to LDAP", e);
+
+			if (ldapSsl) {
+				SSLUtil sslUtil = new SSLUtil(new TrustAllTrustManager());
+				SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+				ldapConnection = new LDAPConnection(sslSocketFactory);
+			} else {
+				ldapConnection = new LDAPConnection();
+			}
+			ldapConnection.connect(ldapUrl, ldapPort);
+		} catch (LDAPException | GeneralSecurityException e) {
+			logger.error("Failed to connect to LDAP", e.getStackTrace());
 		}
+
 	}
 
 	@PreDestroy

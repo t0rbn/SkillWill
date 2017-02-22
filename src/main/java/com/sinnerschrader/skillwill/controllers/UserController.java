@@ -71,6 +71,7 @@ public class UserController {
 		skills = skills != null ? skills : "";
 		location = location != null ? location : "";
 		List<Person> matches;
+		JSONArray returnArray;
 
 		// Arrays.asList has fixed length, so add all to new List
 		List<String> skillNameList = new ArrayList<>();
@@ -81,18 +82,22 @@ public class UserController {
 		try {
 			matches = userService.getUsers(skillNameList, location);
 			skillService.registerSkillSearch(skillNameList);
-
-			JSONArray arr = new JSONArray();
-			for (Person p : matches) {
-				JSONObject personObj = p.toJSON();
-				personObj.put("fitness", new FitnessScore(p, skillNameList, fitnessScoreProperties).getValue());
-				arr.put(personObj);
-			}
-
-			return new ResponseEntity<>(arr.toString(), HttpStatus.OK);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+
+		if (!skillNameList.isEmpty()) {
+			returnArray = new JSONArray();
+			for (Person p : matches) {
+				JSONObject personObj = p.toJSON();
+				personObj.put("fitness", new FitnessScore(p, skillNameList, fitnessScoreProperties).getValue());
+				returnArray.put(personObj);
+			}
+		} else {
+			returnArray = new JSONArray(matches.stream().map(Person::toJSON).collect(Collectors.toList()));
+		}
+
+		return new ResponseEntity<>(returnArray.toString(), HttpStatus.OK);
 	}
 
 	/**

@@ -1,8 +1,8 @@
 version: 1
 
-#######################
-# One Basic Test User #
-#######################
+######################################
+# Test Users for Integration Testing #
+######################################
 
 dn: dc=sinnerschrader,dc=com
 objectClass: top
@@ -30,3 +30,53 @@ userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
 telephoneNumber: +49 666 666 666
+
+dn: uid=abc,ou=users,dc=sinnerschrader,dc=com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Fooberius
+uid: foobar
+sn: Barblub
+mail: fooberius.barblub@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
+dn: uid=def,ou=users,dc=sinnerschrader,dc=com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Fooberius
+uid: foobar
+sn: Barblub
+mail: fooberius.barblub@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
+dn: uid=ghi,ou=users,dc=sinnerschrader,dc=com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Fooberius
+uid: foobar
+sn: Barblub
+mail: fooberius.barblub@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
+

@@ -110,7 +110,10 @@ public class SkillService {
 			searchitems.stream().filter(s -> !s.equals(current.getName())).forEach(s -> current.incrementSuggestion(s));
 			skillRepository.save(current);
 		}
-		logger.info("Successfully registered search for {}", searchitems);
+
+		if (!searchitems.isEmpty()) {
+			logger.info("Successfully registered search for {}", searchitems);
+		}
 	}
 
 	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)

@@ -51,6 +51,10 @@ public class LdapService {
 
 	private static boolean ldapSsl;
 
+	private static String ldapLookupUser;
+
+	private static String ldapLookupPassword;
+
 	@Autowired
 	private PersonRepository personRepo;
 
@@ -85,6 +89,18 @@ public class LdapService {
 	@Value("${ldapSsl}")
 	public void setLdapSsl(String propString) {
 		ldapSsl = Boolean.parseBoolean(propString);
+	}
+
+	@SuppressWarnings("static-access")
+	@Value("${ldapLookupUser}")
+	public void setLdapLookupUser(String propString) {
+		ldapLookupUser = propString;
+	}
+
+	@SuppressWarnings("static-access")
+	@Value("${ldapLookupPassword}")
+	public void setLdapLookupPassword(String propString) {
+		ldapLookupPassword = propString;
 	}
 
 	@PostConstruct
@@ -128,7 +144,7 @@ public class LdapService {
 
 	public List<Person> syncUsers(List<Person> persons, boolean forceUpdate) {
 		try {
-			ldapConnection.bind(new SimpleBindRequest("uid=abbgil," + ldapBaseDN, "testuser"));
+			ldapConnection.bind(new SimpleBindRequest("uid=" + ldapLookupUser + "," + ldapBaseDN, ldapLookupPassword));
 		} catch (LDAPException e) {
 			logger.error("Failed to sync users: bind exception", e);
 		}

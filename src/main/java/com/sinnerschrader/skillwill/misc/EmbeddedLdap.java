@@ -7,8 +7,7 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldif.LDIFReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,8 +19,7 @@ import java.net.InetAddress;
  *
  * @author torree
  */
-@Component
-@Scope("singleton")
+@Service
 public class EmbeddedLdap {
 
 	private static Logger logger = LoggerFactory.getLogger(EmbeddedLdap.class);

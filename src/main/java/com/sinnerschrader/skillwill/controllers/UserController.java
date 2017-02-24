@@ -1,11 +1,11 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import com.sinnerschrader.skillwill.domain.person.FitnessScore;
+import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
-import com.sinnerschrader.skillwill.domain.person.FitnessScore;
-import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import com.sinnerschrader.skillwill.services.UserService;
@@ -19,13 +19,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -170,7 +168,7 @@ public class UserController {
 			@ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
 	})
 	@RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
-	public ResponseEntity<String> removeSkill(@PathVariable String user, @RequestParam("skill") String skill,  @RequestParam("session") String sessionKey) {
+	public ResponseEntity<String> removeSkill(@PathVariable String user, @RequestParam("skill") String skill, @RequestParam("session") String sessionKey) {
 		if (!sessionService.isValidSession(user, sessionKey)) {
 			logger.debug("Failed to modify {}'s skills: not logged in", user);
 			return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
@@ -225,7 +223,7 @@ public class UserController {
 	/**
 	 * Get users with similar skill sets
 	 */
-	@ApiOperation(value = "get similar", nickname = "get similar",notes = "get users with similar skills sets")
+	@ApiOperation(value = "get similar", nickname = "get similar", notes = "get users with similar skills sets")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 404, message = "Not Found"),

@@ -2,7 +2,6 @@ package com.sinnerschrader.skillwill.domain.person;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class JaccardFilter {
 
-	Person reference;
+	private final Person reference;
 
 	public JaccardFilter(Person reference) {
 		this.reference = reference;
@@ -32,7 +31,7 @@ public class JaccardFilter {
 
 	private class JaccardIndexComparator implements Comparator<Person> {
 
-		Person reference;
+		private final Person reference;
 
 		public JaccardIndexComparator(Person reference) {
 			this.reference = reference;

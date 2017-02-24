@@ -36,7 +36,7 @@ public class SessionService {
 	@Autowired
 	private SessionRepository sessionRepo;
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public String createSession(String username) {
 		String key = null;
 		do {
@@ -90,7 +90,7 @@ public class SessionService {
 		sessionRepo.delete(session);
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	private void renewSession(Session session) {
 		logger.debug("Renewed session {}", session.getKey());
 		session.renewSession(expireDuration);

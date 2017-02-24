@@ -6,7 +6,6 @@ import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.services.SkillService;
-import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
 import io.swagger.annotations.*;
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;

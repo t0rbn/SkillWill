@@ -33,7 +33,7 @@ public class LoginService {
 	@Autowired
 	private SessionService sessionService;
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public String login(String username, String password) {
 		if (!ldapService.canAuthenticate(username, password)) {
 			logger.info("Failed to login user {}", username);

@@ -10,7 +10,7 @@ import org.json.JSONObject;
  */
 public class StatusJSON {
 
-	private JSONObject json;
+	private final JSONObject json;
 
 	public StatusJSON(String message) {
 		JSONObject obj = new JSONObject();

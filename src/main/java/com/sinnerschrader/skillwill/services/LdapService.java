@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
@@ -33,27 +32,31 @@ import java.util.stream.Collectors;
  * @author torree
  */
 @Service
-@Scope("singleton")
 @EnableRetry
 public class LdapService {
 
 	private static Logger logger = LoggerFactory.getLogger(LdapService.class);
 
-	private static String ldapUrl;
+	@Value("${ldapUrl}")
+	private String ldapUrl;
 
-	private static String ldapBaseDN;
+	@Value("${ldapPort}")
+	private int ldapPort;
 
-	private static int ldapPort;
+	@Value("${ldapBaseDN}")
+	private String ldapBaseDN;
 
-	private static boolean ldapEmbeded;
+	@Value("${ldapEmbeded}")
+	private boolean ldapEmbeded;
 
-	private static LDAPConnection ldapConnection;
+	@Value("${ldapSsl}")
+	private boolean ldapSsl;
 
-	private static boolean ldapSsl;
+	@Value("${ldapLookupUser}")
+	private String ldapLookupUser;
 
-	private static String ldapLookupUser;
-
-	private static String ldapLookupPassword;
+	@Value("${ldapLookupPassword}")
+	private String ldapLookupPassword;
 
 	@Autowired
 	private PersonRepository personRepo;
@@ -61,47 +64,7 @@ public class LdapService {
 	@Autowired
 	private EmbeddedLdap ldap;
 
-	@SuppressWarnings("static-access")
-	@Value("${ldapUrl}")
-	private void setLdapUrl(String ldapUrl) {
-		this.ldapUrl = ldapUrl;
-	}
-
-	@SuppressWarnings("static-access")
-	@Value("${ldapPort}")
-	private void setLdapPort(String portString) {
-		this.ldapPort = Integer.parseInt(portString);
-	}
-
-	@SuppressWarnings("static-access")
-	@Value("${ldapBaseDN}")
-	public void setLdapBaseDN(String ldapBaseDN) {
-		this.ldapBaseDN = ldapBaseDN;
-	}
-
-	@SuppressWarnings("static-access")
-	@Value("${ldapEmbeded}")
-	public void setLdapEmbed(String propString) {
-		ldapEmbeded = propString.equals("true");
-	}
-
-	@SuppressWarnings("static-access")
-	@Value("${ldapSsl}")
-	public void setLdapSsl(String propString) {
-		ldapSsl = Boolean.parseBoolean(propString);
-	}
-
-	@SuppressWarnings("static-access")
-	@Value("${ldapLookupUser}")
-	public void setLdapLookupUser(String propString) {
-		ldapLookupUser = propString;
-	}
-
-	@SuppressWarnings("static-access")
-	@Value("${ldapLookupPassword}")
-	public void setLdapLookupPassword(String propString) {
-		ldapLookupPassword = propString;
-	}
+	private static LDAPConnection ldapConnection;
 
 	@PostConstruct
 	private void setup() {
@@ -135,7 +98,7 @@ public class LdapService {
 		}
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void syncUser(Person person) {
 		List<Person> lst = new ArrayList<>();
 		lst.add(person);
@@ -211,4 +174,5 @@ public class LdapService {
 		}
 		return false;
 	}
+
 }

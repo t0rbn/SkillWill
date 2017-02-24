@@ -20,7 +20,10 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -99,7 +102,7 @@ public class SkillService {
 		return suggestionNames;
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void registerSkillSearch(List<String> searchitems) throws IllegalArgumentException {
 		for (String skillName : searchitems) {
 			KnownSkill current = skillRepository.findByName(skillName);
@@ -116,7 +119,7 @@ public class SkillService {
 		}
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void createSkill(String name, String iconDescriptor) throws EmptyArgumentException, DuplicateSkillException {
 		if (StringUtils.isEmpty(name)) {
 			logger.debug("Failed to create skill {}: name is empty", name);
@@ -138,7 +141,7 @@ public class SkillService {
 
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void updateSkill(String name, String newName, String iconDescriptor) throws IllegalArgumentException, DuplicateSkillException {
 		if (skillRepository.findByName(name) == null) {
 			logger.debug("Failed to rename skill {}: not found", name);
@@ -175,7 +178,7 @@ public class SkillService {
 		logger.info("Successfully renamed skill {} to {}", name, newName);
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	private void renameSkillInSuggestions(String name, String newName) {
 		logger.debug("Renaming Skill {} to {} in skill suggestions", name, newName);
 		for (KnownSkill knownSkill : skillRepository.findBySuggestion(name)) {
@@ -184,7 +187,7 @@ public class SkillService {
 		}
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	private void renameSkillinPersons(String name, String newName) {
 		logger.debug("Renaming Skill {} to {} in persons", name, newName);
 		for (Person person : personRepository.findBySkill(name)) {
@@ -196,7 +199,7 @@ public class SkillService {
 	}
 
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void deleteSkill(String name) {
 		if (skillRepository.findByName(name) == null) {
 			logger.debug("Failed to delete skill {}: not found", name);

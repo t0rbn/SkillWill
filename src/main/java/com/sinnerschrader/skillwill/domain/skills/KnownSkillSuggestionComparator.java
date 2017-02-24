@@ -9,7 +9,7 @@ import java.util.Comparator;
  */
 public class KnownSkillSuggestionComparator implements Comparator<KnownSkill> {
 
-	private String userinput;
+	private final String userinput;
 
 	public KnownSkillSuggestionComparator(String userinput) {
 		this.userinput = userinput;

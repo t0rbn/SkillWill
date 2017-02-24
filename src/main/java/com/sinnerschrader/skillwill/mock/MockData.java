@@ -1,10 +1,10 @@
 package com.sinnerschrader.skillwill.mock;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

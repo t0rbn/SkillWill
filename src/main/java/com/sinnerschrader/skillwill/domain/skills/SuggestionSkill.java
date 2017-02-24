@@ -10,19 +10,17 @@ public class SuggestionSkill {
 	private String name;
 	private int count;
 
-	public SuggestionSkill(String name) {
-		this.name = name;
-		this.count = 0;
-	}
-
-	public SuggestionSkill() {
-		this.name = null;
-		this.count = 0;
-	}
-
 	public SuggestionSkill(String name, int count) {
 		this.name = name;
 		this.count = count;
+	}
+
+	public SuggestionSkill(String name) {
+		this(name, 0);
+	}
+
+	public SuggestionSkill() {
+		this(null, 0);
 	}
 
 	public String getName() {

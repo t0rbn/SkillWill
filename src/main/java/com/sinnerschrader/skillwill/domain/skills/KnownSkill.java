@@ -6,7 +6,6 @@ import org.springframework.data.annotation.Version;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A skill known to the system including a list of suggestable skills
@@ -21,17 +20,16 @@ public class KnownSkill {
 	private List<SuggestionSkill> suggestions;
 
 	@Version
-	Long version;
-
-	public KnownSkill(String name, String iconDescriptor) {
-		this.name = name;
-		this.iconDescriptor = iconDescriptor;
-		this.suggestions = new ArrayList<SuggestionSkill>();
-	}
+	private Long version;
 
 	public KnownSkill(String name, String iconDescriptor, List<SuggestionSkill> suggestions) {
-		this(name, iconDescriptor);
+		this.name = name;
+		this.iconDescriptor = iconDescriptor;
 		this.suggestions = suggestions;
+	}
+
+	public KnownSkill(String name, String iconDescriptor) {
+		this(name, iconDescriptor, new ArrayList<>());
 	}
 
 	public KnownSkill() {
@@ -64,10 +62,10 @@ public class KnownSkill {
 	}
 
 	private SuggestionSkill getSuggestionByName(String name) {
-		Optional<SuggestionSkill> found = this.suggestions.stream()
+		return this.suggestions.stream()
 				.filter(s -> s.getName().equals(name))
-				.findFirst();
-		return found.isPresent() ? found.get() : null;
+				.findFirst()
+				.orElse(null);
 	}
 
 	public void renameSuggestion(String oldName, String newName) {

@@ -64,7 +64,7 @@ public class UserService {
 					logger.debug("Failed to search for skill {}: not found", s);
 					throw new SkillNotFoundException("skill " + s + " not found");
 				}
- 			}
+			}
 
 			candidates = personRepository.findBySkills(skills);
 			candidates.sort(new FitnessScoreComparator(skills, fitnessScoreProperties));
@@ -103,7 +103,7 @@ public class UserService {
 		return p;
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void updateSkills(String username, String skillName, int skillLevel, int willLevel) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");
@@ -133,7 +133,7 @@ public class UserService {
 		logger.info("Successfully updated {}'s skill {}", username, skillName);
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void removeSkills(String username, String skillName) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
 			logger.debug("Failed to modify skills: username or skillName empty");
@@ -156,7 +156,7 @@ public class UserService {
 		personRepository.save(person);
 	}
 
-	@Retryable(include=OptimisticLockingFailureException.class, maxAttempts=10)
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
 	public void updateDetails(String username, String comment) throws EmptyArgumentException, UserNotFoundException {
 		if (StringUtils.isEmpty(username)) {
 			logger.debug("Failed to update comment: username or empty");

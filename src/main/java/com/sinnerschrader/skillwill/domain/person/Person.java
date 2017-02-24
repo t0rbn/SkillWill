@@ -25,7 +25,7 @@ public class Person {
 	private String comment;
 
 	@Version
-	Long version;
+	private Long version;
 
 	// LDAP Details will be updates regularly
 	private PersonalLdapDetails ldapDetails;
@@ -45,8 +45,10 @@ public class Person {
 	}
 
 	public PersonalSkill getSkill(String name) {
-		Optional<PersonalSkill> skill = this.skills.stream().filter(s -> s.getName().equals(name)).findFirst();
-		return skill.isPresent() ? skill.get() : null;
+		return this.skills.stream()
+				.filter(s -> s.getName().equals(name))
+				.findFirst()
+				.orElse(null);
 	}
 
 	public void deleteSkill(String name) {
@@ -76,12 +78,11 @@ public class Person {
 	}
 
 	public void removeSkill(String name) {
-		Optional<PersonalSkill> skill = skills.stream().filter(s -> s.getName().equals(name)).findAny();
-		if (!skill.isPresent()) {
-			throw new SkillNotFoundException("user does not have skill");
-		}
-
-		skills.remove(skill.get());
+		PersonalSkill skill = skills.stream()
+				.filter(s -> s.getName().equals(name))
+				.findAny()
+				.orElseThrow(() -> new SkillNotFoundException("user does not have skill"));
+		skills.remove(skill);
 	}
 
 	public void setComment(String comment) {

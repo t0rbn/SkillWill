@@ -20,10 +20,10 @@ public class FitnessScore {
 	public FitnessScore(Person person, List<String> searchItems, FitnessScoreProperties props) {
 		this.props = props;
 
-		double weightedAverageSearchedSkills = props.weightAverageSkills * (getAverageSearchedSkills(person, searchItems) > 0 ? getAverageSearchedSkills(person, searchItems) / 3 : 0);
-		double weightedAverageSearchedWills = props.weightAverageWills * (getAverageSearchedWills(person, searchItems) > 0 ? getAverageSearchedWills(person, searchItems) / 3 : 0);
-		double weightedSpecializationSkills = props.weightSpecializationSkills * getSpecializationSkills(person, searchItems);
-		double weightedSpecializationWills = props.weightSpecializationWills * getSpecializationWills(person, searchItems);
+		double weightedAverageSearchedSkills = props.getWeightAverageSkills() * (getAverageSearchedSkills(person, searchItems) > 0 ? getAverageSearchedSkills(person, searchItems) / 3 : 0);
+		double weightedAverageSearchedWills = props.getWeightAverageWills() * (getAverageSearchedWills(person, searchItems) > 0 ? getAverageSearchedWills(person, searchItems) / 3 : 0);
+		double weightedSpecializationSkills = props.getWeightSpecializationSkills() * getSpecializationSkills(person, searchItems);
+		double weightedSpecializationWills = props.getWeightSpecializationWills() * getSpecializationWills(person, searchItems);
 
 		// Round fitness to four digits -> eg. 0.4223 = 42.23% match
 		this.value = Math.round((weightedAverageSearchedSkills + weightedAverageSearchedWills + weightedSpecializationSkills + weightedSpecializationWills) * 10000.0) / 10000.0;
@@ -83,14 +83,14 @@ public class FitnessScore {
 	private double getSpecializationSkills(Person person, List<String> searchItems) {
 		double searchedAverage = getAverageSearchedSkills(person, searchItems);
 		double unsearchedAverage = getAverageUnsearchedSkills(person, searchItems);
-		return (this.props.maxLevelValue + searchedAverage - unsearchedAverage) / (2 * this.props.maxLevelValue);
+		return (this.props.getMaxLevelValue() + searchedAverage - unsearchedAverage) / (2 * this.props.getMaxLevelValue());
 	}
 
 	// Specialization in will level of person regarding searched items (0: worst; 1: best)
 	private double getSpecializationWills(Person person, List<String> searchItems) {
 		double searchedAverage = getAverageSearchedWills(person, searchItems);
 		double unsearchedAverage = getAverageUnsearchedWills(person, searchItems);
-		return (this.props.maxLevelValue + searchedAverage - unsearchedAverage) / (2 * this.props.maxLevelValue);
+		return (this.props.getMaxLevelValue() + searchedAverage - unsearchedAverage) / (2 * this.props.getMaxLevelValue());
 	}
 
 }

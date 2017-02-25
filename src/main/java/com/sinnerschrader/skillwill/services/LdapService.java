@@ -163,10 +163,7 @@ public class LdapService {
 		try {
 			BindRequest bindRequest = new SimpleBindRequest("uid=" + username + "," + ldapBaseDN, password);
 			BindResult bindResult = ldapConnection.bind(bindRequest);
-			if (bindResult.getResultCode().equals(ResultCode.SUCCESS)) {
-				return true;
-			}
-			return false;
+			return bindResult.getResultCode().equals(ResultCode.SUCCESS);
 		} catch (LDAPBindException e) {
 			return false;
 		} catch (LDAPException e) {

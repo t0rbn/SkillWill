@@ -21,7 +21,7 @@ You'll need the following things:
 * Enjoy the interactive documentation using [Swagger](http://swagger.io/)
 
 # License
-TODO define
+* [MIT](https://opensource.org/licenses/MIT) (see LICENSE.md) 
 
 # Links
 * [Jira](https://jira.sinnerschrader.com/secure/RapidBoard.jspa?rapidView=425)

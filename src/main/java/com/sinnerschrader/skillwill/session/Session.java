@@ -20,7 +20,7 @@ public class Session {
 	private Date expireDate;
 
 	@Version
-	Long version;
+	private Long version;
 
 	public Session(String key, String username, Date expireDate) {
 		this.key = key;

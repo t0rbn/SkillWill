@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
  */
 public class FitnessScore {
 
-	private double value;
-	private FitnessScoreProperties props;
+	private final double value;
+	private final FitnessScoreProperties props;
 
 	// total score => weighted average of all factors.
 	public FitnessScore(Person person, List<String> searchItems, FitnessScoreProperties props) {

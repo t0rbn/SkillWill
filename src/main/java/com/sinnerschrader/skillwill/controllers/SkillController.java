@@ -52,10 +52,14 @@ public class SkillController {
 	@RequestMapping(path = "/skills", method = RequestMethod.GET)
 	public ResponseEntity<String> getSkills(@RequestParam(required = false) String search) {
 		logger.debug("Successfully got autocompletion for {}", search);
-		return new ResponseEntity<>(new JSONArray(skillService.getSkills(search).stream()
+
+		JSONArray skillsArr = new JSONArray(
+				skillService.getSkills(search)
+				.stream()
 				.map(s -> s.toJSON())
 				.collect(Collectors.toList())
-		).toString(), HttpStatus.OK);
+		);
+		return new ResponseEntity<>(skillsArr.toString(), HttpStatus.OK);
 	}
 
 	/**

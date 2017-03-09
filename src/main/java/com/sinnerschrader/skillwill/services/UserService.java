@@ -18,6 +18,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class UserService {
 	public List<Person> getUsers(List<String> skills, String location) throws IllegalArgumentException {
 		List<Person> candidates;
 
-		if (skills == null || skills.isEmpty()) {
+		if (CollectionUtils.isEmpty(skills)) {
 			candidates = personRepository.findAll();
 		} else {
 			for (String s : skills) {
@@ -79,7 +80,7 @@ public class UserService {
 	}
 
 	private List<Person> filterByLocation(List<Person> unfiltered, String location) {
-		if (location == null || StringUtils.isEmpty(location)) {
+		if (StringUtils.isEmpty(location)) {
 			return unfiltered;
 		}
 		return unfiltered.stream()

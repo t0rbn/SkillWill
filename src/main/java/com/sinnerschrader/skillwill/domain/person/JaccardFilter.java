@@ -29,7 +29,7 @@ public class JaccardFilter {
 		return intersectionCount / unionCount;
 	}
 
-	private class JaccardIndexComparator implements Comparator<Person> {
+	private static class JaccardIndexComparator implements Comparator<Person> {
 
 		private final Person reference;
 

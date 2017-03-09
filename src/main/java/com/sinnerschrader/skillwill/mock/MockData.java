@@ -37,7 +37,7 @@ public class MockData {
 	private LdapService ldapService;
 
 	@Value("${mockInit}")
-	private String initmock;
+	private Boolean initmock;
 
 	@Value("${mockSkillFilePath}")
 	private String skillsPath;
@@ -47,7 +47,7 @@ public class MockData {
 
 	@PostConstruct
 	public void init() throws IOException {
-		if (!initmock.equals("true")) {
+		if (!initmock) {
 			return;
 		}
 

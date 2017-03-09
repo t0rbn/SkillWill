@@ -16,8 +16,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,18 +97,19 @@ public class SkillController {
 			@ApiResponse(code = 500, message = "Failure")
 	})
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "search", value = "Names of skills already entered, separated by comma", paramType = "query", required = true),
+			@ApiImplicitParam(name = "search", value = "Names of skills already entered, separated by comma", paramType = "query", required = false),
 			@ApiImplicitParam(name = "count", value = "Count of recommendations to get", paramType = "query", defaultValue = "10")
 	})
 	@RequestMapping(path = "/skills/next", method = RequestMethod.GET)
-	public ResponseEntity<String> getNext(@RequestParam String search, @RequestParam(defaultValue = "10") int count) {
+	public ResponseEntity<String> getNext(@RequestParam(required = false) String search, @RequestParam(defaultValue = "10") int count) {
 		if (count < 0) {
 			logger.debug("Failed to get suggestions for skills {}: parameter count less than zero", search);
 			return new ResponseEntity<>(new StatusJSON("count must be a positive integer (or zero)").toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		try {
-			List<KnownSkill> suggestionSkills = skillService.getSuggestionSkills(Arrays.asList(search.split("\\s*,\\s*")), count);
+			List<String> searchItems = !StringUtils.isEmpty(search) ? Arrays.asList(search.split("\\s*,\\s*")) : new ArrayList<>();
+			List<KnownSkill> suggestionSkills = skillService.getSuggestionSkills(searchItems, count);
 			List<JSONObject> suggestionJsons = suggestionSkills.stream().map(KnownSkill::toJSON).collect(Collectors.toList());
 			logger.debug("Successfully got {} suggestions for search {}", suggestionJsons.size(), search);
 			return new ResponseEntity<>(new JSONArray(suggestionJsons).toString(), HttpStatus.OK);

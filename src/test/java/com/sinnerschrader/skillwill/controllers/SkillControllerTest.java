@@ -119,7 +119,7 @@ public class SkillControllerTest {
 	@Test
 	public void testGetNextEmptySearch() {
 		ResponseEntity<String> res = skillController.getNext("", 1);
-		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+		assertTrue(res.getStatusCode() == HttpStatus.OK);
 	}
 
 	@Test

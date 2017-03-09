@@ -18,6 +18,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -68,19 +69,27 @@ public class SkillService {
 
 	public List<KnownSkill> getSuggestionSkills(List<String> references, int count) {
 		List<SuggestionSkill> suggestions = new ArrayList<>();
-		SuggestionSkill currentmax = null;
+		List<KnownSkill> unaggregated;
 
 		if (count < 0) {
 			throw new IllegalArgumentException("count must be a positive integer");
 		}
 
-		for (String name : references) {
-			KnownSkill skill = skillRepository.findByName(name);
-			if (skill == null) {
-				logger.debug("Failed to find suggestions for {}: skill not found", name);
-				throw new SkillNotFoundException("skill does not exist");
-			}
+		if (!CollectionUtils.isEmpty(references)) {
+			// if references exist, find all of their suggestions...
+			unaggregated = references.stream()
+					.map(s -> skillRepository.findByName(s))
+					.collect(Collectors.toList());
 
+			if (unaggregated.contains(null)) {
+				throw new SkillNotFoundException("parameter contains unknown skill name");
+			}
+		} else {
+			// ...if not, use all skills -> find overall most popular
+			unaggregated = skillRepository.findAll();
+		}
+
+		for (KnownSkill skill : unaggregated) {
 			for (SuggestionSkill suggestion : skill.getSuggestions()) {
 				Optional<SuggestionSkill> existing = suggestions.stream().filter(s -> s.getName().equals(suggestion.getName())).findFirst();
 				if (existing.isPresent() && !references.contains(existing.get().getName())) {
@@ -89,7 +98,6 @@ public class SkillService {
 					suggestions.add(suggestion);
 				}
 			}
-
 		}
 
 		return suggestions.stream()

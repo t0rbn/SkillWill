@@ -84,7 +84,7 @@ public class SkillControllerTest {
 	public void testGetNextValid() throws JSONException {
 		ResponseEntity<String> res = skillController.getNext("Java", 1);
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
-		assertEquals("COBOL", new JSONArray(res.getBody()).getString(0));
+		assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class SkillControllerTest {
 		ResponseEntity<String> res = skillController.getNext("Java", 42);
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
 		assertEquals(1, new JSONArray(res.getBody()).length());
-		assertEquals("COBOL", new JSONArray(res.getBody()).getString(0));
+		assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).get("name"));
 	}
 
 
@@ -163,7 +163,7 @@ public class SkillControllerTest {
 	@Test
 	public void testEditSkillValid() throws JSONException {
 		assertTrue(skillController.updateSkill("COBOL", "foo", "").getStatusCode() == HttpStatus.OK);
-		assertEquals("foo", new JSONArray(skillController.getNext("Java", 1).getBody()).getString(0));
+		assertEquals("foo", new JSONArray(skillController.getNext("Java", 1).getBody()).getJSONObject(0).get("name"));
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class SkillControllerTest {
 	@Test
 	public void testEditSkillEmptyNewName() throws JSONException {
 		assertTrue(skillController.updateSkill("Java", "", "").getStatusCode() == HttpStatus.BAD_REQUEST);
-		assertEquals("Java", new JSONArray(skillController.getNext("COBOL", 1).getBody()).getString(0));
+		assertEquals("Java", new JSONArray(skillController.getNext("COBOL", 1).getBody()).getJSONObject(0).get("name"));
 	}
 
 	@Test
@@ -185,8 +185,8 @@ public class SkillControllerTest {
 	@Test
 	public void testEditSkillToExisting() throws JSONException {
 		assertTrue(skillController.updateSkill("Java", "COBOL" ,"").getStatusCode() == HttpStatus.BAD_REQUEST);
-		assertEquals("COBOL", new JSONArray(skillController.getNext("Java", 1).getBody()).getString(0));
-		assertEquals("Java", new JSONArray(skillController.getNext("COBOL", 1).getBody()).getString(0));
+		assertEquals("COBOL", new JSONArray(skillController.getNext("Java", 1).getBody()).getJSONObject(0).get("name"));
+		assertEquals("Java", new JSONArray(skillController.getNext("COBOL", 1).getBody()).getJSONObject(0).get("name"));
 	}
 
 	@Test

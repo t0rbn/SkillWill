@@ -66,7 +66,7 @@ public class SkillService {
 		return skillRepository.findByName(name);
 	}
 
-	public List<String> getSuggestionNames(List<String> references, int count) {
+	public List<KnownSkill> getSuggestionSkills(List<String> references, int count) {
 		List<SuggestionSkill> suggestions = new ArrayList<>();
 		SuggestionSkill currentmax = null;
 
@@ -92,14 +92,11 @@ public class SkillService {
 
 		}
 
-		List<String> suggestionNames = suggestions.stream()
+		return suggestions.stream()
 				.sorted(Comparator.comparingInt(SuggestionSkill::getCount).reversed())
 				.limit(count)
-				.map(s -> s.getName())
+				.map(s -> skillRepository.findByName(s.getName()))
 				.collect(Collectors.toList());
-
-		logger.debug("Successfully got {} suggestions for {}", suggestionNames.size(), references);
-		return suggestionNames;
 	}
 
 	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

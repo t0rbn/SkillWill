@@ -8,6 +8,7 @@ import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.services.SkillService;
 import io.swagger.annotations.*;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,9 +106,10 @@ public class SkillController {
 		}
 
 		try {
-			List<String> suggestedNames = skillService.getSuggestionNames(Arrays.asList(search.split("\\s*,\\s*")), count);
-			logger.debug("Successfully got {} suggestions for search {}", suggestedNames.size(), search);
-			return new ResponseEntity<>(new JSONArray(suggestedNames).toString(), HttpStatus.OK);
+			List<KnownSkill> suggestionSkills = skillService.getSuggestionSkills(Arrays.asList(search.split("\\s*,\\s*")), count);
+			List<JSONObject> suggestionJsons = suggestionSkills.stream().map(KnownSkill::toJSON).collect(Collectors.toList());
+			logger.debug("Successfully got {} suggestions for search {}", suggestionJsons.size(), search);
+			return new ResponseEntity<>(new JSONArray(suggestionJsons).toString(), HttpStatus.OK);
 		} catch (SkillNotFoundException e) {
 			logger.debug("Failed to get suggestions for skills {}: serach contains inkown skill", search);
 			return new ResponseEntity<>(new StatusJSON("search contains unknown skill").toString(), HttpStatus.BAD_REQUEST);

@@ -75,8 +75,9 @@ public class SkillService {
 			throw new IllegalArgumentException("count must be a positive integer");
 		}
 
-		if (!CollectionUtils.isEmpty(references)) {
-			// if references exist, find all of their suggestions...
+		if (CollectionUtils.isEmpty(references)) {
+			unaggregated = skillRepository.findAll();
+		} else {
 			unaggregated = references.stream()
 					.map(s -> skillRepository.findByName(s))
 					.collect(Collectors.toList());
@@ -84,9 +85,6 @@ public class SkillService {
 			if (unaggregated.contains(null)) {
 				throw new SkillNotFoundException("parameter contains unknown skill name");
 			}
-		} else {
-			// ...if not, use all skills -> find overall most popular
-			unaggregated = skillRepository.findAll();
 		}
 
 		for (KnownSkill skill : unaggregated) {

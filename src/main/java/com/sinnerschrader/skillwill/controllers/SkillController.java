@@ -108,7 +108,7 @@ public class SkillController {
 		}
 
 		try {
-			List<String> searchItems = !StringUtils.isEmpty(search) ? Arrays.asList(search.split("\\s*,\\s*")) : new ArrayList<>();
+			List<String> searchItems = StringUtils.isEmpty(search) ? new ArrayList<>() :  Arrays.asList(search.split("\\s*,\\s*"));
 			List<KnownSkill> suggestionSkills = skillService.getSuggestionSkills(searchItems, count);
 			List<JSONObject> suggestionJsons = suggestionSkills.stream().map(KnownSkill::toJSON).collect(Collectors.toList());
 			logger.debug("Successfully got {} suggestions for search {}", suggestionJsons.size(), search);

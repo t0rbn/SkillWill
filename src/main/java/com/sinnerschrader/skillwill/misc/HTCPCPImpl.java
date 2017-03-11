@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Api(hidden = true)
 @Controller
+@CrossOrigin
 @Scope("prototype")
 public class HTCPCPImpl {
 
 	@ApiOperation(value = "HTCPCP Implementation", notes = "HTCPCP", hidden = true)
-	@CrossOrigin("http://localhost:8888")
 	@RequestMapping(path = "/coffee", method = RequestMethod.GET)
 	public ResponseEntity<String> coffee() {
 		StatusJSON json = new StatusJSON("I'm a teapot \u2615");

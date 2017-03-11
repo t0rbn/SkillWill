@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  */
 @Api(tags = "Users", description = "User management and search")
 @Controller
-@CrossOrigin("http://localhost:8888")
+@CrossOrigin
 @Scope("prototype")
 public class UserController {
 

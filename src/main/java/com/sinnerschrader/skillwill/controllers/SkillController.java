@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Api(tags = "Skills", description = "Manage all skills")
 @Controller
-@CrossOrigin("http://localhost:8888")
+@CrossOrigin
 @Scope("prototype")
 public class SkillController {
 

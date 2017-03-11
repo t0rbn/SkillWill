@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Api(tags = "Login", description = "Handles user createSession and logout")
 @Controller
-@CrossOrigin("http://localhost:8888")
+@CrossOrigin
 @Scope("prototype")
 public class LoginController {
 

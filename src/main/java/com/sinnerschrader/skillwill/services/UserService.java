@@ -5,7 +5,7 @@ import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
-import com.sinnerschrader.skillwill.exceptions.LevelOutOfRangeException;
+import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
@@ -114,18 +114,18 @@ public class UserService {
 		Person person = personRepository.findById(username);
 
 		if (person == null) {
-			logger.debug("Failed to modify {}'s skills: user not found", username);
+			logger.debug("Failed to add/modify {}'s skills: user not found", username);
 			throw new UserNotFoundException("user not found");
 		}
 
 		if (skillRepository.findByName(skillName) == null) {
-			logger.debug("Failed to modify {}'s skill {}: skill not found", username, skillName);
+			logger.debug("Failed to add/modify {}'s skill {}: skill not found", username, skillName);
 			throw new SkillNotFoundException("skill not found");
 		}
 
-		if (!isValidLevel(skillLevel) || !isValidLevel(willLevel)) {
-			logger.debug("Failed to modify {}'s skill {}: new value out of range", username, skillName);
-			throw new LevelOutOfRangeException("skill/will level out of range");
+		if (!isValidLevelConfiguration(skillLevel, willLevel)) {
+			logger.debug("Failed to add/modify {}'s skill {}: illegal levels {}/{}", username, skillName, skillLevel, willLevel);
+			throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
 		}
 
 		person.addUpdateSkill(skillName, skillLevel, willLevel);
@@ -180,8 +180,13 @@ public class UserService {
 		logger.info("Successfully updated {}'s comment", username);
 	}
 
-	private boolean isValidLevel(int level) {
-		return 0 <= level && level <= maxLevelValue;
+	private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
+		// Both levels must be between 0 and maxLevel
+		// at least one level must be 1 or above (see [SKILLWILL-30])
+		final boolean isValidSkillLevel = 0 <= skillLevel && skillLevel <= maxLevelValue;
+		final boolean isValidWillLevel = 0 <= willLevel && willLevel <= maxLevelValue;
+		final boolean isOneGreaterZero = skillLevel > 0 || willLevel > 0;
+		return isValidSkillLevel && isValidWillLevel && isOneGreaterZero;
 	}
 
 	public List<Person> getSimilar(String username, int count) throws UserNotFoundException {

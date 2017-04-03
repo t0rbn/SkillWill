@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.controllers;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
@@ -161,10 +162,24 @@ public class UserControllerTest {
 	@Test
 	public void testModifySkillsValid() {
 		logger.debug("Testing UserController: modify skill");
-		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "abc123");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "3", "0", "abc123");
 		assertTrue(res.getStatusCode() == HttpStatus.OK);
-		assertEquals(0, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
+		assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
 		assertEquals(0, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
+	}
+
+	@Test
+	public void testModifySkillsLevelsZero() {
+		logger.debug("Testing UserController: modify skill with both levels zero");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "abc123");
+		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+	}
+
+	@Test
+	public void testModifySkillsLevelOverMax() {
+		logger.debug("Testing UserController: modify skill with both level over max");
+		ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "4", "abc123");
+		assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
 	}
 
 	@Test

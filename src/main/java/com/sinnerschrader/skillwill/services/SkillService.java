@@ -53,7 +53,7 @@ public class SkillService {
 	}
 
 	private List<KnownSkill> getAutocompleteSkills(String input) {
-		List<KnownSkill> skills = skillRepository.findByNameLike(input);
+		List<KnownSkill> skills = skillRepository.findByNameLikeIgnoreCase(input);
 		skills.sort(new KnownSkillSuggestionComparator(input));
 		logger.debug("Successfully got {} autocompletions for : {}", skills.size(), input);
 		return skills;

@@ -16,7 +16,7 @@ public interface SkillRepository extends MongoRepository<KnownSkill, String> {
 
 	KnownSkill findByName(String name);
 
-	List<KnownSkill> findByNameLike(String name);
+	List<KnownSkill> findByNameLikeIgnoreCase(String name);
 
 	@Query("{ 'suggestions.name' : '?0' }")
 	List<KnownSkill> findBySuggestion(String suggestion);

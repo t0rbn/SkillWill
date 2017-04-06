@@ -1,10 +1,9 @@
 package com.sinnerschrader.skillwill.repositories;
 
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-
-import java.util.List;
 
 /**
  * Repository for skills
@@ -14,11 +13,11 @@ import java.util.List;
  */
 public interface SkillRepository extends MongoRepository<KnownSkill, String> {
 
-	KnownSkill findByName(String name);
+  KnownSkill findByName(String name);
 
-	List<KnownSkill> findByNameLikeIgnoreCase(String name);
+  List<KnownSkill> findByNameLikeIgnoreCase(String name);
 
-	@Query("{ 'suggestions.name' : '?0' }")
-	List<KnownSkill> findBySuggestion(String suggestion);
+  @Query("{ 'suggestions.name' : '?0' }")
+  List<KnownSkill> findBySuggestion(String suggestion);
 
 }

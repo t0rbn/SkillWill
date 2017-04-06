@@ -20,8 +20,16 @@ You'll need the following things:
 * Open its root path `http://localhost:1337/`
 * Enjoy the interactive documentation using [Swagger](http://swagger.io/)
 
+# Code Style
+* [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
+  * [IntelliJ Config](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml)
+  * [Eclipse Config](https://github.com/google/styleguide/blob/gh-pages/eclipse-java-google-style.xml)
+* Exceptions:
+  * Maximum of 100 characters per line will _not_ be enforced.
+  * Add one unit of vertical whitespace (aka one empty line) after _multi-line_ method signatures.
+
 # License
-* [MIT](https://opensource.org/licenses/MIT) (see LICENSE.md) 
+* [MIT](https://opensource.org/licenses/MIT) (see LICENSE.md)
 
 # Links
 * [Jira](https://jira.sinnerschrader.com/secure/RapidBoard.jspa?rapidView=425)

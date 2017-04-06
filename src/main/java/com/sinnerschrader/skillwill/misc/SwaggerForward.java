@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Scope("prototype")
 public class SwaggerForward {
 
-	@ApiOperation(value = "redirect to swagger", notes = "redirect to swagger", hidden = true)
-	@RequestMapping(path = "/", method = RequestMethod.GET)
-	public String redirectRoot() {
-		return "redirect:/swagger-ui.html";
-	}
+  @ApiOperation(value = "redirect to swagger", notes = "redirect to swagger", hidden = true)
+  @RequestMapping(path = "/", method = RequestMethod.GET)
+  public String redirectRoot() {
+    return "redirect:/swagger-ui.html";
+  }
 
 }

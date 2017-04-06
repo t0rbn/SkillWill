@@ -10,21 +10,21 @@ import org.json.JSONObject;
  */
 public class StatusJSON {
 
-	private final JSONObject json;
+  private final JSONObject json;
 
-	public StatusJSON(String message) {
-		JSONObject obj = new JSONObject();
-		obj.put("message", message);
-		this.json = obj;
-	}
+  public StatusJSON(String message) {
+    JSONObject obj = new JSONObject();
+    obj.put("message", message);
+    this.json = obj;
+  }
 
-	public JSONObject getJSON() {
-		return this.json;
-	}
+  public JSONObject getJSON() {
+    return this.json;
+  }
 
-	@Override
-	public String toString() {
-		return this.json.toString();
-	}
+  @Override
+  public String toString() {
+    return this.json.toString();
+  }
 
 }

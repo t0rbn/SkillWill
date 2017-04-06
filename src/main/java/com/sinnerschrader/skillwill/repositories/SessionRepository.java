@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface SessionRepository extends MongoRepository<Session, String> {
 
-	Session findByKey(String key);
+  Session findByKey(String key);
 
-	Session findByUsername(String username);
+  Session findByUsername(String username);
 
 }

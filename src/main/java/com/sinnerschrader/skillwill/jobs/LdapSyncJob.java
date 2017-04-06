@@ -18,19 +18,19 @@ import org.springframework.stereotype.Service;
 @EnableScheduling
 public class LdapSyncJob {
 
-	private static Logger logger = LoggerFactory.getLogger(LdapSyncJob.class);
+  private static final Logger logger = LoggerFactory.getLogger(LdapSyncJob.class);
 
-	@Autowired
-	private LdapService ldapService;
+  @Autowired
+  private LdapService ldapService;
 
-	@Autowired
-	private PersonRepository personRepository;
+  @Autowired
+  private PersonRepository personRepository;
 
-	@Scheduled(cron = "${ldapSyncCron}")
-	private void run() {
-		logger.info("Starting regular LDAP sync, this may take a while");
-		ldapService.syncUsers(personRepository.findAll(), true);
-		logger.info("Finished regular LDAP sync");
-	}
+  @Scheduled(cron = "${ldapSyncCron}")
+  private void run() {
+    logger.info("Starting regular LDAP sync, this may take a while");
+    ldapService.syncUsers(personRepository.findAll(), true);
+    logger.info("Finished regular LDAP sync");
+  }
 
 }

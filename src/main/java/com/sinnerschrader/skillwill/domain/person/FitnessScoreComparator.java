@@ -11,20 +11,22 @@ import java.util.List;
  */
 public class FitnessScoreComparator implements Comparator<Person> {
 
-	private final List<String> searchItems;
+  private final List<String> searchItems;
 
-	private final FitnessScoreProperties fitnessScoreProperties;
+  private final FitnessScoreProperties fitnessScoreProperties;
 
-	public FitnessScoreComparator(List<String> searchItems, FitnessScoreProperties fitnessScoreProperties) {
-		this.searchItems = searchItems;
-		this.fitnessScoreProperties = fitnessScoreProperties;
-	}
+  public FitnessScoreComparator(List<String> searchItems,
+      FitnessScoreProperties fitnessScoreProperties) {
 
-	@Override
-	public final int compare(Person a, Person b) {
-		double scoreA = new FitnessScore(a, searchItems, fitnessScoreProperties).getValue();
-		double scoreB = new FitnessScore(b, searchItems, fitnessScoreProperties).getValue();
-		return scoreA > scoreB ? -1 : 1;
-	}
+    this.searchItems = searchItems;
+    this.fitnessScoreProperties = fitnessScoreProperties;
+  }
+
+  @Override
+  public final int compare(Person a, Person b) {
+    double scoreA = new FitnessScore(a, searchItems, fitnessScoreProperties).getValue();
+    double scoreB = new FitnessScore(b, searchItems, fitnessScoreProperties).getValue();
+    return scoreA > scoreB ? -1 : 1;
+  }
 
 }

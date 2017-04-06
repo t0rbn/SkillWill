@@ -10,6 +10,9 @@ import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 /**
  * Service handling user management
  *
@@ -34,176 +33,185 @@ import java.util.stream.Collectors;
 @EnableRetry
 public class UserService {
 
-	private static Logger logger = LoggerFactory.getLogger(UserService.class);
+  private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-	@Autowired
-	private PersonRepository personRepository;
+  @Autowired
+  private PersonRepository personRepository;
 
-	@Autowired
-	private LdapService ldapService;
+  @Autowired
+  private LdapService ldapService;
 
-	@Autowired
-	private SkillService skillService;
+  @Autowired
+  private SkillService skillService;
 
-	@Autowired
-	private SkillRepository skillRepository;
+  @Autowired
+  private SkillRepository skillRepository;
 
-	@Autowired
-	private FitnessScoreProperties fitnessScoreProperties;
+  @Autowired
+  private FitnessScoreProperties fitnessScoreProperties;
 
-	@Value("${maxLevelValue}")
-	private int maxLevelValue;
+  @Value("${maxLevelValue}")
+  private int maxLevelValue;
 
-	public List<Person> getUsers(List<String> skills, String location) throws IllegalArgumentException {
-		List<Person> candidates;
+  public List<Person> getUsers(List<String> skills, String location)
+      throws IllegalArgumentException {
+    List<Person> candidates;
 
-		if (CollectionUtils.isEmpty(skills)) {
-			candidates = personRepository.findAll();
-		} else {
-			for (String s : skills) {
-				if (!skillService.skillExists(s)) {
-					logger.debug("Failed to search for skill {}: not found", s);
-					throw new SkillNotFoundException("skill " + s + " not found");
-				}
-			}
+    if (CollectionUtils.isEmpty(skills)) {
+      candidates = personRepository.findAll();
+    } else {
+      for (String s : skills) {
+        if (!skillService.skillExists(s)) {
+          logger.debug("Failed to search for skill {}: not found", s);
+          throw new SkillNotFoundException("skill " + s + " not found");
+        }
+      }
 
-			candidates = personRepository.findBySkills(skills);
-			candidates.sort(new FitnessScoreComparator(skills, fitnessScoreProperties));
-		}
+      candidates = personRepository.findBySkills(skills);
+      candidates.sort(new FitnessScoreComparator(skills, fitnessScoreProperties));
+    }
 
-		// sync needed to search for location
-		candidates = ldapService.syncUsers(candidates, false);
-		candidates = filterByLocation(candidates, location);
+    // sync needed to search for location
+    candidates = ldapService.syncUsers(candidates, false);
+    candidates = filterByLocation(candidates, location);
 
-		logger.debug("Successfully found {} users for search skill={} location={}", candidates.size(), skills, location);
-		return candidates;
-	}
+    logger.debug("Successfully found {} users for search skill={} location={}", candidates.size(),
+        skills, location);
+    return candidates;
+  }
 
-	private List<Person> filterByLocation(List<Person> unfiltered, String location) {
-		if (StringUtils.isEmpty(location)) {
-			return unfiltered;
-		}
-		return unfiltered.stream()
-				.filter(p -> p.getLdapDetails().getLocation().equals(location))
-				.collect(Collectors.toList());
-	}
+  private List<Person> filterByLocation(List<Person> unfiltered, String location) {
+    if (StringUtils.isEmpty(location)) {
+      return unfiltered;
+    }
+    return unfiltered.stream()
+        .filter(p -> p.getLdapDetails().getLocation().equals(location))
+        .collect(Collectors.toList());
+  }
 
-	public Person getUser(String id) {
-		Person p = personRepository.findById(id);
+  public Person getUser(String id) {
+    Person p = personRepository.findById(id);
 
-		if (p == null) {
-			logger.debug("Failed to find user {}: not found", id);
-			throw new UserNotFoundException("user not found");
-		}
+    if (p == null) {
+      logger.debug("Failed to find user {}: not found", id);
+      throw new UserNotFoundException("user not found");
+    }
 
-		if (p.getLdapDetails() == null) {
-			ldapService.syncUser(p);
-		}
+    if (p.getLdapDetails() == null) {
+      ldapService.syncUser(p);
+    }
 
-		logger.debug("Successfully found user {}", id);
-		return p;
-	}
+    logger.debug("Successfully found user {}", id);
+    return p;
+  }
 
-	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-	public void updateSkills(String username, String skillName, int skillLevel, int willLevel) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
-		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
-			logger.debug("Failed to modify skills: username or skillName empty");
-			throw new EmptyArgumentException("arguments must not be empty or null");
-		}
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public void updateSkills(String username, String skillName, int skillLevel, int willLevel)
+      throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 
-		Person person = personRepository.findById(username);
+    if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
+      logger.debug("Failed to modify skills: username or skillName empty");
+      throw new EmptyArgumentException("arguments must not be empty or null");
+    }
 
-		if (person == null) {
-			logger.debug("Failed to add/modify {}'s skills: user not found", username);
-			throw new UserNotFoundException("user not found");
-		}
+    Person person = personRepository.findById(username);
 
-		if (skillRepository.findByName(skillName) == null) {
-			logger.debug("Failed to add/modify {}'s skill {}: skill not found", username, skillName);
-			throw new SkillNotFoundException("skill not found");
-		}
+    if (person == null) {
+      logger.debug("Failed to add/modify {}'s skills: user not found", username);
+      throw new UserNotFoundException("user not found");
+    }
 
-		if (!isValidLevelConfiguration(skillLevel, willLevel)) {
-			logger.debug("Failed to add/modify {}'s skill {}: illegal levels {}/{}", username, skillName, skillLevel, willLevel);
-			throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
-		}
+    if (skillRepository.findByName(skillName) == null) {
+      logger.debug("Failed to add/modify {}'s skill {}: skill not found", username, skillName);
+      throw new SkillNotFoundException("skill not found");
+    }
 
-		person.addUpdateSkill(skillName, skillLevel, willLevel);
-		personRepository.save(person);
+    if (!isValidLevelConfiguration(skillLevel, willLevel)) {
+      logger.debug("Failed to add/modify {}'s skill {}: illegal levels {}/{}", username, skillName,
+          skillLevel, willLevel);
+      throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
+    }
 
-		logger.info("Successfully updated {}'s skill {}", username, skillName);
-	}
+    person.addUpdateSkill(skillName, skillLevel, willLevel);
+    personRepository.save(person);
 
-	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-	public void removeSkills(String username, String skillName) throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
-		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
-			logger.debug("Failed to modify skills: username or skillName empty");
-			throw new EmptyArgumentException("arguments must not be empty or null");
-		}
+    logger.info("Successfully updated {}'s skill {}", username, skillName);
+  }
 
-		Person person = personRepository.findById(username);
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public void removeSkills(String username, String skillName)
+      throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 
-		if (person == null) {
-			logger.debug("Failed to remove {}'s skills: user not found", username);
-			throw new UserNotFoundException("user not found");
-		}
+    if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
+      logger.debug("Failed to modify skills: username or skillName empty");
+      throw new EmptyArgumentException("arguments must not be empty or null");
+    }
 
-		if (skillRepository.findByName(skillName) == null) {
-			logger.debug("Failed to remove {}'s skill {}: skill not found", username, skillName);
-			throw new SkillNotFoundException("skill not found");
-		}
+    Person person = personRepository.findById(username);
 
-		person.removeSkill(skillName);
-		personRepository.save(person);
-	}
+    if (person == null) {
+      logger.debug("Failed to remove {}'s skills: user not found", username);
+      throw new UserNotFoundException("user not found");
+    }
 
-	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-	public void updateDetails(String username, String comment) throws EmptyArgumentException, UserNotFoundException {
-		if (StringUtils.isEmpty(username)) {
-			logger.debug("Failed to update comment: username or empty");
-			throw new EmptyArgumentException("username must not be empty");
-		}
+    if (skillRepository.findByName(skillName) == null) {
+      logger.debug("Failed to remove {}'s skill {}: skill not found", username, skillName);
+      throw new SkillNotFoundException("skill not found");
+    }
 
-		Person person = personRepository.findById(username);
+    person.removeSkill(skillName);
+    personRepository.save(person);
+  }
 
-		if (person == null) {
-			logger.debug("Failed to modify {}'s comment: user not found", username);
-			throw new UserNotFoundException("user not found");
-		}
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public void updateDetails(String username, String comment)
+      throws EmptyArgumentException, UserNotFoundException {
 
-		// if parameter is empty string, comment will default to null
-		person.setComment(comment);
+    if (StringUtils.isEmpty(username)) {
+      logger.debug("Failed to update comment: username or empty");
+      throw new EmptyArgumentException("username must not be empty");
+    }
 
-		// Add more details to update here
+    Person person = personRepository.findById(username);
 
-		personRepository.save(person);
-		logger.info("Successfully updated {}'s comment", username);
-	}
+    if (person == null) {
+      logger.debug("Failed to modify {}'s comment: user not found", username);
+      throw new UserNotFoundException("user not found");
+    }
 
-	private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
-		// Both levels must be between 0 and maxLevel
-		// at least one level must be 1 or above (see [SKILLWILL-30])
-		final boolean isValidSkillLevel = 0 <= skillLevel && skillLevel <= maxLevelValue;
-		final boolean isValidWillLevel = 0 <= willLevel && willLevel <= maxLevelValue;
-		final boolean isOneGreaterZero = skillLevel > 0 || willLevel > 0;
-		return isValidSkillLevel && isValidWillLevel && isOneGreaterZero;
-	}
+    // if parameter is empty string, comment will default to null
+    person.setComment(comment);
 
-	public List<Person> getSimilar(String username, int count) throws UserNotFoundException {
-		if (count < 0) {
-			throw new IllegalArgumentException("count must be a positive integer");
-		}
+    // Add more details to update here
 
-		List<Person> toSearch = personRepository.findAll();
-		Optional<Person> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
+    personRepository.save(person);
+    logger.info("Successfully updated {}'s comment", username);
+  }
 
-		if (!person.isPresent()) {
-			logger.debug("Failed to get users similar to {}: user not found", username);
-			throw new UserNotFoundException("user not found");
-		}
+  private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
+    // Both levels must be between 0 and maxLevel
+    // at least one level must be 1 or above (see [SKILLWILL-30])
+    final boolean isValidSkillLevel = 0 <= skillLevel && skillLevel <= maxLevelValue;
+    final boolean isValidWillLevel = 0 <= willLevel && willLevel <= maxLevelValue;
+    final boolean isOneGreaterZero = skillLevel > 0 || willLevel > 0;
+    return isValidSkillLevel && isValidWillLevel && isOneGreaterZero;
+  }
 
-		toSearch.remove(person.get());
-		return ldapService.syncUsers(new JaccardFilter(person.get()).getFrom(toSearch, count), false);
-	}
+  public List<Person> getSimilar(String username, int count) throws UserNotFoundException {
+    if (count < 0) {
+      throw new IllegalArgumentException("count must be a positive integer");
+    }
+
+    List<Person> toSearch = personRepository.findAll();
+    Optional<Person> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
+
+    if (!person.isPresent()) {
+      logger.debug("Failed to get users similar to {}: user not found", username);
+      throw new UserNotFoundException("user not found");
+    }
+
+    toSearch.remove(person.get());
+    return ldapService.syncUsers(new JaccardFilter(person.get()).getFrom(toSearch, count), false);
+  }
 
 }

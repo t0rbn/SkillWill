@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Scope("prototype")
 public class HTCPCPImpl {
 
-	@ApiOperation(value = "HTCPCP Implementation", notes = "HTCPCP", hidden = true)
-	@RequestMapping(path = "/coffee", method = RequestMethod.GET)
-	public ResponseEntity<String> coffee() {
-		StatusJSON json = new StatusJSON("I'm a teapot \u2615");
-		return new ResponseEntity<String>(json.toString(), HttpStatus.I_AM_A_TEAPOT);
-	}
+  @ApiOperation(value = "HTCPCP Implementation", notes = "HTCPCP", hidden = true)
+  @RequestMapping(path = "/coffee", method = RequestMethod.GET)
+  public ResponseEntity<String> coffee() {
+    StatusJSON json = new StatusJSON("I'm a teapot \u2615");
+    return new ResponseEntity<>(json.toString(), HttpStatus.I_AM_A_TEAPOT);
+  }
 
 }

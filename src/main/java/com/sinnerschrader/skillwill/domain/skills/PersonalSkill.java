@@ -11,43 +11,43 @@ import org.springframework.data.annotation.Id;
  */
 public class PersonalSkill {
 
-	@Id
-	private String name;
-	private int skillLevel;
-	private int willLevel;
+  @Id
+  private String name;
+  private int skillLevel;
+  private int willLevel;
 
-	public PersonalSkill(String name, int skillLevel, int willLevel) {
-		this.name = name;
-		this.skillLevel = skillLevel;
-		this.willLevel = willLevel;
-	}
+  public PersonalSkill(String name, int skillLevel, int willLevel) {
+    this.name = name;
+    this.skillLevel = skillLevel;
+    this.willLevel = willLevel;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public int getSkillLevel() {
-		return skillLevel;
-	}
+  public int getSkillLevel() {
+    return skillLevel;
+  }
 
-	public void setSkillLevel(int skillLevel) {
-		this.skillLevel = skillLevel;
-	}
+  public void setSkillLevel(int skillLevel) {
+    this.skillLevel = skillLevel;
+  }
 
-	public int getWillLevel() {
-		return willLevel;
-	}
+  public int getWillLevel() {
+    return willLevel;
+  }
 
-	public void setWillLevel(int willLevel) {
-		this.willLevel = willLevel;
-	}
+  public void setWillLevel(int willLevel) {
+    this.willLevel = willLevel;
+  }
 
-	public JSONObject toJSON() {
-		JSONObject o = new JSONObject();
-		o.put("name", this.name);
-		o.put("skillLevel", this.skillLevel);
-		o.put("willLevel", this.willLevel);
-		return o;
-	}
+  public JSONObject toJSON() {
+    JSONObject o = new JSONObject();
+    o.put("name", this.name);
+    o.put("skillLevel", this.skillLevel);
+    o.put("willLevel", this.willLevel);
+    return o;
+  }
 
 }

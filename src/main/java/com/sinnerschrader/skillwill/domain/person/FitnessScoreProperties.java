@@ -9,40 +9,40 @@ import org.springframework.stereotype.Component;
 @Component
 public class FitnessScoreProperties {
 
-	@Value("${weightAverageSkills}")
-	private double weightAverageSkills;
+  @Value("${weightAverageSkills}")
+  private double weightAverageSkills;
 
-	@Value("${weightAverageWills}")
-	private double weightAverageWills;
+  @Value("${weightAverageWills}")
+  private double weightAverageWills;
 
 
-	@Value("${weightSpecializationSkills}")
-	private double weightSpecializationSkills;
+  @Value("${weightSpecializationSkills}")
+  private double weightSpecializationSkills;
 
-	@Value("${weightSpecializationWills}")
-	private double weightSpecializationWills;
+  @Value("${weightSpecializationWills}")
+  private double weightSpecializationWills;
 
-	@Value("${maxLevelValue}")
-	private int maxLevelValue;
+  @Value("${maxLevelValue}")
+  private int maxLevelValue;
 
-	public double getWeightAverageSkills() {
-		return weightAverageSkills;
-	}
+  public double getWeightAverageSkills() {
+    return weightAverageSkills;
+  }
 
-	public double getWeightAverageWills() {
-		return weightAverageWills;
-	}
+  public double getWeightAverageWills() {
+    return weightAverageWills;
+  }
 
-	public double getWeightSpecializationSkills() {
-		return weightSpecializationSkills;
-	}
+  public double getWeightSpecializationSkills() {
+    return weightSpecializationSkills;
+  }
 
-	public double getWeightSpecializationWills() {
-		return weightSpecializationWills;
-	}
+  public double getWeightSpecializationWills() {
+    return weightSpecializationWills;
+  }
 
-	public int getMaxLevelValue() {
-		return maxLevelValue;
-	}
+  public int getMaxLevelValue() {
+    return maxLevelValue;
+  }
 
 }

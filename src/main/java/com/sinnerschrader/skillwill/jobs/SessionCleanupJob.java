@@ -17,16 +17,16 @@ import org.springframework.stereotype.Service;
 @EnableScheduling
 public class SessionCleanupJob {
 
-	private static Logger logger = LoggerFactory.getLogger(SessionCleanupJob.class);
+  private static final Logger logger = LoggerFactory.getLogger(SessionCleanupJob.class);
 
-	@Autowired
-	private SessionService sessionService;
+  @Autowired
+  private SessionService sessionService;
 
-	@Scheduled(cron = "${sessionCleanUpCron}")
-	private void run() {
-		logger.info("Starting regular session cleanup, this may take a while");
-		sessionService.cleanUp();
-		logger.info("Finished regular session cleanup");
-	}
+  @Scheduled(cron = "${sessionCleanUpCron}")
+  private void run() {
+    logger.info("Starting regular session cleanup, this may take a while");
+    sessionService.cleanUp();
+    logger.info("Finished regular session cleanup");
+  }
 
 }

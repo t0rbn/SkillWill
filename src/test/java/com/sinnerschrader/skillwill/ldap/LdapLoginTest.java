@@ -1,19 +1,18 @@
 package com.sinnerschrader.skillwill.ldap;
 
-import com.sinnerschrader.skillwill.services.LdapService;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
+import com.sinnerschrader.skillwill.services.LdapService;
 import com.unboundid.ldap.sdk.LDAPException;
+import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for LdapLogin
@@ -24,30 +23,30 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest
 public class LdapLoginTest {
 
-	@Autowired
-	private EmbeddedLdap ldap;
+  @Autowired
+  private EmbeddedLdap ldap;
 
-	@Autowired
-	private LdapService ldapService;
+  @Autowired
+  private LdapService ldapService;
 
-	@Before
-	public void setUp() throws IOException, LDAPException {
-		ldap.reset();
-	}
+  @Before
+  public void setUp() throws IOException, LDAPException {
+    ldap.reset();
+  }
 
-	@Test
-	public void testValidCredentials() {
-		assertTrue(ldapService.canAuthenticate("foobar", "fleischcreme"));
-	}
+  @Test
+  public void testValidCredentials() {
+    assertTrue(ldapService.canAuthenticate("foobar", "fleischcreme"));
+  }
 
-	@Test
-	public void testInvalidUser() {
-		assertFalse(ldapService.canAuthenticate("IAmUnknown", "fleischcreme"));
-	}
+  @Test
+  public void testInvalidUser() {
+    assertFalse(ldapService.canAuthenticate("IAmUnknown", "fleischcreme"));
+  }
 
-	@Test
-	public void testInvalidPassword() {
-		assertFalse(ldapService.canAuthenticate("foobar", "cremefleisch"));
-	}
+  @Test
+  public void testInvalidPassword() {
+    assertFalse(ldapService.canAuthenticate("foobar", "cremefleisch"));
+  }
 
 }

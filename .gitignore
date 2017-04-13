@@ -64,3 +64,20 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+# Frontend Build stuff
+node/
+src/frontend/logs
+src/frontend/*.log
+src/frontend/pids
+src/frontend/*.pid
+src/frontend/*.seed
+src/frontend/lib-cov
+src/frontend/coverage
+src/frontend/.grunt
+src/frontend/.lock-wscript
+src/frontend/build/Release
+src/frontend/node_modules
+src/frontend/public
+
+

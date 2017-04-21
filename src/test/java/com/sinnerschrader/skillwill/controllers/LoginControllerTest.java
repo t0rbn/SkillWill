@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -40,7 +41,7 @@ public class LoginControllerTest {
   @Test
   public void testLoginValid() throws JSONException {
     ResponseEntity<String> res = loginController.login("foobar", "fleischcreme");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
     assertTrue(resJSON.getString("session").matches("^[a-zA-Z0-9]{32}$"));
   }
@@ -48,7 +49,7 @@ public class LoginControllerTest {
   @Test
   public void testLoginUserInvalid() throws JSONException {
     ResponseEntity<String> res = loginController.login("IAmUnknown", "fleischcreme");
-    assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
     assertFalse(resJSON.has("session"));
   }
@@ -56,7 +57,7 @@ public class LoginControllerTest {
   @Test
   public void testLoginPasswordInvalid() throws JSONException {
     ResponseEntity<String> res = loginController.login("foobar", "cremefleisch");
-    assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
     assertFalse(resJSON.has("session"));
   }
@@ -64,17 +65,16 @@ public class LoginControllerTest {
   @Test
   public void testLogoutValid() throws JSONException {
     ResponseEntity<String> res = loginController.login("foobar", "fleischcreme");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
-    assertTrue(loginController.logout(resJSON.getString("session")).getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, loginController.logout(resJSON.getString("session")).getStatusCode());
   }
 
   @Test
   public void testLogoutInvalidSession() {
     ResponseEntity<String> res = loginController.login("foobar", "fleischcreme");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertTrue(loginController.logout("NotQuiteASessionId").getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, loginController.logout("NotQuiteASessionId").getStatusCode());
   }
-
 
 }

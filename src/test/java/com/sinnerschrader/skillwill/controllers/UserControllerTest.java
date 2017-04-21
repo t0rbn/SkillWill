@@ -77,7 +77,7 @@ public class UserControllerTest {
     logger.debug("Testing UserController: get valid user");
 
     ResponseEntity<String> res = userController.getUser("foobar");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
 
     assertTrue(new JSONObject(res.getBody()).has("id"));
     assertTrue(new JSONObject(res.getBody()).get("id").equals("foobar"));
@@ -92,76 +92,106 @@ public class UserControllerTest {
   @Test
   public void testGetUserInvalid() {
     logger.debug("Testing UserController: get invalid user");
-    assertTrue(userController.getUser("barfoo").getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, userController.getUser("barfoo").getStatusCode());
   }
 
   @Test
   public void testGetUsersValid() throws JSONException {
     logger.debug("Testing UserController: get valid users");
     ResponseEntity<String> res = userController.getUsers("Java", "Hamburg");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertTrue(new JSONArray(res.getBody()).length() == 1);
-    assertTrue(new JSONArray(res.getBody()).getJSONObject(0).has("id"));
-    assertEquals("foobar", new JSONArray(res.getBody()).getJSONObject(0).getString("id"));
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersSkillsEmpty() throws JSONException {
     logger.debug("Testing UserController: get users with empty skill");
     ResponseEntity<String> res = userController.getUsers("", "Hamburg");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertTrue(new JSONArray(res.getBody()).length() == 1);
-    assertTrue(new JSONArray(res.getBody()).getJSONObject(0).has("id"));
-    assertEquals("foobar", new JSONArray(res.getBody()).getJSONObject(0).getString("id"));
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertFalse(new JSONObject(res.getBody()).has("searched"));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
-  public void testGetUsersNoFitnessInEmotySearch() throws JSONException {
+  public void testGetUsersNoFitnessInEmptySearch() throws JSONException {
     logger.debug("Testing UserController: get users with empty skills -> no fitness in JSON");
     ResponseEntity<String> res = userController.getUsers("", "Hamburg");
-    assertFalse(new JSONArray(res.getBody()).getJSONObject(0).has("fitness"));
+    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersLocationEmpty() throws JSONException {
     logger.debug("Testing UserController: get users for empty location");
     ResponseEntity<String> res = userController.getUsers("Java", "");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertTrue(new JSONArray(res.getBody()).length() == 1);
-    assertTrue(new JSONArray(res.getBody()).getJSONObject(0).has("id"));
-    assertEquals("foobar", new JSONArray(res.getBody()).getJSONObject(0).getString("id"));
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersSkillsEmptyLocationEmpty() throws JSONException {
     logger.debug("Testing UserController: get users for empty skill and empty location");
     ResponseEntity<String> res = userController.getUsers("", "");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertTrue(new JSONArray(res.getBody()).length() == 1);
-    assertTrue(new JSONArray(res.getBody()).getJSONObject(0).has("id"));
-    assertEquals("foobar", new JSONArray(res.getBody()).getJSONObject(0).getString("id"));
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertFalse(new JSONObject(res.getBody()).has("searched"));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
-  public void testGetUsersSkillUnknown() {
+  public void testGetUsersSkillUnknown() throws JSONException {
     logger.debug("Testing UserController: get users with unknown skill");
-    ResponseEntity<String> res = userController.getUsers("IAmUnknown", "Hamburg");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    ResponseEntity<String> res = userController.getUsers("Java, IAmUnknown", "Hamburg");
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
-  public void testGetUsersLocationUnknown() {
+  public void testGetUsersIgnoreSkillCase() throws JSONException {
+    logger.debug("Testing UserController: get users - skill case insensitive");
+    ResponseEntity<String> res = userController.getUsers("JaVa", "Hamburg");
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+  }
+
+  @Test
+  public void testGetUsersIgnoreNonAlphanumerics() throws JSONException {
+    logger.debug("Testing UserController: get users - skill case insensitive");
+    ResponseEntity<String> res = userController.getUsers("j#a)_V®a", "Hamburg");
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+  }
+
+  @Test
+  public void testGetUsersLocationUnknown() throws JSONException {
     logger.debug("Testing UserController: get users with unknown location");
     ResponseEntity<String> res = userController.getUsers("Java", "IAmUnknown");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertEquals("[]", res.getBody());
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals(0, new JSONObject(res.getBody()).getJSONArray("results").length());
   }
 
   @Test
   public void testModifySkillsValid() {
     logger.debug("Testing UserController: modify skill");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "3", "0", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
     assertEquals(0, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
   }
@@ -170,21 +200,21 @@ public class UserControllerTest {
   public void testModifySkillsLevelsZero() {
     logger.debug("Testing UserController: modify skill with both levels zero");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testModifySkillsLevelOverMax() {
     logger.debug("Testing UserController: modify skill with both level over max");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "4", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testModifySkillsSessionInvalid() {
     logger.debug("Testing UserController: modify user with invalid session");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "InvalidSession");
-    assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
   }
@@ -199,7 +229,7 @@ public class UserControllerTest {
     sessionRepo.insert(session);
 
     ResponseEntity<String> res = userController.updateSkills("IAmUnknown", "Java", "0", "0", "2342");
-    assertTrue(res.getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
   }
@@ -208,7 +238,7 @@ public class UserControllerTest {
   public void testModifySkillsSkillUnknown() {
     logger.debug("Testing UserController: modify skill for unknown skill");
     ResponseEntity<String> res = userController.updateSkills("foobar", "UnknownSkill", "0", "0", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
   }
@@ -217,7 +247,7 @@ public class UserControllerTest {
   public void testModifySkillsSkillLevelOutOfRange() {
     logger.debug("Testing UserController: modify skill with skill out of range");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "5", "0", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
   }
@@ -226,7 +256,7 @@ public class UserControllerTest {
   public void testModifySkillsWillLevelOutOfRange() {
     logger.debug("Testing UserController: modify skill with will out of range");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "5", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getWillLevel());
   }
@@ -235,35 +265,35 @@ public class UserControllerTest {
   public void testRemoveSkill() {
     logger.debug("Testing UserController: remove skill");
     ResponseEntity<String> res = userController.removeSkill("foobar", "Java", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillSkillUnknown() {
     logger.debug("Testing UserController: remove skill");
     ResponseEntity<String> res = userController.removeSkill("foobar", "UNKNOWN", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserUnknown() {
     logger.debug("Testing UserController: remove skill");
     ResponseEntity<String> res = userController.removeSkill("IAmUnknown", "Java", "abc123");
-    assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserUnauthorized() {
     logger.debug("Testing UserController: remove skill");
     ResponseEntity<String> res = userController.removeSkill("foobar", "Java", "IAmUnknown");
-    assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
   }
 
   @Test
   public void testSetCommentValid() throws JSONException {
     logger.debug("Testing Usercontroller: set valid comment");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "insert comment here");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
 
     res = userController.getUser("foobar");
     assertEquals("insert comment here", new JSONObject(res.getBody()).getString("comment"));
@@ -273,7 +303,7 @@ public class UserControllerTest {
   public void testSetCommentUnicode() throws JSONException {
     logger.debug("Testing Usercontroller: set unicode comment");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "本产品可能含有网络的痕迹");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
 
     res = userController.getUser("foobar");
     assertEquals("本产品可能含有网络的痕迹", new JSONObject(res.getBody()).getString("comment"));
@@ -283,7 +313,7 @@ public class UserControllerTest {
   public void testSetCommentEmpty() throws JSONException {
     logger.debug("Testing Usercontroller: set empty comment");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
 
     res = userController.getUser("foobar");
     assertFalse(new JSONObject(res.getBody()).has("comment"));
@@ -294,7 +324,7 @@ public class UserControllerTest {
     logger.debug("Testing Usercontroller: update details, ignore null");
     userController.updateDetails("foobar", "abc123", "insert comment here");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", null);
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
 
     res = userController.getUser("foobar");
     assertFalse(new JSONObject(res.getBody()).has("comment"));
@@ -304,7 +334,7 @@ public class UserControllerTest {
   public void testSetCommentUserNotLoggedIn() {
     logger.debug("Testing Usercontroller: update details with unauthorized user");
     ResponseEntity<String> res = userController.updateDetails("foobar", "ThisIsNotASessionKey", "comment");
-    assertTrue(res.getStatusCode() == HttpStatus.UNAUTHORIZED);
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
   }
 
   @Test
@@ -335,14 +365,14 @@ public class UserControllerTest {
   public void testGetSimilarUserNotFound() {
     logger.debug("Testing Usercontroller: get similar users for unknown user");
     ResponseEntity<String> res = userController.getSimilar("IAmUnknown", 42);
-    assertTrue(res.getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
   }
 
   @Test
   public void testGetSimilarUserCountNegative() {
     logger.debug("Testing Usercontroller: get similar users with negative count");
     ResponseEntity<String> res = userController.getSimilar("foobar", -1);
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
 }

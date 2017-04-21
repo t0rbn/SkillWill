@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.domain.person;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -51,13 +52,13 @@ public class FitnessScoreComparatorTest {
     toSort.add(pBad);
 
     // Double input order
-    assertTrue(toSort.get(0) == pGood);
-    assertTrue(toSort.get(1) == pBad);
+    assertEquals(pGood, toSort.get(0));
+    assertEquals(pBad, toSort.get(1));
 
     toSort.sort(comparator);
 
-    assertTrue(toSort.get(0) == pGood);
-    assertTrue(toSort.get(1) == pBad);
+    assertEquals(pGood, toSort.get(0));
+    assertEquals(pBad, toSort.get(1));
   }
 
   @Test
@@ -67,13 +68,13 @@ public class FitnessScoreComparatorTest {
     toSort.add(pGood);
 
     // Check input order
-    assertTrue(toSort.get(0) == pBad);
-    assertTrue(toSort.get(1) == pGood);
+    assertEquals(pBad, toSort.get(0));
+    assertEquals(pGood, toSort.get(1));
 
     toSort.sort(comparator);
 
-    assertTrue(toSort.get(0) == pGood);
-    assertTrue(toSort.get(1) == pBad);
+    assertEquals(pGood, toSort.get(0));
+    assertEquals(pBad, toSort.get(1));
   }
 
 }

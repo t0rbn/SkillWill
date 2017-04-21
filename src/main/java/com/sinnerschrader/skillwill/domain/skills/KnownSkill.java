@@ -13,8 +13,9 @@ import org.springframework.data.annotation.Version;
  */
 public class KnownSkill {
 
-  @Id
   private String name;
+  @Id
+  private String nameStem;
   private String iconDescriptor;
   private List<SuggestionSkill> suggestions;
 
@@ -23,6 +24,7 @@ public class KnownSkill {
 
   public KnownSkill(String name, String iconDescriptor, List<SuggestionSkill> suggestions) {
     this.name = name;
+    this.nameStem = SkillStemUtils.nameToStem(name);
     this.iconDescriptor = iconDescriptor;
     this.suggestions = suggestions;
   }
@@ -103,6 +105,19 @@ public class KnownSkill {
     obj.put("name", this.name);
     obj.put("iconDescriptor", this.iconDescriptor);
     return obj;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof KnownSkill)) {
+      return false;
+    }
+    return ((KnownSkill) o).getName().equals(this.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return this.getName().hashCode();
   }
 
 }

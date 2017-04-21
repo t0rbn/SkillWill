@@ -60,7 +60,6 @@ export default class UserSearch extends React.Component {
 		if (prevSearchString !== newRoute) {
 			this.context.router.push(newRoute)
 			// window.history.pushState({}, "", newRoute)
-		}
 	}
 
 	render() {

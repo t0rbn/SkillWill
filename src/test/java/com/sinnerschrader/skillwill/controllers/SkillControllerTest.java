@@ -55,18 +55,18 @@ public class SkillControllerTest {
   @Test
   public void testGetSkillsValidQuery() throws JSONException {
     ResponseEntity<String> res = skillController.getSkills("COB");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONArray resJSON = new JSONArray(res.getBody());
-    assertTrue(resJSON.length() == 1);
+    assertEquals(1, resJSON.length());
     assertEquals("COBOL", resJSON.getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetSkillsEmptyQuery() throws JSONException {
     ResponseEntity<String> res = skillController.getSkills("");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONArray resJSON = new JSONArray(res.getBody());
-    assertTrue(resJSON.length() == 2);
+    assertEquals(2, resJSON.length());
     assertEquals("Java", resJSON.getJSONObject(0).getString("name"));
     assertEquals("COBOL", resJSON.getJSONObject(1).getString("name"));
   }
@@ -74,35 +74,48 @@ public class SkillControllerTest {
   @Test
   public void testGetSkillsUnknownSkill() throws JSONException {
     ResponseEntity<String> res = skillController.getSkills("glibberish");
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONArray resJSON = new JSONArray(res.getBody());
-    assertTrue(resJSON.length() == 0);
+    assertEquals(0, resJSON.length());
   }
 
   @Test
   public void testGetNextValid() throws JSONException {
     ResponseEntity<String> res = skillController.getNext("Java", 1);
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+  }
+
+  @Test
+  public void testGetNextIgnoreCase() throws JSONException {
+    ResponseEntity<String> res = skillController.getNext("JaVa", 1);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+  }
+
+  @Test
+  public void testGetNextStemminng() throws JSONException {
+    ResponseEntity<String> res = skillController.getNext("j#a)_V®a", 1);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetNextCountZero() throws JSONException {
     ResponseEntity<String> res = skillController.getNext("Java", 0);
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
-    assertEquals(0, new JSONArray(res.getBody()).length());
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testGetNextCountNegative() {
     ResponseEntity<String> res = skillController.getNext("Java", -1);
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testGetNextCountMoreThanSkills() throws JSONException {
     ResponseEntity<String> res = skillController.getNext("Java", 42);
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(1, new JSONArray(res.getBody()).length());
     assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).get("name"));
   }
@@ -111,79 +124,80 @@ public class SkillControllerTest {
   @Test
   public void testgetNextDoubleSearch() throws JSONException {
     ResponseEntity<String> res = skillController.getNext("Java, COBOL", 1);
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(0, new JSONArray(res.getBody()).length());
   }
 
   @Test
   public void testGetNextEmptySearch() {
     ResponseEntity<String> res = skillController.getNext("", 1);
-    assertTrue(res.getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
   }
 
   @Test
-  public void testGetNextUnknownSearch() {
+  public void testGetNextUnknownSearch() throws JSONException {
     ResponseEntity<String> res = skillController.getNext("IAmUnknown", 1);
-    assertTrue(res.getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals(0, new JSONArray(res.getBody()).length());
   }
 
   @Test
   public void testAddSkillValid() throws JSONException {
-    assertTrue(skillController.addSkill("foo", "foo descriptor").getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, skillController.addSkill("foo", "foo descriptor").getStatusCode());
     assertEquals("foo", new JSONArray(skillController.getSkills("fo").getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testAddSkillEmptyName() {
-    assertTrue(skillController.addSkill("", "").getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("", "").getStatusCode());
   }
 
   @Test
   public void testAddSkillDuplicateName() {
-    assertTrue(skillController.addSkill("Java", "java descriptor").getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("Java", "java descriptor").getStatusCode());
   }
 
   @Test
   public void testDeleteValid() throws JSONException {
-    assertTrue(skillController.deleteSkill("Java").getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java").getStatusCode());
     assertEquals(0, new JSONArray(skillController.getNext("COBOL", 1).getBody()).length());
   }
 
   @Test
   public void testDeleteEmpty() {
-    assertTrue(skillController.deleteSkill("").getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("").getStatusCode());
   }
 
   @Test
   public void testDeleteUnknown() {
-    assertTrue(skillController.deleteSkill("foo").getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("foo").getStatusCode());
   }
 
   @Test
   public void testEditSkillValid() throws JSONException {
-    assertTrue(skillController.updateSkill("COBOL", "foo", "").getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, skillController.updateSkill("COBOL", "foo", "").getStatusCode());
     assertEquals("foo", new JSONArray(skillController.getNext("Java", 1).getBody()).getJSONObject(0).get("name"));
   }
 
   @Test
   public void testEditSkillEmptyName() {
-    assertTrue(skillController.updateSkill("", "foo", "").getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill("", "foo", "").getStatusCode());
   }
 
   @Test
   public void testEditSkillEmptyNewName() throws JSONException {
-    assertTrue(skillController.updateSkill("Java", "", "").getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", "", "").getStatusCode());
     assertEquals("Java", new JSONArray(skillController.getNext("COBOL", 1).getBody()).getJSONObject(0).get("name"));
   }
 
   @Test
   public void testEditSkillUnknown() {
-    assertTrue(skillController.updateSkill("foo", "bar", "bar descriptor").getStatusCode() == HttpStatus.NOT_FOUND);
+    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill("foo", "bar", "bar descriptor").getStatusCode());
   }
 
   @Test
   public void testEditSkillToExisting() throws JSONException {
-    assertTrue(skillController.updateSkill("Java", "COBOL", "").getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", "COBOL", "").getStatusCode());
     assertEquals("COBOL", new JSONArray(skillController.getNext("Java", 1).getBody()).getJSONObject(0).get("name"));
     assertEquals("Java", new JSONArray(skillController.getNext("COBOL", 1).getBody()).getJSONObject(0).get("name"));
   }
@@ -197,7 +211,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditSkillEmptyDescriptor() throws JSONException {
-    assertTrue(skillController.updateSkill("Java", "Java", "").getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "Java", "").getStatusCode());
     System.out.println(skillController.updateSkill("Java", "Java", "").getStatusCode().toString());
     ResponseEntity<String> res = skillController.getSkill("Java");
     assertEquals("", new JSONObject(res.getBody()).getString("iconDescriptor"));
@@ -205,14 +219,14 @@ public class SkillControllerTest {
 
   @Test
   public void testEditSkillUnicodeDescriptor() throws JSONException {
-    assertTrue(skillController.updateSkill("Java", "Java", "đây là một biểu tượng").getStatusCode() == HttpStatus.OK);
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "Java", "đây là một biểu tượng").getStatusCode());
     ResponseEntity<String> res = skillController.getSkill("Java");
     assertEquals("đây là một biểu tượng", new JSONObject(res.getBody()).getString("iconDescriptor"));
   }
 
   @Test
   public void testEditSkillNullDescriptor() throws JSONException {
-    assertTrue(skillController.updateSkill("Java", "Java", null).getStatusCode() == HttpStatus.BAD_REQUEST);
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", "Java", null).getStatusCode());
     ResponseEntity<String> res = skillController.getSkill("Java");
     assertEquals("java descriptor", new JSONObject(res.getBody()).getString("iconDescriptor"));
   }

@@ -114,7 +114,7 @@ public class SkillController {
   public ResponseEntity<String> getNext(@RequestParam(required = false) String search,
       @RequestParam(defaultValue = "10") int count) {
 
-    if (count < 0) {
+    if (count < 1) {
       logger.debug("Failed to get suggestions for skills {}: count less than zero", search);
       return new ResponseEntity<>(
           new StatusJSON("count must be a positive integer (or zero)").toString(),
@@ -130,7 +130,7 @@ public class SkillController {
           .map(KnownSkill::toJSON)
           .collect(Collectors.toList());
 
-      logger.debug("Successfully got {} suggestions for search {}", suggestionJsons.size(), search);
+      logger.debug("Successfully got {} suggestions for search [{}]", suggestionJsons.size(), search);
       return new ResponseEntity<>(new JSONArray(suggestionJsons).toString(), HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to get suggestions for skills {}: serach contains inkown skill", search);

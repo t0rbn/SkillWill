@@ -4,6 +4,7 @@ import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkillSuggestionComparator;
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
+import com.sinnerschrader.skillwill.domain.skills.SkillStemUtils;
 import com.sinnerschrader.skillwill.domain.skills.SuggestionSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
@@ -47,12 +48,8 @@ public class SkillService {
     return skillRepository.findAll();
   }
 
-  public boolean skillExists(String name) {
-    return skillRepository.findByName(name) != null;
-  }
-
   private List<KnownSkill> getAutocompleteSkills(String input) {
-    List<KnownSkill> skills = skillRepository.findByNameLikeIgnoreCase(input);
+    List<KnownSkill> skills = skillRepository.findByNameStemLike(SkillStemUtils.nameToStem(input));
     skills.sort(new KnownSkillSuggestionComparator(input));
     logger.debug("Successfully got {} autocompletions for : {}", skills.size(), input);
     return skills;
@@ -66,37 +63,53 @@ public class SkillService {
     return skillRepository.findByName(name);
   }
 
-  public List<KnownSkill> getSuggestionSkills(List<String> references, int count) {
-    List<SuggestionSkill> suggestions = new ArrayList<>();
-    List<KnownSkill> unaggregated;
+  public List<KnownSkill> getSkillsByStems(List<String> stems, boolean checkFindAll) throws SkillNotFoundException {
+      List<KnownSkill> skills = stems.stream()
+          .map(s -> skillRepository.findByNameStem(SkillStemUtils.nameToStem(s)))
+          .collect(Collectors.toList());
 
-    if (count < 0) {
+      if (checkFindAll && skills.contains(null)) {
+        throw new SkillNotFoundException("cannot find all skills for search query " + stems.toString());
+      }
+
+      return skills.stream().filter(s -> s != null).collect(Collectors.toList());
+  }
+
+  private List<SuggestionSkill> aggregateSuggestions(List<KnownSkill> skills) {
+    List<SuggestionSkill> unaggregated = skills.stream().flatMap(s -> s.getSuggestions().stream())
+        .collect(Collectors.toList());
+    List<SuggestionSkill> aggregated = new ArrayList<>();
+
+
+    for (SuggestionSkill s : unaggregated) {
+      Optional<SuggestionSkill> present = aggregated.stream()
+          .filter(a -> a.getName().equals(s.getName()))
+          .findAny();
+      if (present.isPresent()) {
+        present.get().incrementCount(s.getCount());
+      } else {
+        aggregated.add(s);
+      }
+    }
+    return aggregated;
+  }
+
+  public List<KnownSkill> getSuggestionSkills(List<String> references, int count) {
+    if (count < 1) {
       throw new IllegalArgumentException("count must be a positive integer");
     }
 
+    List<SuggestionSkill> suggestions;
     if (CollectionUtils.isEmpty(references)) {
-      unaggregated = skillRepository.findAll();
+      suggestions = aggregateSuggestions(skillRepository.findAll());
     } else {
-      unaggregated = references.stream()
-          .map(s -> skillRepository.findByName(s))
+      List<KnownSkill> sanitizedReferenceskills = getSkillsByStems(references, false);
+      List<String> sanitizedReferenceNames = sanitizedReferenceskills.stream()
+          .map(KnownSkill::getName)
           .collect(Collectors.toList());
-
-      if (unaggregated.contains(null)) {
-        throw new SkillNotFoundException("parameter contains unknown skill name");
-      }
-    }
-
-    for (KnownSkill skill : unaggregated) {
-      for (SuggestionSkill suggestion : skill.getSuggestions()) {
-        Optional<SuggestionSkill> existing = suggestions.stream()
-            .filter(s -> s.getName().equals(suggestion.getName()))
-            .findFirst();
-        if (existing.isPresent() && !references.contains(existing.get().getName())) {
-          existing.get().incrementCount(suggestion.getCount());
-        } else if (!references.contains(suggestion.getName())) {
-          suggestions.add(suggestion);
-        }
-      }
+      suggestions = aggregateSuggestions(sanitizedReferenceskills).stream()
+          .filter(s ->  !sanitizedReferenceNames.contains(s.getName()))
+          .collect(Collectors.toList());
     }
 
     return suggestions.stream()
@@ -107,22 +120,23 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void registerSkillSearch(List<String> searchitems) throws IllegalArgumentException {
-    for (String skillName : searchitems) {
-      KnownSkill current = skillRepository.findByName(skillName);
-      if (current == null) {
-        logger.debug("Failed to register search for {}: not found", skillName);
-        throw new IllegalArgumentException("skill not found");
-      }
-      searchitems.stream()
-          .filter(s -> !s.equals(current.getName()))
-          .forEach(current::incrementSuggestion);
-      skillRepository.save(current);
+  public void registerSkillSearch(List<KnownSkill> searchedSkills) throws IllegalArgumentException {
+
+    if (searchedSkills.size() < 2) {
+      logger.debug("Searched for less than two skills, cannot update mutual suggestions");
+      return;
     }
 
-    if (!searchitems.isEmpty()) {
-      logger.info("Successfully registered search for {}", searchitems);
+    for (KnownSkill s : searchedSkills) {
+      List<KnownSkill> ts = searchedSkills.stream().filter(x -> !x.equals(s)).collect(Collectors.toList());
+      for (KnownSkill t : ts) {
+        s.incrementSuggestion(t.getName());
+      }
     }
+
+    skillRepository.save(searchedSkills);
+    logger.info("Successfully registered search for {}",
+        searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.toList()));
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

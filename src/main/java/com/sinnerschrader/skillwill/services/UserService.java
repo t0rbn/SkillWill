@@ -4,12 +4,15 @@ import com.sinnerschrader.skillwill.domain.person.FitnessScoreComparator;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.SkillStemUtils;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,22 +56,19 @@ public class UserService {
   @Value("${maxLevelValue}")
   private int maxLevelValue;
 
-  public List<Person> getUsers(List<String> skills, String location)
+  public List<Person> getUsers(List<KnownSkill> skills, String location)
       throws IllegalArgumentException {
+
+    List<String> searchedSkillNames = skills.stream()
+        .map(KnownSkill::getName)
+        .collect(Collectors.toList());
     List<Person> candidates;
 
     if (CollectionUtils.isEmpty(skills)) {
       candidates = personRepository.findAll();
     } else {
-      for (String s : skills) {
-        if (!skillService.skillExists(s)) {
-          logger.debug("Failed to search for skill {}: not found", s);
-          throw new SkillNotFoundException("skill " + s + " not found");
-        }
-      }
-
-      candidates = personRepository.findBySkills(skills);
-      candidates.sort(new FitnessScoreComparator(skills, fitnessScoreProperties));
+      candidates = personRepository.findBySkills(searchedSkillNames);
+      candidates.sort(new FitnessScoreComparator(searchedSkillNames, fitnessScoreProperties));
     }
 
     // sync needed to search for location
@@ -76,7 +76,8 @@ public class UserService {
     candidates = filterByLocation(candidates, location);
 
     logger.debug("Successfully found {} users for search skill={} location={}", candidates.size(),
-        skills, location);
+        searchedSkillNames, location);
+
     return candidates;
   }
 

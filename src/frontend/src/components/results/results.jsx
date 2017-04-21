@@ -43,11 +43,12 @@ export default class Results extends React.Component {
 					})
 				} else {
 					r.json().then(data => {
+						const updatedSearchTerms = data.searched || searchTerms
 						this.setState({
-							results: data,
+							results: data.results,
 							searchStarted: true,
-							searchItems: searchTerms,
-							route: `search?skills=${searchTerms}${locationString}`,
+							searchItems: updatedSearchTerms,
+							route: `search?skills=${updatedSearchTerms}${locationString}`,
 							shouldUpdate: true
 						})
 					})

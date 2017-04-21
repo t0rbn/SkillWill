@@ -32,7 +32,6 @@ export default class SearchBar extends React.Component {
 	}
 
 	deleteOnBackSpacePress(e) {
-		//remove recently added searchTerm on Backspace
 		if (this.state.currentValue == "" && e.keyCode == 8 && this.state.searchTerms !== "") {
 			const deleteItem = this.state.searchTerms.slice(-1)
 			this.props.onInputDelete(deleteItem)
@@ -53,7 +52,6 @@ export default class SearchBar extends React.Component {
 			searchTerms: this.state.searchTerms.concat(name),
 			currentValue: ''
 		})
-		// this.props.handleRequest(this.state.searchTerms)
 	}
 
 	render() {

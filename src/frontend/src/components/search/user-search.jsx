@@ -62,27 +62,6 @@ export default class UserSearch extends React.Component {
 		}
 	}
 
-	renderResults(searchStarted, results, searchItems) {
-		/* display Results component only when there has been an inital search */
-		if (results && results.length > 0) {
-			return (
-				<Results
-					results={results}
-					searchTerms={searchItems}
-					noResultsLabel={"Keine Ergebnisse"}>
-					<User searchTerms={searchItems} />
-				</Results>
-			)
-		} else {
-			return (
-				<div class="info-text">
-					Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?
-					Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt.
-				</div>
-			)
-		}
-	}
-
 	render() {
 		const { results, dropdownLabel, searchItems, searchStarted } = this.state
 		return (
@@ -97,11 +76,10 @@ export default class UserSearch extends React.Component {
 					searchTerms={searchItems}
 					noResults={results.length === 0}
 					queryParams={this.props.location.query}>
-					<SearchSuggestions
+					{/*<SearchSuggestions
 						searchTerms={searchItems}
-						noResults={results.length === 0} />
+						noResults={results.length === 0} />*/}
 				</SearchBar>
-				{/*{this.renderResults(searchStarted, results, searchItems)}*/}
 				{this.props.children}
 			</div>
 		)

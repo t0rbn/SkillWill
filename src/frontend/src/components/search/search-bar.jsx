@@ -31,9 +31,10 @@ export default class SearchBar extends React.Component {
 	}
 
 	deleteFilter(event, deleteItem) {
-		console.log(event)
-		const isBackspaceKey = this.state.currentValue === "" && event.key === 'Backspace' && this.state.searchTerms !== ""
-		const isMouseClick = event.type === 'click' && event.target.dataset.filter === deleteItem
+		const {currentValue, searchTerms} = this.state
+		const {key, type, target} = event
+		const isBackspaceKey = currentValue === "" && key === 'Backspace' && searchTerms !== ""
+		const isMouseClick = type === 'click' && target.dataset.filter === deleteItem
 
 		if (isBackspaceKey || isMouseClick) {
 			const deleteItem = this.state.searchTerms.slice(-1)

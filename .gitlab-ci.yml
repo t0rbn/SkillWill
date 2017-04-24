@@ -7,5 +7,5 @@ cache:
 
 build:
   script:
-    - ./mvnw package -e
+    - ./mvnw clean package -e -U
     - cat target/site/jacoco/index.html

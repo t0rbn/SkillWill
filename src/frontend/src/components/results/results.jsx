@@ -2,6 +2,7 @@ import React from 'react'
 import config from '../../config.json'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import User from '../user/user'
+import { browserHistory } from 'react-router'
 
 export default class Results extends React.Component {
 	constructor(props) {
@@ -18,6 +19,7 @@ export default class Results extends React.Component {
 			shouldUpdate: false,
 			route: this.props.location.pathname
 		};
+
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)

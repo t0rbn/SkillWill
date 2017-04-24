@@ -36,7 +36,7 @@ export default class BasicProfile extends React.Component {
 		}
 		else {
 			this.setState({
-				infoLayerAt: i, //set Layer to index of clicked item
+				infoLayerAt: i //set Layer to index of clicked item
 			})
 		}
 	}

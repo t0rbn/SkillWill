@@ -3,9 +3,9 @@ import React from 'react';
 export default function setInitialStateFromURL(queryObject) {
 	if(typeof queryObject.skills !== 'undefined'){
 		const {location, skills} = queryObject
-		const dropdownLabel = typeof location != 'undefined' ? location : 'Alle Standorte'
+		const dropdownLabel = location ? location : 'Alle Standorte'
 		const queryArray = convertQueryParamsToArray(skills)
-		const locationString = convertLocationToString(location)
+		const locationString = generateLocationToString(location)
 
 		return({
 			searchItems: queryArray,
@@ -29,7 +29,7 @@ function convertQueryParamsToArray(skills){
 	}
 }
 
-function convertLocationToString(location){
+function generateLocationToString(location){
 	if (typeof location !== 'undefined'){
 		return `&location=${location}`
 	} else {

@@ -58,7 +58,8 @@ export default class UserSearch extends React.Component {
 		const prevSearchString = `search${prevProps.location.search}`
 		document.SearchBar.SearchInput.focus()
 		if (prevSearchString !== newRoute) {
-			this.context.router.push(newRoute)
+			//this.context.router.push(newRoute)
+			window.history.pushState({}, "", newRoute)
 		}
 	}
 

@@ -15,8 +15,7 @@ export default class SearchBar extends React.Component {
 			searchTerms: this.props.searchTerms
 		}
 		this.getInputValue = this.getInputValue.bind(this)
-		this.deleteOnBackSpacePress = this.deleteOnBackSpacePress.bind(this)
-		this.closeOnXClick = this.closeOnXClick.bind(this)
+		this.deleteFilter = this.deleteFilter.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleSuggestionSelected = this.handleSuggestionSelected.bind(this)
 	}
@@ -25,26 +24,28 @@ export default class SearchBar extends React.Component {
 		this.input.focus();
 	}
 
-	getInputValue(e) {
+	getInputValue(event) {
 		this.setState({
-			currentValue: e.target.value
+			currentValue: event.target.value
 		})
 	}
 
-	deleteOnBackSpacePress(e) {
-		if (this.state.currentValue == "" && e.keyCode == 8 && this.state.searchTerms !== "") {
+	deleteFilter(event, deleteItem) {
+		const isBackspaceKey = this.state.currentValue === "" && event.keyCode === 8 && this.state.searchTerms !== ""
+		const isMouseClick = event.type === 'click' && event.target.dataset.filter === deleteItem
+
+		if (isBackspaceKey || isMouseClick) {
 			const deleteItem = this.state.searchTerms.slice(-1)
 			this.props.onInputDelete(deleteItem)
 		}
 	}
 
-	closeOnXClick(name) {
-		this.props.onInputDelete(name)
-	}
-
-	handleSubmit(e) {
-		e.preventDefault()
-		this.props.onInputChange(this.state.currentValue)
+	handleSubmit(event) {
+		event.preventDefault()
+		const currentValue = this.state.currentValue.trim()
+		if (currentValue && currentValue.length > 0) {
+			this.props.onInputChange(currentValue)
+		}
 	}
 
 	handleSuggestionSelected(name) {
@@ -68,7 +69,7 @@ export default class SearchBar extends React.Component {
 								return (
 									<div class="search-term">
 										{searchTerm}
-										<a class="close" key={i} onClick={() => this.closeOnXClick(searchTerm)}>&#9747;</a>
+										<a class="close" data-filter={searchTerm} key={i} onClick={event => this.deleteFilter(event, searchTerm)}>&#9747;</a>
 									</div>
 								)
 							})}
@@ -80,11 +81,11 @@ export default class SearchBar extends React.Component {
 								value={this.state.currentValue}
 								autoFocus="true"
 								onChange={this.getInputValue}
-								onKeyDown={this.deleteOnBackSpacePress}
+								onKeyDown={this.deleteFilter}
 								ref={input => { this.input = input }}>
 							</input>
 						</div>
-						<button type="submit" class="search" />
+						<button type="submit" class="submit-search-button" />
 					</div>
 				</form>
 				{React.cloneElement(this.props.children, { handleSuggestionSelected: this.handleSuggestionSelected, currentValue: this.state.currentValue })}

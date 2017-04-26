@@ -5,21 +5,21 @@ import User from '../user/user'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-Results.propTypes = {
-	secondNamedReducer: React.PropTypes.number
-}
+// Results.propTypes = {
+// 	secondNamedReducer: React.PropTypes.number
+// }
 
-function mapStateToProps({ secondNamedReducer }) {
-	return {
-		secondNamedReducer
-	};
-}
+// function mapStateToProps({ secondNamedReducer }) {
+// 	return {
+// 		secondNamedReducer
+// 	};
+// }
 
-const mapDispatchToProps = {
-	onSearch: 'foo'
-}
+// const mapDispatchToProps = {
+// 	onSearch: 'foo'
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Results)
+// export default connect(mapStateToProps, mapDispatchToProps)(Results)
 
 class Results extends React.Component {
 	constructor(props) {

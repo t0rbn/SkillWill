@@ -2,9 +2,13 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { Router, Route, browserHistory } from 'react-router';
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import thunkMiddleware from 'redux-thunk'
+
+import { fetchResults } from './actions'
+import reducer from './reducers'
 
 import App from './app.jsx';
 import UserSearch from './components/search/user-search.jsx';
@@ -16,18 +20,23 @@ import OthersProfile from './components/profile/others-profile.jsx';
 import Login from './components/login/login.jsx';
 import Logout from './components/logout/logout.jsx';
 
-import {secondNamedReducer} from './reducers'
 
 const store = createStore(
   combineReducers({
-    secondNamedReducer,
-    routing: routerReducer
-  })
+    reducer,
+    routing: routerReducer,
+  }),
+		applyMiddleware(
+    thunkMiddleware
+  	)
 )
 
 const history = syncHistoryWithStore(browserHistory, store)
 
-console.log(store.getState());
+store.dispatch(fetchResults("Ruby"))
+	.then(() => setTimeout(()=> {
+		console.log(store.getState())
+	}, 1000))
 
 
 render(

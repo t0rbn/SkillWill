@@ -4,6 +4,7 @@ import Dropdown from '../dropdown/dropdown.jsx'
 import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import User from '../user/user.jsx'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
+import { browserHistory } from 'react-router'
 
 export default class UserSearch extends React.Component {
 	constructor(props) {
@@ -58,8 +59,7 @@ export default class UserSearch extends React.Component {
 		const prevSearchString = `search${prevProps.location.search}`
 		document.SearchBar.SearchInput.focus()
 		if (prevSearchString !== newRoute) {
-			this.context.router.push(newRoute)
-			// window.history.pushState({}, "", newRoute)
+			browserHistory.push(newRoute)
 		}
 	}
 

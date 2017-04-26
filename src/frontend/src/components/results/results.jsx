@@ -3,10 +3,28 @@ import config from '../../config.json'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import User from '../user/user'
 import { browserHistory } from 'react-router'
+import { connect } from 'react-redux'
 
-export default class Results extends React.Component {
+Results.propTypes = {
+	secondNamedReducer: React.PropTypes.number
+}
+
+function mapStateToProps({ secondNamedReducer }) {
+	return {
+		secondNamedReducer
+	};
+}
+
+const mapDispatchToProps = {
+	onSearch: 'foo'
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Results)
+
+class Results extends React.Component {
 	constructor(props) {
 		super(props)
+		console.log(this.props)
 		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
 		this.state = {
 			searchItems,
@@ -113,4 +131,3 @@ export default class Results extends React.Component {
 		}
 	}
 }
-

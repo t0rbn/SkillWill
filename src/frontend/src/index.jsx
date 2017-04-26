@@ -1,6 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import { Router, Route, browserHistory } from 'react-router';
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+
 import App from './app.jsx';
 import UserSearch from './components/search/user-search.jsx';
 import Results from './components/results/results.jsx'
@@ -10,11 +15,24 @@ import MyProfile from './components/profile/my-profile.jsx';
 import OthersProfile from './components/profile/others-profile.jsx';
 import Login from './components/login/login.jsx';
 import Logout from './components/logout/logout.jsx';
-import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
+
+import {secondNamedReducer} from './reducers'
+
+const store = createStore(
+  combineReducers({
+    secondNamedReducer,
+    routing: routerReducer
+  })
+)
+
+const history = syncHistoryWithStore(browserHistory, store)
+
+console.log(store.getState());
+
 
 render(
-	<AppContainer>
-		<Router history={browserHistory}>
+<Provider store={store}>
+		<Router history={history}>
 			<Route path="/" component={App}>
 				<Route path="search" name="search" component={Results} />
 				<Route path="profile" component={Layer}>
@@ -29,5 +47,5 @@ render(
 				</Route>
 			</Route>
 		</Router>
-	</AppContainer>, document.querySelector("#app")
+	</Provider>, document.querySelector("#app")
 );

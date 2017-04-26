@@ -50,11 +50,11 @@ export default class SkillSearch extends React.Component {
 			<div class="searchbar">
 				<p class="subtitle">Neuen Skill hinzufügen</p>
 				<p class="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
-					<SearchBar
-					onInputChange={this.handleSearchBarInput}
-					onInputDelete={this.handleSearchBarDelete}
-					parent={this}
-					searchTerms={searchItems}/>
+				<SearchBar
+				onInputChange={this.handleSearchBarInput}
+				onInputDelete={this.handleSearchBarDelete}
+				parent={this}
+				searchTerms={searchItems}/>
 			</div>
 		)
 	}

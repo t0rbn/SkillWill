@@ -1,9 +1,21 @@
 package com.sinnerschrader.skillwill.services;
 
+import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
+import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
+import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
+import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
+import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
+import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +26,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreComparator;
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
-import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
-import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
-import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
-import com.sinnerschrader.skillwill.repositories.SkillRepository;
 
 /**
  * Service handling user management
@@ -55,7 +56,7 @@ public class UserService {
   @Value("${maxLevelValue}")
   private int maxLevelValue;
 
-  public List<Person> getUsers(List<String> skills, String location)
+  public List<Person> getUsers(Collection<KnownSkill> skills, String location)
       throws IllegalArgumentException {
 
     List<Person> candidates;
@@ -63,8 +64,11 @@ public class UserService {
     if (CollectionUtils.isEmpty(skills)) {
       candidates = personRepository.findAll();
     } else {
-      candidates = personRepository.findBySkills(skills);
-      candidates.sort(new FitnessScoreComparator(skills, fitnessScoreProperties));
+      List<String> skillNames = skills.stream().map(KnownSkill::getName).collect(Collectors.toList());
+      candidates = personRepository.findBySkills(skillNames).stream()
+          .peek(p -> p.setFitnessScore(skills, fitnessScoreProperties))
+          .sorted(Comparator.comparingDouble(Person::getFitnessScoreValue).reversed())
+          .collect(Collectors.toList());
     }
 
     // sync needed to search for location
@@ -73,7 +77,8 @@ public class UserService {
       candidates = filterByLocation(candidates, location);
     }
 
-    logger.debug("Successfully found {} users for search", candidates.size());
+    logger.debug("Successfully found {} users for search [{}]", candidates.size(),
+        skills.stream().map(KnownSkill::getName).collect(Collectors.joining(", ")));
 
     return candidates;
   }

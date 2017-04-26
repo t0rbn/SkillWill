@@ -27,7 +27,7 @@ public class LdapSyncJob {
   private PersonRepository personRepository;
 
   @Scheduled(cron = "${ldapSyncCron}")
-  private void run() {
+  public void run() {
     logger.info("Starting regular LDAP sync, this may take a while");
     ldapService.syncUsers(personRepository.findAll(), true);
     logger.info("Finished regular LDAP sync");

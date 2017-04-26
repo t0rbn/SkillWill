@@ -2,6 +2,7 @@ package com.sinnerschrader.skillwill.mock;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.jobs.LdapSyncJob;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
@@ -33,7 +34,7 @@ public class MockData {
   private PersonRepository personRepo;
 
   @Autowired
-  private LdapService ldapService;
+  private LdapSyncJob ldapSyncJob;
 
   @Value("${mockInit}")
   private Boolean initmock;
@@ -88,6 +89,8 @@ public class MockData {
         curr.addUpdateSkill(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2]));
       }
     }
+
+    ldapSyncJob.run();
   }
 
 }

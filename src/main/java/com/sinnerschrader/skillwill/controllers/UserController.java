@@ -85,23 +85,15 @@ public class UserController {
     Set<KnownSkill> sanitizedSkills = skillService.getSkillsByStems(skillList);
     skillService.registerSkillSearch(sanitizedSkills);
 
-    List<String> sanitizedSkillNames = sanitizedSkills.stream().map(KnownSkill::getName).collect(Collectors.toList());
-    List<Person> matches = userService.getUsers(sanitizedSkillNames, location);
-
-    boolean hasSkills = !CollectionUtils.isEmpty(sanitizedSkillNames);
-
-    List<JSONObject> results = matches.stream()
-      .map(p -> {
-        JSONObject obj = p.toJSON();
-        if (hasSkills) {
-          obj.put("fitness", new FitnessScore(p, sanitizedSkillNames, fitnessScoreProperties).getValue());
-        }
-        return obj;
-      }).collect(Collectors.toList());
+    List<Person> matches = userService.getUsers(sanitizedSkills, location);
 
     JSONObject returnJsonObj = new JSONObject();
-    returnJsonObj.put("results",  new JSONArray(results));
-    returnJsonObj.put("searched", new JSONArray(sanitizedSkillNames));
+    returnJsonObj.put("results",  new JSONArray(matches.stream()
+        .map(Person::toJSON)
+        .collect(Collectors.toList())));
+    returnJsonObj.put("searched", new JSONArray(sanitizedSkills.stream()
+        .map(KnownSkill::getName)
+        .collect(Collectors.toList())));
     return new ResponseEntity<>(returnJsonObj.toString(), HttpStatus.OK);
   }
 

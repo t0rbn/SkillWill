@@ -1,13 +1,16 @@
 package com.sinnerschrader.skillwill.domain.person;
 
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +26,9 @@ public class Person {
   private List<PersonalSkill> skills;
   private String comment;
 
+  @Transient
+  private FitnessScore fitnessScore;
+
   @Version
   private Long version;
 
@@ -33,6 +39,7 @@ public class Person {
     this.id = id;
     this.skills = new ArrayList<>();
     this.ldapDetails = null;
+    this.fitnessScore = null;
   }
 
   public String getId() {
@@ -94,6 +101,18 @@ public class Person {
     this.comment = StringUtils.isEmpty(comment) ? null : comment;
   }
 
+  public void setFitnessScore(Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
+    this.fitnessScore = new FitnessScore(this, searchedSkills, props);
+  }
+
+  public double getFitnessScoreValue() {
+    if (this.fitnessScore == null) {
+      throw new IllegalStateException("no fitness score set");
+    }
+
+    return this.fitnessScore.getValue();
+  }
+
   public JSONObject toJSON() {
     JSONObject obj = new JSONObject();
     obj.put("id", this.id);
@@ -106,6 +125,10 @@ public class Person {
       obj.put("phone", ldapDetails.getPhone());
       obj.put("location", ldapDetails.getLocation());
       obj.put("title", ldapDetails.getTitle());
+    }
+
+    if (this.fitnessScore != null) {
+      obj.put("fitness", this.fitnessScore.getValue());
     }
 
     JSONArray skills = new JSONArray();

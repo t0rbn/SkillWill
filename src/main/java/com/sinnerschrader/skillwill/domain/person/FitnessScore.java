@@ -1,7 +1,10 @@
 package com.sinnerschrader.skillwill.domain.person;
 
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -12,99 +15,81 @@ import java.util.stream.Collectors;
  */
 public class FitnessScore {
 
-  private final double value;
   private final FitnessScoreProperties props;
+  private final Person person;
+  private final Collection<KnownSkill> searchedSkills;
+  private final double value;
 
-  // total score => weighted average of all factors.
-  public FitnessScore(Person person, List<String> searchItems, FitnessScoreProperties props) {
+  public FitnessScore(Person person, Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
+    this.person = person;
+    this.searchedSkills = searchedSkills;
     this.props = props;
-
-    double weightedAverageSearchedSkills =
-        props.getWeightAverageSkills() * (getAverageSearchedSkills(person, searchItems) > 0
-            ? getAverageSearchedSkills(person, searchItems) / 3
-            : 0);
-    double weightedAverageSearchedWills =
-        props.getWeightAverageWills() * (getAverageSearchedWills(person, searchItems) > 0
-            ? getAverageSearchedWills(person, searchItems) / 3
-            : 0);
-    double weightedSpecializationSkills =
-        props.getWeightSpecializationSkills() * getSpecializationSkills(person, searchItems);
-    double weightedSpecializationWills =
-        props.getWeightSpecializationWills() * getSpecializationWills(person, searchItems);
-
-    // Round fitness to four digits -> eg. 0.4223 = 42.23% match
-    this.value = Math.round(
-        (weightedAverageSearchedSkills
-            + weightedAverageSearchedWills
-            + weightedSpecializationSkills
-            + weightedSpecializationWills
-        ) * 10000.0
-    ) / 10000.0;
+    this.value = (double) Math.round(calculateValue() * 10000) / 10000;
   }
 
   public double getValue() {
     return this.value;
   }
 
-  // Helper method finding the intersection of the person's and the searched skill set
-  private List<PersonalSkill> searchedSkillsInPerson(Person person, List<String> searchItems) {
-    return person.getSkills().stream()
-        .filter(skill -> searchItems.contains(skill.getName()))
-        .collect(Collectors.toList());
+  private Set<String> getSearchedSkillNames(Collection<KnownSkill> searchedSkills) {
+    return searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.toSet());
   }
 
-  private List<PersonalSkill> unsearchedSkillsInPerson(Person person, List<String> searchItems) {
-    return person.getSkills().stream()
-        .filter(skill -> !searchItems.contains(skill.getName()))
-        .collect(Collectors.toList());
+  private Set<PersonalSkill> getSearchedPersonalSkills() {
+    return this.person.getSkills().stream()
+        .filter(s -> getSearchedSkillNames(this.searchedSkills).contains(s.getName()))
+        .collect(Collectors.toSet());
   }
 
-  // Average skill level of person regarding searched items
-  private double getAverageSearchedSkills(Person person, List<String> searchItems) {
-    List<PersonalSkill> relevantSkills = searchedSkillsInPerson(person, searchItems);
-    int count = relevantSkills.size();
-    int sum = relevantSkills.stream().mapToInt(PersonalSkill::getSkillLevel).sum();
-    return count > 0 ? (double) sum / count : 0;
+  private Set<PersonalSkill> getUnsearchedPersonalSkills() {
+    HashSet<PersonalSkill> skillset = new HashSet<>(this.person.getSkills());
+    skillset.removeAll(getSearchedPersonalSkills());
+    return skillset;
   }
 
-  // Average will level of person regarding searched items
-  private double getAverageSearchedWills(Person person, List<String> searchItems) {
-    List<PersonalSkill> relevantSkills = searchedSkillsInPerson(person, searchItems);
-    int count = relevantSkills.size();
-    int sum = relevantSkills.stream().mapToInt(PersonalSkill::getWillLevel).sum();
-    return count > 0 ? (double) sum / count : 0;
+  private double getAverageSkillLevelSearched() {
+    return getSearchedPersonalSkills().stream()
+        .mapToInt(PersonalSkill::getSkillLevel)
+        .average()
+        .orElse(0);
   }
 
-  // Average skill level of person regarding searched items
-  private double getAverageUnsearchedSkills(Person person, List<String> searchItems) {
-    List<PersonalSkill> relevantSkills = unsearchedSkillsInPerson(person, searchItems);
-    int count = relevantSkills.size();
-    int sum = relevantSkills.stream().mapToInt(PersonalSkill::getSkillLevel).sum();
-    return count > 0 ? (double) sum / count : 0;
+  private double getAverageWillLevelSearched() {
+    return getSearchedPersonalSkills().stream()
+        .mapToInt(PersonalSkill::getWillLevel)
+        .average()
+        .orElse(0);
   }
 
-  // Average will level of person regarding searched items
-  private double getAverageUnsearchedWills(Person person, List<String> searchItems) {
-    List<PersonalSkill> relevantSkills = unsearchedSkillsInPerson(person, searchItems);
-    int count = relevantSkills.size();
-    int sum = relevantSkills.stream().mapToInt(PersonalSkill::getWillLevel).sum();
-    return count > 0 ? (double) sum / count : 0;
+  private double getAverageSkillLevelUnsearched() {
+    return getUnsearchedPersonalSkills().stream()
+        .mapToInt(PersonalSkill::getSkillLevel)
+        .average()
+        .orElse(0);
   }
 
-  // Specialization in skill level of person regarding searched items (0: worst; 1: best)
-  private double getSpecializationSkills(Person person, List<String> searchItems) {
-    double searchedAverage = getAverageSearchedSkills(person, searchItems);
-    double unsearchedAverage = getAverageUnsearchedSkills(person, searchItems);
-    return (this.props.getMaxLevelValue() + searchedAverage - unsearchedAverage)
-        / (2 * this.props.getMaxLevelValue());
+  private double getAverageWillLevelUnsearched() {
+    return this.getUnsearchedPersonalSkills().stream()
+        .mapToInt(PersonalSkill::getWillLevel)
+        .average()
+        .orElse(0);
   }
 
-  // Specialization in will level of person regarding searched items (0: worst; 1: best)
-  private double getSpecializationWills(Person person, List<String> searchItems) {
-    double searchedAverage = getAverageSearchedWills(person, searchItems);
-    double unsearchedAverage = getAverageUnsearchedWills(person, searchItems);
-    return (this.props.getMaxLevelValue() + searchedAverage - unsearchedAverage)
-        / (2 * this.props.getMaxLevelValue());
+  private double getSpecializationSkills() {
+    return (props.getMaxLevelValue() + getAverageSkillLevelSearched() - getAverageSkillLevelUnsearched())
+        / (2 * props.getMaxLevelValue());
+  }
+
+  private double getSpecializationWills() {
+    return (props.getMaxLevelValue() + getAverageWillLevelSearched() - getAverageWillLevelUnsearched())
+        / (2 * props.getMaxLevelValue());
+  }
+
+  private double calculateValue() {
+    return (props.getWeightAverageSkills() * getAverageSkillLevelSearched()) / props.getMaxLevelValue() +
+        (props.getWeightAverageWills() * getAverageWillLevelSearched()) / props.getMaxLevelValue() +
+        (props.getWeightSpecializationSkills() * getSpecializationSkills()) +
+        (props.getWeightSpecializationWills() * getSpecializationWills());
   }
 
 }

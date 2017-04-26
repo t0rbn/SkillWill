@@ -1,27 +1,11 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.mongodb.util.JSON;
-import com.sinnerschrader.skillwill.domain.person.FitnessScore;
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
-import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.misc.StatusJSON;
-import com.sinnerschrader.skillwill.services.SessionService;
-import com.sinnerschrader.skillwill.services.SkillService;
-import com.sinnerschrader.skillwill.services.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -32,12 +16,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.sinnerschrader.skillwill.domain.person.FitnessScore;
+import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
+import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
+import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.services.SessionService;
+import com.sinnerschrader.skillwill.services.SkillService;
+import com.sinnerschrader.skillwill.services.UserService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller handling /users/{foo}
@@ -80,50 +81,30 @@ public class UserController {
   public ResponseEntity<String> getUsers(@RequestParam(required = false) String skills,
       @RequestParam(required = false) String location) {
 
-    skills = skills != null ? skills : "";
-    location = location != null ? location : "";
-    JSONObject returnJsonObj = new JSONObject();
-    List<Person> matches;
-    List<KnownSkill> sanitizedSkills = new ArrayList<>();
-    boolean isEmptySkillSearch = StringUtils.isEmpty(skills);
-
-    if (!isEmptySkillSearch) {
-      try {
-        sanitizedSkills = skillService.getSkillsByStems(Arrays.asList(skills.split("\\s*,\\s*")), true);
-      } catch (SkillNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    List<String> sanitizedSkillNames = isEmptySkillSearch
-        ? new ArrayList<>()
-        : sanitizedSkills.stream().map(KnownSkill::getName).collect(Collectors.toList());
-
-    if (!CollectionUtils.isEmpty(sanitizedSkills)) {
-      returnJsonObj.put("searched", new JSONArray(sanitizedSkillNames));
-    }
-
-    try {
-      matches = userService.getUsers(sanitizedSkills, location);
-    } catch (IllegalArgumentException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    JSONArray userJson = new JSONArray(matches.stream()
-        .map(p -> {
-          JSONObject obj = p.toJSON();
-          if (!isEmptySkillSearch) {
-            obj.put("fitness", new FitnessScore(p, sanitizedSkillNames, fitnessScoreProperties).getValue());
-          }
-          return obj;
-        })
-        .collect(Collectors.toList())
-    );
-    returnJsonObj.put("results", userJson);
-
+    List<String> skillList = skills != null ? Arrays.asList(skills.split("\\s*,\\s*")) : Collections.emptyList();
+    Set<KnownSkill> sanitizedSkills = skillService.getSkillsByStems(skillList);
     skillService.registerSkillSearch(sanitizedSkills);
+
+    List<String> sanitizedSkillNames = sanitizedSkills.stream().map(KnownSkill::getName).collect(Collectors.toList());
+    List<Person> matches = userService.getUsers(sanitizedSkillNames, location);
+
+    boolean hasSkills = !CollectionUtils.isEmpty(sanitizedSkillNames);
+
+    List<JSONObject> results = matches.stream()
+      .map(p -> {
+        JSONObject obj = p.toJSON();
+        if (hasSkills) {
+          obj.put("fitness", new FitnessScore(p, sanitizedSkillNames, fitnessScoreProperties).getValue());
+        }
+        return obj;
+      }).collect(Collectors.toList());
+
+    JSONObject returnJsonObj = new JSONObject();
+    returnJsonObj.put("results",  new JSONArray(results));
+    returnJsonObj.put("searched", new JSONArray(sanitizedSkillNames));
     return new ResponseEntity<>(returnJsonObj.toString(), HttpStatus.OK);
   }
+
 
   /**
    * Get a user

@@ -1,5 +1,25 @@
 package com.sinnerschrader.skillwill.services;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkillSuggestionComparator;
@@ -11,21 +31,6 @@ import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Services handling skills management (create, rename, suggest, delete, ...)
@@ -63,19 +68,14 @@ public class SkillService {
     return skillRepository.findByName(name);
   }
 
-  public List<KnownSkill> getSkillsByStems(List<String> stems, boolean checkFindAll) throws SkillNotFoundException {
-      List<KnownSkill> skills = stems.stream()
-          .map(s -> skillRepository.findByNameStem(SkillStemUtils.nameToStem(s)))
-          .collect(Collectors.toList());
-
-      if (checkFindAll && skills.contains(null)) {
-        throw new SkillNotFoundException("cannot find all skills for search query " + stems.toString());
-      }
-
-      return skills.stream().filter(s -> s != null).collect(Collectors.toList());
+  public Set<KnownSkill> getSkillsByStems(List<String> stems) throws SkillNotFoundException {
+    return stems.stream()
+      .map(s -> skillRepository.findByNameStem(SkillStemUtils.nameToStem(s)))
+      .filter(Objects::nonNull)
+      .collect(Collectors.toSet());
   }
 
-  private List<SuggestionSkill> aggregateSuggestions(List<KnownSkill> skills) {
+  private List<SuggestionSkill> aggregateSuggestions(Collection<KnownSkill> skills) {
     List<SuggestionSkill> unaggregated = skills.stream().flatMap(s -> s.getSuggestions().stream())
         .collect(Collectors.toList());
     List<SuggestionSkill> aggregated = new ArrayList<>();
@@ -103,7 +103,7 @@ public class SkillService {
     if (CollectionUtils.isEmpty(references)) {
       suggestions = aggregateSuggestions(skillRepository.findAll());
     } else {
-      List<KnownSkill> sanitizedReferenceskills = getSkillsByStems(references, false);
+      Set<KnownSkill> sanitizedReferenceskills = getSkillsByStems(references);
       List<String> sanitizedReferenceNames = sanitizedReferenceskills.stream()
           .map(KnownSkill::getName)
           .collect(Collectors.toList());
@@ -120,7 +120,7 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void registerSkillSearch(List<KnownSkill> searchedSkills) throws IllegalArgumentException {
+  public void registerSkillSearch(Collection<KnownSkill> searchedSkills) throws IllegalArgumentException {
 
     if (searchedSkills.size() < 2) {
       logger.debug("Searched for less than two skills, cannot update mutual suggestions");

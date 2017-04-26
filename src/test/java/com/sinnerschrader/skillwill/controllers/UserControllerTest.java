@@ -1,19 +1,8 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
-import com.sinnerschrader.skillwill.repositories.SessionRepository;
-import com.sinnerschrader.skillwill.repositories.SkillRepository;
-import com.sinnerschrader.skillwill.session.Session;
-import com.unboundid.ldap.sdk.LDAPException;
 import java.io.IOException;
 import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +16,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
+import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.SessionRepository;
+import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import com.sinnerschrader.skillwill.session.Session;
+import com.unboundid.ldap.sdk.LDAPException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration test for UserController
@@ -112,7 +114,18 @@ public class UserControllerTest {
     logger.debug("Testing UserController: get users with empty skill");
     ResponseEntity<String> res = userController.getUsers("", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertFalse(new JSONObject(res.getBody()).has("searched"));
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
+    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
+    assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+  }
+
+  @Test
+  public void testGetUsersSkillsNull() throws JSONException {
+    logger.debug("Testing UserController: get users with empty skill");
+    ResponseEntity<String> res = userController.getUsers(null, "Hamburg");
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
@@ -142,17 +155,10 @@ public class UserControllerTest {
     logger.debug("Testing UserController: get users for empty skill and empty location");
     ResponseEntity<String> res = userController.getUsers("", "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertFalse(new JSONObject(res.getBody()).has("searched"));
+    assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
-  }
-
-  @Test
-  public void testGetUsersSkillUnknown() throws JSONException {
-    logger.debug("Testing UserController: get users with unknown skill");
-    ResponseEntity<String> res = userController.getUsers("Java, IAmUnknown", "Hamburg");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test

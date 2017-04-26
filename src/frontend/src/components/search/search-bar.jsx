@@ -37,7 +37,6 @@ export default class SearchBar extends React.Component {
 		const isMouseClick = type === 'click' && target.dataset.filter === deleteItem
 
 		if (isBackspaceKey || isMouseClick) {
-			const deleteItem = this.state.searchTerms.slice(-1)
 			this.props.onInputDelete(deleteItem)
 		}
 	}

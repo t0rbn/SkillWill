@@ -14,54 +14,35 @@ export default class SkillSearch extends React.Component {
 			searchStarted: false,
 			shouldUpdate: false
 		}
-		this.toggleUpdate = this.toggleUpdate.bind(this)
-		this.requestSearch = this.requestSearch.bind(this)
+		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
+		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
-	requestSearch(searchTerms) {
 
-		fetch(`${config.backendServer}/skills?search=${searchTerms}`)
-			.then(r => {
-				r.json().then(data => {
-					this.setState({
-						results: data,
-						searchStarted: true,
-						searchItems: searchTerms,
-						shouldUpdate: true
-					})
-				})
-			})
-			.catch(error => {
-				console.error("requestSearch" + error)
-				this.setState({ results: null })
-			})
-	}
-
-	// update component only if search has changed
-	shouldComponentUpdate(nextProps, nextState) {
-		if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchItems.length !== nextState.searchItems.length))) {
-			return true
-		}
-		return false
-	}
-
-	toggleUpdate(bool) {
+	handleSearchBarInput(searchString) {
 		this.setState({
-			shouldUpdate: bool
+			searchItems: this.state.searchItems.concat([searchString])
 		})
 	}
 
-	renderResults(searchStarted, results, searchItems) {
-		/* display Results component only when there has been an inital search */
-		if (searchStarted) {
-			return (
-				<Results results={results} searchTerms={searchItems} noResultsLabel={"Keinen passenden Skill gefunden?"}>
-					<Skill handleEdit={this.props.handleEdit} userData={this.props.data} />
-				</Results>
-			)
-		}
+	handleSearchBarDelete(deleteItem) {
+		const { searchItems } = this.state
+		searchItems.splice(searchItems.indexOf(deleteItem), 1)
+		this.setState({
+			searchItems
+		})
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		const { route, searchItems, locationString } = this.state
+		const newRoute = `${route}?skills=${searchItems}${locationString}`
+		const prevSearchString = `search${prevProps.location.search}`
+		document.SearchBar.SearchInput.focus()
+		if (prevSearchString !== newRoute) {
+			this.context.router.push(newRoute)
+			// window.history.pushState({}, "", newRoute)
+		}
+	}
 
 	render() {
 		const { results, searchItems, searchStarted } = this.state
@@ -69,12 +50,11 @@ export default class SkillSearch extends React.Component {
 			<div class="searchbar">
 				<p class="subtitle">Neuen Skill hinzufügen</p>
 				<p class="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
-				<SearchBar
-					handleRequest={this.requestSearch}
-					toggleUpdate={this.toggleUpdate}
+					<SearchBar
+					onInputChange={this.handleSearchBarInput}
+					onInputDelete={this.handleSearchBarDelete}
 					parent={this}
-					searchTerms={searchItems} />
-				{this.renderResults(searchStarted, results, searchItems)}
+					searchTerms={searchItems}/>
 			</div>
 		)
 	}

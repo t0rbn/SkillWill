@@ -24,7 +24,7 @@ render(
 					<Route path="login" component={Login} />
 					<Route path="logout" component={Logout} />
 					<Route path=":id" component={MyProfile}>
-						<Route path="add-skill" component={Login} />
+						<Route path="add-skill" component={Results} />
 					</Route>
 				</Route>
 			</Route>

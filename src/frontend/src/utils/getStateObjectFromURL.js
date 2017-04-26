@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function setInitialStateFromURL(queryObject) {
-	if(typeof queryObject.skills !== 'undefined'){
+	if(queryObject && queryObject.skills){
 		const {location, skills} = queryObject
 		const dropdownLabel = location ? location : 'Alle Standorte'
 		const queryArray = convertQueryParamsToArray(skills)

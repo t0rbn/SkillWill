@@ -37,12 +37,11 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
 * see the fancy webpack development server on port ```8888```
 * including hot loading when source changes
 
-
-
-# More Docs
-* when starting you can find the interactive API documentation at ```localhost:1337/swagger```
-* Bachelor's Thesis covering concept and backend: [on GitHub](https://github.com/t0rbn/BSc)
-* Bachelor's Thesis covering the frontend: ?
+## Important URLs
+* `/`: Application main view
+* `/swagger`: Interactive API documentation
+* `/info`: Show application-specific stats (# of users, skills per user, etc.)
+* `/metrics`: Show technical stats (memory, thread info, etc.)
 
 
 
@@ -58,6 +57,13 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
 
 ## Frontend
 * ?
+
+
+
+# More Docs
+* when starting you can find the interactive API documentation at ```localhost:1337/swagger```
+* Bachelor's Thesis covering concept and backend: [on GitHub](https://github.com/t0rbn/BSc)
+* Bachelor's Thesis covering the frontend: ?
 
 
 

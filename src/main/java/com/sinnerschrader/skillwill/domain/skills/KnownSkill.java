@@ -117,12 +117,17 @@ public class KnownSkill {
     if (!(o instanceof KnownSkill)) {
       return false;
     }
+
+    if (((KnownSkill) o).getNameStem() == null || this.getNameStem() == null) {
+      throw new IllegalStateException("KnownSkill's nameStem is null.");
+    }
+
     return ((KnownSkill) o).getNameStem().equals(this.getNameStem());
   }
 
   @Override
   public int hashCode() {
-    return this.getName().hashCode();
+    return this.getNameStem().hashCode();
   }
 
 }

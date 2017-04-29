@@ -43,6 +43,11 @@ public class KnownSkill {
 
   public void setName(String name) {
     this.name = name;
+    this.nameStem = SkillStemUtils.nameToStem(name);
+  }
+
+  public String getNameStem() {
+    return this.nameStem;
   }
 
   public String getIconDescriptor() {
@@ -112,7 +117,7 @@ public class KnownSkill {
     if (!(o instanceof KnownSkill)) {
       return false;
     }
-    return ((KnownSkill) o).getName().equals(this.getName());
+    return ((KnownSkill) o).getNameStem().equals(this.getNameStem());
   }
 
   @Override

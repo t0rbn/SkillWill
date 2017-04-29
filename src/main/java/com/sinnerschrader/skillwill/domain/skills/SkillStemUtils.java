@@ -15,7 +15,10 @@ package com.sinnerschrader.skillwill.domain.skills;
 public class SkillStemUtils {
 
   public static String nameToStem(String name) {
-    return  name.replaceAll("[^A-Za-z0-9]", "").toUpperCase();
+    if (name == null) {
+      throw new IllegalArgumentException("cannot generate stem from null");
+    }
+    return name.replaceAll("[^A-Za-z0-9]", "").toUpperCase();
   }
 
 }

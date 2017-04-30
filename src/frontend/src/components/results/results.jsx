@@ -5,43 +5,19 @@ import User from '../user/user'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-// Results.propTypes = {
-// 	secondNamedReducer: React.PropTypes.number
-// }
-
-// function mapStateToProps({ secondNamedReducer }) {
-// 	return {
-// 		secondNamedReducer
-// 	};
-// }
-
-// const mapDispatchToProps = {
-// 	onSearch: 'foo'
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Results)
-
 class Results extends React.Component {
 	constructor(props) {
 		super(props)
-		console.log(this.props)
 		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
 		this.state = {
 			searchItems,
 			locationString,
 			dropdownLabel,
 			lastSortedBy: 'fitness',
-			results: [],
-			locationTerm: this.props.location.query.location || '',
-			searchStarted: false,
-			shouldUpdate: false,
-			route: this.props.location.pathname
 		};
 
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
-		this.requestSearch = this.requestSearch.bind(this)
-		this.requestSearch(searchItems, locationString)
 	}
 
 	scrollToResults() {
@@ -49,36 +25,10 @@ class Results extends React.Component {
 		window.scrollBy({ top: `${searchbarRect.top - 10}`, behavior: "smooth" })
 	}
 
-	requestSearch(searchTerms, locationString = this.state.locationTerm) {
-		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
-			.then(r => {
-				if (r.status === 400) {
-					this.setState({
-						results: [],
-						searchItems: searchTerms,
-						searchStarted: true,
-						shouldUpdate: true
-					})
-				} else {
-					r.json().then(data => {
-						this.setState({
-							results: data,
-							searchStarted: true,
-							searchItems: searchTerms,
-							route: `search?skills=${searchTerms}${locationString}`,
-							shouldUpdate: true
-						})
-					})
-				}
-			})
-			.catch(error => {
-				console.error(`requestSearch:${error}`)
-			})
-	}
-
 	sortResults(criterion) {
 		let sortedResults
-		const { results, sortOrder } = this.state
+		const { results } = this.props
+		const { sortOrder } = this.state
 		if (this.state.lastSortedBy === criterion) {
 			sortedResults = results.reverse()
 		} else if (criterion === 'fitness') {
@@ -100,8 +50,9 @@ class Results extends React.Component {
 	}
 
 	render() {
-		const { results } = this.state
-		if (results.length > 0) {
+		const { results } = this.props
+
+		if (results && results.length > 0) {
 			return (
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
@@ -131,3 +82,10 @@ class Results extends React.Component {
 		}
 	}
 }
+
+function mapStateToProps(state) {
+	return {
+		results: state.reducer.results
+	};
+}
+export default connect(mapStateToProps)(Results)

@@ -1,13 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { Router, Route, browserHistory } from 'react-router';
+import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
+import ReduxPromise from 'redux-promise';
 
-import { fetchResults } from './actions'
+import { fetchResults, keepSearchTerms } from './actions'
 import reducer from './reducers'
 
 import App from './app.jsx';
@@ -22,25 +23,19 @@ import Logout from './components/logout/logout.jsx';
 
 
 const store = createStore(
-  combineReducers({
-    reducer,
-    routing: routerReducer,
-  }),
-		applyMiddleware(
-    thunkMiddleware
-  	)
+	combineReducers({
+		reducer,
+		routing: routerReducer,
+	}),
+	applyMiddleware(
+		ReduxPromise
+	)
 )
 
 const history = syncHistoryWithStore(browserHistory, store)
 
-store.dispatch(fetchResults("Ruby"))
-	.then(() => setTimeout(()=> {
-		console.log(store.getState())
-	}, 1000))
-
-
 render(
-<Provider store={store}>
+	<Provider store={store}>
 		<Router history={history}>
 			<Route path="/" component={App}>
 				<Route path="search" name="search" component={Results} />

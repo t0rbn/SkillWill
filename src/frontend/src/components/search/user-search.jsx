@@ -5,8 +5,10 @@ import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import User from '../user/user.jsx'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import { browserHistory } from 'react-router'
+import { fetchResults } from '../../actions'
+import { connect } from 'react-redux'
 
-export default class UserSearch extends React.Component {
+class UserSearch extends React.Component {
 	constructor(props) {
 		super(props)
 		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
@@ -24,9 +26,17 @@ export default class UserSearch extends React.Component {
 		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
+	componentWillMount() {
+		const { searchItems, locationString } = this.state
+		this.props.fetchResults(searchItems, locationString)
+		console.log('user props', this.props)
+
+	}
+
 	handleSearchBarInput(searchString) {
+		const { searchItems } = this.state
 		this.setState({
-			searchItems: this.state.searchItems.concat([searchString])
+			searchItems: searchItems.concat([searchString])
 		})
 	}
 
@@ -86,3 +96,6 @@ export default class UserSearch extends React.Component {
 		)
 	}
 }
+
+
+export default connect(null, { fetchResults })(UserSearch)

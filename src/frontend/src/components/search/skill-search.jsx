@@ -3,8 +3,10 @@ import SearchBar from './search-bar.jsx'
 import Results from '../results/results.jsx'
 import Skill from '../skill/skill.jsx'
 import config from '../../config.json'
+import { fetchSkills, keepSearchTerms } from '../../actions'
+import { connect } from 'react-redux'
 
-export default class SkillSearch extends React.Component {
+class SkillSearch extends React.Component {
 
 	constructor(props) {
 		super(props)
@@ -14,20 +16,50 @@ export default class SkillSearch extends React.Component {
 			searchStarted: false,
 			shouldUpdate: false
 		}
+
+		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
-		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
+		// this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
+	// requestSearch(searchTerms) {
 
-	handleSearchBarInput(searchString) {
-		this.setState({
-			searchItems: this.state.searchItems.concat([searchString])
-		})
+	// 	fetch(`${config.backendServer}/skills?search=${searchTerms}`)
+	// 		.then(r => {
+	// 			r.json().then(data => {
+	// 				this.setState({
+	// 					results: data,
+	// 					searchStarted: true,
+	// 					searchItems: searchTerms,
+	// 					shouldUpdate: true
+	// 				})
+	// 			})
+	// 		})
+	// 		.catch(error => {
+	// 			console.error("requestSearch" + error)
+	// 			this.setState({ results: null })
+	// 		})
+	// }
+
+	// update component only if search has changed
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchItems.length !== nextState.searchItems.length))) {
+			return true
+		}
+		return false
 	}
 
-	handleSearchBarDelete(deleteItem) {
+		handleSearchBarInput(searchString) {
 		const { searchItems } = this.state
-		searchItems.splice(searchItems.indexOf(deleteItem), 1)
+		this.setState({
+			searchItems: searchItems.concat([searchString]),
+		})
+		this.props.keepSearchTerms(this.state.searchItems)
+		this.props.fetchSkills(this.state.searchItems)
+		console.log('constructor',this.props)
+	}
+
+	toggleUpdate(bool) {
 		this.setState({
 			searchItems
 		})
@@ -51,11 +83,22 @@ export default class SkillSearch extends React.Component {
 				<p class="subtitle">Neuen Skill hinzufügen</p>
 				<p class="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
 				<SearchBar
-				onInputChange={this.handleSearchBarInput}
-				onInputDelete={this.handleSearchBarDelete}
-				parent={this}
-				searchTerms={searchItems}/>
+					onInputChange={this.handleSearchBarInput}
+					onInputDelete={this.handleSearchBarDelete}
+					parent={this}
+					searchTerms={searchItems} />
+				{this.renderResults(searchStarted, results, searchItems)}
 			</div>
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	console.log('mapStateToProps',state.reducer)
+	return {
+		skills: state.reducer.results,
+		searchTerms: state.reducer.keepSearchTerms
+	};
+}
+
+export default connect(mapStateToProps, { fetchSkills, keepSearchTerms })(SkillSearch)

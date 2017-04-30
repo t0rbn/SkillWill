@@ -118,11 +118,9 @@ public class KnownSkill {
       return false;
     }
 
-    if (((KnownSkill) o).getNameStem() == null || this.getNameStem() == null) {
-      throw new IllegalStateException("KnownSkill's nameStem is null.");
-    }
-
-    return ((KnownSkill) o).getNameStem().equals(this.getNameStem());
+    String thisNameStem = this.getNameStem();
+    String otherNameStem = ((KnownSkill) o).getNameStem();
+    return (thisNameStem == null && otherNameStem == null) || thisNameStem.equals(otherNameStem);
   }
 
   @Override

@@ -8,7 +8,7 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
 import ReduxPromise from 'redux-promise';
 
-import { fetchResults, keepSearchTerms } from './actions'
+import { fetchResults } from './actions'
 import reducer from './reducers'
 
 import App from './app.jsx';

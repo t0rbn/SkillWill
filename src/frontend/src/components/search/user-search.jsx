@@ -29,8 +29,6 @@ class UserSearch extends React.Component {
 	componentWillMount() {
 		const { searchItems, locationString } = this.state
 		this.props.fetchResults(searchItems, locationString)
-		console.log('user props', this.props)
-
 	}
 
 	handleSearchBarInput(searchString) {
@@ -96,6 +94,5 @@ class UserSearch extends React.Component {
 		)
 	}
 }
-
 
 export default connect(null, { fetchResults })(UserSearch)

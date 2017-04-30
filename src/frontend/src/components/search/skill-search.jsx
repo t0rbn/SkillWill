@@ -3,7 +3,7 @@ import SearchBar from './search-bar.jsx'
 import Results from '../results/results.jsx'
 import Skill from '../skill/skill.jsx'
 import config from '../../config.json'
-import { fetchSkills, keepSearchTerms } from '../../actions'
+import { fetchSkills } from '../../actions'
 import { connect } from 'react-redux'
 
 class SkillSearch extends React.Component {
@@ -54,9 +54,7 @@ class SkillSearch extends React.Component {
 		this.setState({
 			searchItems: searchItems.concat([searchString]),
 		})
-		this.props.keepSearchTerms(this.state.searchItems)
 		this.props.fetchSkills(this.state.searchItems)
-		console.log('constructor',this.props)
 	}
 
 	toggleUpdate(bool) {
@@ -93,12 +91,4 @@ class SkillSearch extends React.Component {
 	}
 }
 
-function mapStateToProps(state) {
-	console.log('mapStateToProps',state.reducer)
-	return {
-		skills: state.reducer.results,
-		searchTerms: state.reducer.keepSearchTerms
-	};
-}
-
-export default connect(mapStateToProps, { fetchSkills, keepSearchTerms })(SkillSearch)
+export default connect(null, { fetchSkills })(SkillSearch)

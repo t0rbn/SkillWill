@@ -8,15 +8,6 @@ function pushToURL(route){
 	}
 }
 
-export const KEEP_SEARCHTERMS = 'KEEP_SEARCHTERMS'
-
-export function keepSearchTerms(searchTerms){
-	return {
-		type: KEEP_SEARCHTERMS,
-		searchTerms
-	}
-}
-
 export const FETCH_RESULTS = 'FETCH_RESULTS'
 
 export function fetchResults(searchTerms, locationTerm = '') {

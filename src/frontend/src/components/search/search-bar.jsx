@@ -43,7 +43,7 @@ export default class SearchBar extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault()
-		const regex = new RegExp(/\\s*,*\\s*/,'g')
+		const regex = new RegExp(/\s*,+\s*|\s+/,'g')
 		const currentValue = this.state.currentValue.trim().split(regex)
 		if (currentValue && currentValue.length > 0) {
 			this.props.onInputChange(currentValue)

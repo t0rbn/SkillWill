@@ -1,15 +1,14 @@
 import config from '../config.json'
 
-export const ADD_TO_URL = 'ADD_TO_URL'
-function pushToURL(route){
+export const SAVE_SEARCHTERMS_TO_STORE = 'SAVE_SEARCHTERMS_TO_STORE'
+export function saveSearchTermsToStore(searchTerms){
 	return {
-		type: ADD_TO_URL,
-		route
+		type: SAVE_SEARCHTERMS_TO_STORE,
+		searchTerms
 	}
 }
 
 export const FETCH_RESULTS = 'FETCH_RESULTS'
-
 export function fetchResults(searchTerms, locationTerm = '') {
 	const requestURL = `${config.backendServer}/users?skills=${searchTerms}${locationTerm}`
 	const request = fetch(requestURL).then(response => response.json())
@@ -18,8 +17,8 @@ export function fetchResults(searchTerms, locationTerm = '') {
 		payload: request
 	}
 }
-export const FETCH_SKILLS = 'FETCH_SKILLS'
 
+export const FETCH_SKILLS = 'FETCH_SKILLS'
 export function fetchSkills(searchTerms, locationTerm = '') {
 	const requestURL = `${config.backendServer}/skills?search=${searchTerms}`
 	const request = fetch(requestURL).then(response => response.json())

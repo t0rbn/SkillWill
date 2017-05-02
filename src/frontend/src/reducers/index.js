@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import {
 	FETCH_RESULTS,
 	FETCH_SKILLS,
-	KEEP_SEARCHTERMS
+	SAVE_SEARCHTERMS_TO_STORE
 } from '../actions'
 
 function fetchResultsBySearchTerms(state = [], action) {
@@ -15,8 +15,19 @@ function fetchResultsBySearchTerms(state = [], action) {
 	}
 }
 
+function getSearchTerms(state = [], action){
+	switch (action.type) {
+		case SAVE_SEARCHTERMS_TO_STORE:
+			return [...action.searchTerms]
+		default:
+			return state
+	}
+}
+
 const rootReducer = combineReducers({
-  results: fetchResultsBySearchTerms
+  results: fetchResultsBySearchTerms,
+	searchTerms: getSearchTerms
+	// skills: fetchSkillsBySearchTerms
 })
 
 export default rootReducer

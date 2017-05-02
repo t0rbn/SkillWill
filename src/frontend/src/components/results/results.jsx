@@ -8,12 +8,8 @@ import { connect } from 'react-redux'
 class Results extends React.Component {
 	constructor(props) {
 		super(props)
-		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
 		this.state = {
-			searchItems,
-			locationString,
-			dropdownLabel,
-			lastSortedBy: 'fitness',
+			lastSortedBy: 'fitness'
 		};
 
 		this.scrollToResults = this.scrollToResults.bind(this)
@@ -28,7 +24,6 @@ class Results extends React.Component {
 	sortResults(criterion) {
 		let sortedResults
 		const { results } = this.props
-		const { sortOrder } = this.state
 		if (this.state.lastSortedBy === criterion) {
 			sortedResults = results.reverse()
 		} else if (criterion === 'fitness') {
@@ -43,15 +38,13 @@ class Results extends React.Component {
 		this.forceUpdate()
 
 		this.setState({
-			sortOrder: sortOrder,
 			lastSortedBy: criterion,
 			results: sortedResults
 		})
 	}
 
 	render() {
-		const { results } = this.props
-
+		const { results, searchTerms } = this.props
 		if (results && results.length > 0) {
 			return (
 				<div class="results-container">
@@ -67,7 +60,7 @@ class Results extends React.Component {
 						{results.map((data, i) => {
 							return (
 								<li class="result-item" key={i}>
-									<User data={data} searchTerms={this.state.searchItems} />
+									<User data={data} searchTerms={searchTerms} />
 								</li>
 							)
 						})}
@@ -85,7 +78,8 @@ class Results extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		results: state.reducer.results
+		results: state.reducer.results,
+		searchTerms: state.reducer.searchTerms
 	};
 }
 export default connect(mapStateToProps)(Results)

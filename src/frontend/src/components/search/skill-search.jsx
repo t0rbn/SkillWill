@@ -42,17 +42,18 @@ class SkillSearch extends React.Component {
 	// }
 
 	// update component only if search has changed
-	shouldComponentUpdate(nextProps, nextState) {
-		if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchItems.length !== nextState.searchItems.length))) {
-			return true
-		}
-		return false
-	}
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchItems.length !== nextState.searchItems.length))) {
+	// 		return true
+	// 	}
+	// 	return false
+	// }
 
 		handleSearchBarInput(searchString) {
 		const { searchItems } = this.state
 		this.setState({
 			searchItems: searchItems.concat([searchString]),
+			searchStarted: true
 		})
 		this.props.fetchSkills(this.state.searchItems)
 	}
@@ -63,14 +64,19 @@ class SkillSearch extends React.Component {
 		})
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		const { route, searchItems, locationString } = this.state
-		const newRoute = `${route}?skills=${searchItems}${locationString}`
-		const prevSearchString = `search${prevProps.location.search}`
-		document.SearchBar.SearchInput.focus()
-		if (prevSearchString !== newRoute) {
-			this.context.router.push(newRoute)
-			// window.history.pushState({}, "", newRoute)
+	renderResults(searchStarted, results, searchItems) {
+		/* display Results component only when there has been an inital search */
+		if (searchStarted) {
+			return (
+				<Results
+					results={results}
+					searchTerms={searchItems}
+					noResultsLabel={"Keinen passenden Skill gefunden?"}>
+					<Skill
+						handleEdit={this.props.handleEdit}
+						userData={this.props.data} />
+				</Results>
+			)
 		}
 	}
 

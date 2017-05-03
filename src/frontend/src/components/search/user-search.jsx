@@ -24,13 +24,11 @@ class UserSearch extends React.Component {
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
 		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
 		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
-		console.log('items',this.state.searchItems)
 	}
 
 	componentWillMount() {
 		const { searchItems, locationString } = this.state
 		this.props.fetchResults(searchItems, locationString)
-		this.props.saveSearchTermsToStore(searchItems)
 	}
 
 	handleSearchBarInput(searchArray) {
@@ -38,6 +36,7 @@ class UserSearch extends React.Component {
 		this.setState({
 			searchItems: searchItems.concat(searchArray)
 		})
+		this.props.saveSearchTermsToStore(this.state.searchItems)
 	}
 
 	handleSearchBarDelete(deleteItem) {
@@ -46,6 +45,7 @@ class UserSearch extends React.Component {
 		this.setState({
 			searchItems
 		})
+		this.props.saveSearchTermsToStore(this.state.searchItems)
 	}
 
 	handleDropdownSelect(location) {

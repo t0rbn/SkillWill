@@ -18,12 +18,22 @@ export function fetchResults(searchTerms, locationTerm = '') {
 	}
 }
 
-export const FETCH_SKILLS = 'FETCH_SKILLS'
-export function fetchSkills(searchTerms, locationTerm = '') {
+export const FETCH_SKILL = 'FETCH_SKILL'
+export function fetchSkill(searchTerms, locationTerm = '') {
 	const requestURL = `${config.backendServer}/skills?search=${searchTerms}`
 	const request = fetch(requestURL).then(response => response.json())
 	return {
-		type: FETCH_SKILLS,
+		type: FETCH_SKILL,
+		payload: request
+	}
+}
+
+export const GET_PROFILE_DATA = 'GET_PROFILE_DATA'
+export function getUserProfileData(profile) {
+	const requestURL = `${config.backendServer}/users/${profile}`
+	const request = fetch(requestURL).then(response => response.json())
+	return {
+		type: GET_PROFILE_DATA,
 		payload: request
 	}
 }

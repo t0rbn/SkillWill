@@ -10,7 +10,7 @@ class Results extends React.Component {
 		super(props)
 		this.state = {
 			lastSortedBy: 'fitness'
-		};
+		}
 
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
@@ -80,6 +80,6 @@ function mapStateToProps(state) {
 	return {
 		results: state.reducer.results,
 		searchTerms: state.reducer.searchTerms
-	};
+	}
 }
 export default connect(mapStateToProps)(Results)

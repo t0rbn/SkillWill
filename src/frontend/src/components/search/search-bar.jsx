@@ -21,7 +21,7 @@ export default class SearchBar extends React.Component {
 	}
 
 	componentDidMount() {
-		this.input.focus();
+		this.input.focus()
 	}
 
 	getInputValue(event) {

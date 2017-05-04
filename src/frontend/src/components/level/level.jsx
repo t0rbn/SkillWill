@@ -3,28 +3,22 @@ import React from 'react'
 export default class Levels extends React.Component {
 	constructor(props) {
 		super(props)
-
-		this.renderLevelIcons = this.renderLevelIcons.bind(this)
 	}
 
-	renderLevelIcons(icon, level){
-		if(level === 0) {
-			return '💩'
-		}
-		return icon.repeat(level)
-	}
+	levelIcons = ['💩', '🙂', '😀', '😬']
 
 	render() {
-		return(
-			<div>
-				<p class="skill-name">{this.props.skill.name}</p>
+		const { skill: { name, skillLevel, willLevel }, key } = this.props
+		return (
+			<li key={key} class="skill-item">
+				<p class="skill-name">{name}</p>
 				<p class="level">Skill:
-					<span>{this.renderLevelIcons('👌🏼', this.props.skill.skillLevel)}</span>
+					<span>{this.levelIcons[skillLevel]}</span>
 				</p>
 				<p class="level">Will:
-					<span>{this.renderLevelIcons('👌🏼', this.props.skill.willLevel)}</span>
+					<span>{this.levelIcons[willLevel]}</span>
 				</p>
-			</div>
+			</li>
 		)
 	}
 }

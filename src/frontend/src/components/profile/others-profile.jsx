@@ -2,13 +2,13 @@ import React from 'react'
 import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
 import config from '../../config.json'
+import Levels from '../level/level.jsx'
 
 export default class OthersProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			userId: "id",
-			data: null,
+			userId: this.props.params.id || "id",
 			dataLoaded: false,
 			infoLayerAt: 0
 		}
@@ -16,22 +16,12 @@ export default class OthersProfile extends React.Component {
 	}
 
 	componentDidMount() {
-		const elem = this
-		elem.setState({
-			userId: elem.props.params.id
-		})
-
-		fetch(config.backendServer + "/users/" + elem.state.userId)
-			.then(r => r.json())
-			.then(function (data) {
-				elem.setState({
-					data: data,
+		fetch(`${config.backendServer}/users/${this.state.userId}`)
+			.then(response => response.json())
+			.then(user => {
+				this.setState({
+					user,
 					dataLoaded: true
-				})
-
-				let currData = eval(elem.state.data)
-				elem.setState({
-					data: currData
 				})
 			})
 			.catch(function (error) {
@@ -40,17 +30,15 @@ export default class OthersProfile extends React.Component {
 	}
 
 	searchedSkills() {
+		const { skills } = this.state.user
 		return (
 			<li class="searched-skills skill-listing">
 				<div class="listing-header">Gesuchte Skillls</div>
 				<ul class="skills-list">
-					{this.state.data.skills.map((data, i) => {
+					{skills.map((skill, i) => {
 						if (i <= 3)
 							return (
-								<li key={i} class="skill-item">
-									<p class="skill-name">{data.name}</p>
-									<p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel}</span></p>
-								</li>
+								<Levels key={i} skill={skill} />
 							)
 					})}
 				</ul>
@@ -63,11 +51,15 @@ export default class OthersProfile extends React.Component {
 	}
 
 	render() {
+		const { dataLoaded, user } = this.state
 		return (
 			<div class="profile">
-				{this.state.dataLoaded ?
+				{dataLoaded ?
 					<div>
-						<BasicProfile data={this.state.data} infoLayer={this.infoLayer} additionalSkillListing={this.searchedSkills()} />
+						<BasicProfile
+							user={user}
+							infoLayer={this.infoLayer}
+							additionalSkillListing={this.searchedSkills()} />
 					</div>
 					: ""
 				}

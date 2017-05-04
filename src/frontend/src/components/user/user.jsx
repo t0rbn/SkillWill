@@ -47,11 +47,9 @@ export default class User extends React.Component {
 				<li class="location">{location}</li>
 				<li class="skills">
 					<ul class="skills-list">
-						{this.state.skillsToShow.map((user, i) => {
+						{this.state.skillsToShow.map((skill, i) => {
 							return (
-								<li key={i} class="skill-item">
-									<Levels skill={user} />
-								</li>
+								<Levels key={i} skill={skill} />
 							)
 						})}
 					</ul>

@@ -72,7 +72,7 @@ class MyProfile extends React.Component {
 	checkUser() {
 		// check if the profiles userID matches with the logged in user
 		const user = Cookies.load("user")
-		if (user != this.state.userId ) {
+		if (user != this.state.userId) {
 			return false
 		}
 		return true
@@ -162,12 +162,18 @@ class MyProfile extends React.Component {
 			this.state.dataLoaded ?
 				this.state.skillSearchOpen ?
 					<div class="profile">
-						<SkillSearch handleEdit={this.editSkill} data={this.state.data} />
+						<SkillSearch handleEdit={this.editSkill} />
 						<div class="back-btn" onClick={this.openCloseSkillSearch}></div>
 					</div>
 					:
 					<div class="profile">
-						<BasicProfile data={this.state.data} thisElem={this} infoLayer={this.infoLayer} openLayerAt={this.state.openLayerAt} showAllSkills={this.state.showAllSkills} checkLogin={this.checkAndOpenLogin} />
+						<BasicProfile
+							user={this.state.data}
+							thisElem={this}
+							infoLayer={this.infoLayer}
+							openLayerAt={this.state.openLayerAt}
+							showAllSkills={this.state.showAllSkills}
+							checkLogin={this.checkAndOpenLogin} />
 						<div class="add-skill-btn" onClick={this.openCloseSkillSearch}></div>
 					</div>
 				: ""
@@ -175,4 +181,4 @@ class MyProfile extends React.Component {
 	}
 }
 
-export default connect(null, {getUserProfileData})(MyProfile)
+export default connect(null, { getUserProfileData })(MyProfile)

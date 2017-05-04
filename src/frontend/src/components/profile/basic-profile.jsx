@@ -3,6 +3,7 @@ import User from "../user/user.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import { Router, Link, browserHistory } from 'react-router'
+import Levels from '../level/level.jsx'
 
 export default class BasicProfile extends React.Component {
 	constructor(props) {
@@ -49,7 +50,7 @@ export default class BasicProfile extends React.Component {
 
 	getAvatarColor() {
 		const colors = ["blue", "red", "green"]
-		let index = this.props.data.id
+		let index = this.props.user.id
 			.toLowerCase()
 			.split('')
 			.map(c => c.charCodeAt(0))
@@ -58,20 +59,33 @@ export default class BasicProfile extends React.Component {
 
 	}
 
-	renderSkills(data, i) {
+	renderSkills(skill, i) {
 		return (
 			<div>
-				{this.state.infoLayerAt == i ? <div class="close-layer" onClick={this.closeInfoLayer}></div> : ""}
-				<p class="skill-name" key={i} onClick={this.openInfoLayer.bind(null, i)}>{data.name}</p>
-				<p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel}</span></p>
+				{this.state.infoLayerAt == i
+					? <div class="close-layer" onClick={this.closeInfoLayer}></div>
+					: ""
+				}
+				<p
+					class="skill-name"
+					key={i}
+					onClick={this.openInfoLayer.bind(null, i)}>{skill.name}</p>
+				<p
+					class="level">skillLevel:
+						<span>{skill.skillLevel}</span>
+				</p>
+				<p>willLevel:
+					<span>{skill.willLevel}</span>
+				</p>
+
 				{
 					//open Info-Layer on clicked Item
 					this.state.infoLayerAt == i ?
 						<div class="info-layer">
-							<p class="skill-title">{data.name}</p>
+							<p class="skill-title">{skill.name}</p>
 							{
 								// for my-profile only
-								this.props.infoLayer(data, i, this.state.showAllSkills)
+								this.props.infoLayer(skill, i, this.state.showAllSkills)
 							}
 							<a class="close-btn small" onClick={this.closeInfoLayer}></a>
 						</div>
@@ -82,17 +96,31 @@ export default class BasicProfile extends React.Component {
 	}
 
 	render() {
+		const {
+			additionalSkillListing,
+			user: {
+				id,
+				firstName,
+				lastName,
+				title,
+				location,
+				mail,
+				phone,
+				skills
+			}
+		} = this.props
+
 		return (
 			<ul class="basic-profile">
 				<li class="info">
-					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{this.props.data.firstName.charAt(0).toUpperCase()}</span></div>
-					<p class="name">{this.props.data.firstName} {this.props.data.lastName}</p>
-					<p class="id">{this.props.data.id}</p>
-					<p class="department">{this.props.data.title}</p>
-					<p class="location phone">{this.props.data.location} / TEL. {this.props.data.phone}</p>
-					<Link class="mail" href={`mailto:${this.props.data.mail}`} target="_blank"></Link>
-					<Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${this.props.data.firstName.toLowerCase()}.${this.props.data.lastName.toLowerCase()}`} target="_blank"></Link>
-					<Link class="move" href={`http://move.sinner-schrader.de/?id=${this.props.data.id}`} target="_blank"></Link>
+					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
+					<p class="name">{firstName} {lastName}</p>
+					<p class="id">{id}</p>
+					<p class="department">{title}</p>
+					<p class="location phone">{location} / TEL. {phone}</p>
+					<Link class="mail" href={`mailto:${mail}`} target="_blank"></Link>
+					<Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${firstName.toLowerCase()}.${lastName.toLowerCase()}`} target="_blank"></Link>
+					<Link class="move" href={`http://move.sinner-schrader.de/?id=${id}`} target="_blank"></Link>
 				</li>
 
 				{
@@ -102,13 +130,10 @@ export default class BasicProfile extends React.Component {
 				<li class="top-wills skill-listing ">
 					<div class="listing-header">Top Willls</div>
 					<ul class="skills-list">
-						{this.props.data.skills.map((data, i) => {
-							if (i <= 3)
+						{skills.map((skill, i) => {
+							if (i < 3)
 								return (
-									<li key={i} class="skill-item">
-										<p class="skill-name">{data.name}</p>
-										<p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel}</span></p>
-									</li>
+									<Levels key={i} skill={skill} />
 								)
 						})}
 					</ul>
@@ -116,15 +141,15 @@ export default class BasicProfile extends React.Component {
 				<li class="all-skills skill-listing">
 					<div class="listing-header">Alle Skillls</div>
 					<ul class="skills-list closed">
-						{this.props.data.skills.map((data, i) => {
+						{skills.map((skill, i) => {
 
 							//display show-more-link after maximum skills to show
 							if (this.state.showAllSkills) {
-								return (<li class="skill-item" >{this.renderSkills(data, i)}</li>)
+								return (<li class="skill-item" >{this.renderSkills(skill, i)}</li>)
 							}
 							else {
 								if (i <= (this.state.skillsToShow)) {
-									return (<li class="skill-item">{this.renderSkills(data, i)}</li>)
+									return (<li class="skill-item">{this.renderSkills(skill, i)}</li>)
 								}
 							}
 						})}

@@ -9,9 +9,10 @@ export default class User extends React.Component {
 			skillsToShow: []
 		}
 
-		const allSkills = this.props.data.skills
-		allSkills.map((skill) => {
+		const {skills} = this.props.data
+		skills.map((skill) => {
 			const indexOfSearchedSkill = this.props.searchTerms.indexOf(skill.name)
+
 			if (indexOfSearchedSkill > -1) {
 				this.setState({
 					skillsToShow: this.state.skillsToShow.concat([skill])
@@ -23,13 +24,6 @@ export default class User extends React.Component {
 
 	handleClick() {
 		document.body.classList.add('layer-open')
-	}
-
-	renderLevelIcons(icon, level) {
-		if (level === 0) {
-			return '💩'
-		}
-		return icon.repeat(level)
 	}
 
 	render() {

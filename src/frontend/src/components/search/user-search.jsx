@@ -29,6 +29,7 @@ class UserSearch extends React.Component {
 	componentWillMount() {
 		const { searchItems, locationString } = this.state
 		this.props.fetchResults(searchItems, locationString)
+		this.props.saveSearchTermsToStore(this.state.searchItems)
 	}
 
 	handleSearchBarInput(searchArray) {

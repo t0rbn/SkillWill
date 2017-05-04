@@ -6,20 +6,15 @@ export default class User extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			skillsToShow: []
+			skillsToShow: this.getSkillsToShow()
 		}
-
-		const {skills} = this.props.data
-		skills.map((skill) => {
-			const indexOfSearchedSkill = this.props.searchTerms.indexOf(skill.name)
-
-			if (indexOfSearchedSkill > -1) {
-				this.setState({
-					skillsToShow: this.state.skillsToShow.concat([skill])
-				})
-			}
-		})
 		this.handleClick = this.handleClick.bind(this)
+		this.getSkillsToShow = this.getSkillsToShow.bind(this)
+	}
+
+	getSkillsToShow() {
+		const { searchTerms, user: { skills } } = this.props
+		return skills.filter(skill => searchTerms.indexOf(skill.name) > -1)
 	}
 
 	handleClick() {
@@ -27,27 +22,35 @@ export default class User extends React.Component {
 	}
 
 	render() {
+		const {
+			id,
+			firstName,
+			lastName,
+			title,
+			location
+		} = this.props.user
+
 		return (
 			<ul class="user">
 				<li class="info">
 					<Link
 						class="name"
-						to={`/profile/${this.props.data.id}`}
+						to={`/profile/${id}`}
 						activeClassName="active"
-						id={`${this.props.data.id}`}
+						id={id}
 						onClick={this.handleClick}>
-						{`${this.props.data.firstName} ${this.props.data.lastName}`}
+						{`${firstName} ${lastName}`}
 					</Link>
-					<span class="id">{this.props.data.id}</span>
-					<span class="department">{this.props.data.title}</span>
+					<span class="id">{id}</span>
+					<span class="department">{title}</span>
 				</li>
-				<li class="location">{this.props.data.location}</li>
+				<li class="location">{location}</li>
 				<li class="skills">
 					<ul class="skills-list">
-						{this.state.skillsToShow.map((data, i) => {
+						{this.state.skillsToShow.map((user, i) => {
 							return (
 								<li key={i} class="skill-item">
-									<Levels skill={data} />
+									<Levels skill={user} />
 								</li>
 							)
 						})}

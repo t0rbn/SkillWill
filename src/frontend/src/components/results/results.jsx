@@ -57,10 +57,10 @@ class Results extends React.Component {
 							<li class="sort-button-location" onClick={() => this.sortResults('location')}>Sort by Location</li>
 							<li class="sort-button-fitness" onClick={() => this.sortResults('fitness')}>Sort by Fitness</li>
 						</ul>
-						{results.map((data, i) => {
+						{results.map((result, i) => {
 							return (
 								<li class="result-item" key={i}>
-									<User data={data} searchTerms={searchTerms} />
+									<User user={result} searchTerms={searchTerms} />
 								</li>
 							)
 						})}

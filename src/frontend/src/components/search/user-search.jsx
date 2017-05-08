@@ -92,7 +92,6 @@ class UserSearch extends React.Component {
 						searchTerms={searchItems}
 						noResults={results.length === 0} />*/}
 				</SearchBar>
-				{this.props.children}
 			</div>
 		)
 	}

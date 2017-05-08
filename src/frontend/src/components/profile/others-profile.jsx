@@ -3,8 +3,9 @@ import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
 import config from '../../config.json'
 import Levels from '../level/level.jsx'
+import { connect } from 'react-redux'
 
-export default class OthersProfile extends React.Component {
+class OthersProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -31,6 +32,7 @@ export default class OthersProfile extends React.Component {
 
 	searchedSkills() {
 		const { skills } = this.state.user
+		const { searchTerms } = this.props
 		return (
 			<li class="searched-skills skill-listing">
 				<div class="listing-header">Gesuchte Skillls</div>
@@ -67,3 +69,10 @@ export default class OthersProfile extends React.Component {
 		)
 	}
 }
+function mapStateToProps(state) {
+	return {
+		searchTerms: state.reducer.searchTerms
+	}
+}
+
+export default connect(mapStateToProps)(OthersProfile)

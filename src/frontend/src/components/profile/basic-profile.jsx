@@ -2,7 +2,7 @@ import React from 'react'
 import User from "../user/user.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
-import { Router, Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import Levels from '../level/level.jsx'
 
 export default class BasicProfile extends React.Component {
@@ -14,7 +14,7 @@ export default class BasicProfile extends React.Component {
 			infoLayerAt: this.props.openLayerAt,
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
-			skillsToShow: 6
+			numberOfSkillsToShow: 6
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.openInfoLayer = this.openInfoLayer.bind(this)
@@ -66,18 +66,7 @@ export default class BasicProfile extends React.Component {
 					? <div class="close-layer" onClick={this.closeInfoLayer}></div>
 					: ""
 				}
-				<p
-					class="skill-name"
-					key={i}
-					onClick={this.openInfoLayer.bind(null, i)}>{skill.name}</p>
-				<p
-					class="level">skillLevel:
-						<span>{skill.skillLevel}</span>
-				</p>
-				<p>willLevel:
-					<span>{skill.willLevel}</span>
-				</p>
-
+				<Levels skill={skill} key={i} onClick={() => this.openInfoLayer(i)}></Levels>
 				{
 					//open Info-Layer on clicked Item
 					this.state.infoLayerAt == i ?
@@ -123,36 +112,33 @@ export default class BasicProfile extends React.Component {
 					<Link class="move" href={`http://move.sinner-schrader.de/?id=${id}`} target="_blank"></Link>
 				</li>
 
-				{
-					this.props.additionalSkillListing // e.g. searched skills
-				}
+				{this.props.additionalSkillListing} {/*e.g. searched skills}*/}
 
 				<li class="top-wills skill-listing ">
 					<div class="listing-header">Top Willls</div>
 					<ul class="skills-list">
 						{skills.map((skill, i) => {
 							if (i < 3)
-								return (
-									<Levels key={i} skill={skill} />
-								)
+								return this.renderSkills(skill, i)
 						})}
 					</ul>
 				</li>
 				<li class="all-skills skill-listing">
 					<div class="listing-header">Alle Skillls</div>
-					<ul class="skills-list closed">
-						{skills.map((skill, i) => {
 
+					<ul class="skills-list">
+						{skills.map((skill, i) => {
 							//display show-more-link after maximum skills to show
 							if (this.state.showAllSkills) {
-								return (<li class="skill-item" >{this.renderSkills(skill, i)}</li>)
+								return this.renderSkills(skill, i)
 							}
 							else {
-								if (i <= (this.state.skillsToShow)) {
-									return (<li class="skill-item">{this.renderSkills(skill, i)}</li>)
+								if (i < (this.state.numberOfSkillsToShow)) {
+									return this.renderSkills(skill, i)
 								}
 							}
-						})}
+						}
+						)}
 					</ul>
 					<a class="show-more-link" onClick={this.showAllSkills} href=""></a>
 				</li>

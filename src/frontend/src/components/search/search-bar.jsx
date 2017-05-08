@@ -1,7 +1,6 @@
 import React from 'react'
 import { Router, Route, Link } from 'react-router'
 import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
-import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 
 export default class SearchBar extends React.Component {
 	constructor(props) {

@@ -8,7 +8,7 @@ import {
 	GET_PROFILE_DATA
 } from '../actions'
 
-function getSearchTerms(state = [], action) {
+function saveSearchTermsToStore(state = [], action) {
 	switch (action.type) {
 		case SAVE_SEARCHTERMS_TO_STORE:
 			return [...action.searchTerms]
@@ -45,7 +45,7 @@ function getUserProfileData(state = [], action) {
 }
 
 const rootReducer = combineReducers({
-	searchTerms: getSearchTerms,
+	searchTerms: saveSearchTermsToStore,
 	results: fetchResultsBySearchTerms,
 	user: getUserProfileData,
 	skill: fetchSkillBySearchTerm

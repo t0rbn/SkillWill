@@ -1,6 +1,6 @@
 import React from 'react'
 import { Router, Route, Link, browserHistory } from 'react-router'
-import Levels from '../level/level.jsx'
+import SkillItem from '../skill-item/skill-item.jsx'
 
 export default class User extends React.Component {
 	constructor(props) {
@@ -38,7 +38,8 @@ export default class User extends React.Component {
 						to={`/profile/${id}`}
 						activeClassName="active"
 						id={id}
-						onClick={this.handleClick}>
+						onClick={this.handleClick}
+						params={{ testvalue: 'foobar'}}>
 						{`${firstName} ${lastName}`}
 					</Link>
 					<span class="id">{id}</span>
@@ -49,7 +50,7 @@ export default class User extends React.Component {
 					<ul class="skills-list">
 						{this.state.skillsToShow.map((skill, i) => {
 							return (
-								<Levels key={i} skill={skill} />
+								<SkillItem key={i} skill={skill} />
 							)
 						})}
 					</ul>

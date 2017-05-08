@@ -1,7 +1,7 @@
 import React from 'react'
 import SearchBar from './search-bar.jsx'
 import Results from '../results/results.jsx'
-import Skill from '../skill/skill.jsx'
+import SkillEditor from '../skill-editor/skill-editor.jsx'
 import config from '../../config.json'
 import { fetchSkill } from '../../actions'
 import { connect } from 'react-redux'
@@ -47,7 +47,7 @@ class SkillSearch extends React.Component {
 					onInputChange={this.handleSearchBarInput}
 					parent={this}
 					searchTerms={searchItems} />
-				<Skill
+				<SkillEditor
 					handleEdit={handleEdit}
 					skill={skill}
 					user={user} />

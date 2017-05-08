@@ -3,7 +3,7 @@ import User from "../user/user.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import { Link } from 'react-router'
-import Levels from '../level/level.jsx'
+import SkillItem from '../skill-item/skill-item.jsx'
 
 export default class BasicProfile extends React.Component {
 	constructor(props) {
@@ -14,13 +14,16 @@ export default class BasicProfile extends React.Component {
 			infoLayerAt: this.props.openLayerAt,
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
-			numberOfSkillsToShow: 6
+			numberOfSkillsToShow: 6,
+			sortedSkills: this.sortSkills()
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.openInfoLayer = this.openInfoLayer.bind(this)
 		this.closeInfoLayer = this.closeInfoLayer.bind(this)
 		this.renderSkills = this.renderSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
+		this.sortSkills = this.sortSkills.bind(this)
+		console.log(this.state, this.props)
 	}
 
 	showAllSkills(e) {
@@ -59,6 +62,12 @@ export default class BasicProfile extends React.Component {
 
 	}
 
+	sortSkills() {
+		return this.props.user.skills.sort((a, b) => {
+				return a['name'] < b['name'] ? -1 : 1
+		})
+	}
+
 	renderSkills(skill, i) {
 		return (
 			<div>
@@ -66,7 +75,7 @@ export default class BasicProfile extends React.Component {
 					? <div class="close-layer" onClick={this.closeInfoLayer}></div>
 					: ""
 				}
-				<Levels skill={skill} key={i} onClick={() => this.openInfoLayer(i)}></Levels>
+				<SkillItem skill={skill} key={i} onClick={() => this.openInfoLayer(i)}></SkillItem>
 				{
 					//open Info-Layer on clicked Item
 					this.state.infoLayerAt == i ?

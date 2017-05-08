@@ -2,7 +2,8 @@ import React from 'react'
 import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
 import config from '../../config.json'
-import Levels from '../level/level.jsx'
+import SkillItem from '../skill-item/skill-item.jsx'
+
 import { connect } from 'react-redux'
 
 class OthersProfile extends React.Component {
@@ -40,7 +41,7 @@ class OthersProfile extends React.Component {
 					{skills.map((skill, i) => {
 						if (i <= 3)
 							return (
-								<Levels key={i} skill={skill} />
+								<SkillItem key={i} skill={skill} />
 							)
 					})}
 				</ul>

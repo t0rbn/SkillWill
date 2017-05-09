@@ -58,10 +58,10 @@ class OthersProfile extends React.Component {
 		return (
 			<div class="profile">
 				{dataLoaded ?
-						<BasicProfile
-							user={user}
-							infoLayer={this.infoLayer}
-							additionalSkillListing={this.searchedSkills()} />
+					<BasicProfile
+						user={user}
+						infoLayer={this.infoLayer}
+						additionalSkillListing={this.searchedSkills()} />
 					: ""
 				}
 			</div>

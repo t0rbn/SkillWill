@@ -2,7 +2,8 @@ import React from 'react'
 import User from "../user/user.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
-import { Router, Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
+import SkillItem from '../skill-item/skill-item.jsx'
 
 export default class BasicProfile extends React.Component {
 	constructor(props) {
@@ -13,13 +14,15 @@ export default class BasicProfile extends React.Component {
 			infoLayerAt: this.props.openLayerAt,
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
-			skillsToShow: 6
+			numberOfSkillsToShow: 6,
+			sortedSkills: this.sortSkills()
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.openInfoLayer = this.openInfoLayer.bind(this)
 		this.closeInfoLayer = this.closeInfoLayer.bind(this)
 		this.renderSkills = this.renderSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
+		this.sortSkills = this.sortSkills.bind(this)
 	}
 
 	showAllSkills(e) {
@@ -49,7 +52,7 @@ export default class BasicProfile extends React.Component {
 
 	getAvatarColor() {
 		const colors = ["blue", "red", "green"]
-		let index = this.props.data.id
+		let index = this.props.user.id
 			.toLowerCase()
 			.split('')
 			.map(c => c.charCodeAt(0))
@@ -58,20 +61,29 @@ export default class BasicProfile extends React.Component {
 
 	}
 
-	renderSkills(data, i) {
+	sortSkills() {
+		return this.props.user.skills.sort((a, b) => {
+			return a['name'] < b['name'] ? -1 : 1
+		})
+	}
+
+	renderSkills(skill, i) {
+		const { infoLayerAt, showAllSkills } = this.state
 		return (
 			<div>
-				{this.state.infoLayerAt == i ? <div class="close-layer" onClick={this.closeInfoLayer}></div> : ""}
-				<p class="skill-name" key={i} onClick={this.openInfoLayer.bind(null, i)}>{data.name}</p>
-				<p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel}</span></p>
+				{infoLayerAt == i
+					? <div class="close-layer" onClick={this.closeInfoLayer}></div>
+					: ""
+				}
+				<SkillItem skill={skill} key={i} onClick={() => this.openInfoLayer(i)}></SkillItem>
 				{
 					//open Info-Layer on clicked Item
-					this.state.infoLayerAt == i ?
+					infoLayerAt == i ?
 						<div class="info-layer">
-							<p class="skill-title">{data.name}</p>
+							<p class="skill-title">{skill.name}</p>
 							{
 								// for my-profile only
-								this.props.infoLayer(data, i, this.state.showAllSkills)
+								this.props.infoLayer(skill, i, showAllSkills)
 							}
 							<a class="close-btn small" onClick={this.closeInfoLayer}></a>
 						</div>
@@ -82,52 +94,65 @@ export default class BasicProfile extends React.Component {
 	}
 
 	render() {
+		const {
+			additionalSkillListing,
+			user: {
+				id,
+				firstName,
+				lastName,
+				title,
+				location,
+				mail,
+				phone,
+				skills
+			}
+		} = this.props
+
+		const {
+			showAllSkills,
+			numberOfSkillsToShow
+		} = this.state
+
 		return (
 			<ul class="basic-profile">
 				<li class="info">
-					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{this.props.data.firstName.charAt(0).toUpperCase()}</span></div>
-					<p class="name">{this.props.data.firstName} {this.props.data.lastName}</p>
-					<p class="id">{this.props.data.id}</p>
-					<p class="department">{this.props.data.title}</p>
-					<p class="location phone">{this.props.data.location} / TEL. {this.props.data.phone}</p>
-					<Link class="mail" href={`mailto:${this.props.data.mail}`} target="_blank"></Link>
-					<Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${this.props.data.firstName.toLowerCase()}.${this.props.data.lastName.toLowerCase()}`} target="_blank"></Link>
-					<Link class="move" href={`http://move.sinner-schrader.de/?id=${this.props.data.id}`} target="_blank"></Link>
+					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
+					<p class="name">{firstName} {lastName}</p>
+					<p class="id">{id}</p>
+					<p class="department">{title}</p>
+					<p class="location phone">{location} / TEL. {phone}</p>
+					<Link class="mail" href={`mailto:${mail}`} target="_blank"></Link>
+					<Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${firstName.toLowerCase()}.${lastName.toLowerCase()}`} target="_blank"></Link>
+					<Link class="move" href={`http://move.sinner-schrader.de/?id=${id}`} target="_blank"></Link>
 				</li>
 
-				{
-					this.props.additionalSkillListing // e.g. searched skills
-				}
+				{this.props.additionalSkillListing /*e.g. searched skills*/}
 
 				<li class="top-wills skill-listing ">
-					<div class="listing-header">Top Willls</div>
+					<div class="listing-header">Top Wills</div>
 					<ul class="skills-list">
-						{this.props.data.skills.map((data, i) => {
-							if (i <= 3)
-								return (
-									<li key={i} class="skill-item">
-										<p class="skill-name">{data.name}</p>
-										<p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel}</span></p>
-									</li>
-								)
+						{skills.map((skill, i) => {
+							if (i < 3)
+								return this.renderSkills(skill, i)
 						})}
 					</ul>
 				</li>
 				<li class="all-skills skill-listing">
-					<div class="listing-header">Alle Skillls</div>
-					<ul class="skills-list closed">
-						{this.props.data.skills.map((data, i) => {
+					<div class="listing-header">Alle Skills</div>
 
+					<ul class="skills-list">
+						{skills.map((skill, i) => {
 							//display show-more-link after maximum skills to show
 							if (this.state.showAllSkills) {
-								return (<li class="skill-item" >{this.renderSkills(data, i)}</li>)
+								return this.renderSkills(skill, i)
 							}
 							else {
-								if (i <= (this.state.skillsToShow)) {
-									return (<li class="skill-item">{this.renderSkills(data, i)}</li>)
+								if (i < (this.state.numberOfSkillsToShow)) {
+									return this.renderSkills(skill, i)
 								}
 							}
-						})}
+						}
+						)}
 					</ul>
 					<a class="show-more-link" onClick={this.showAllSkills} href=""></a>
 				</li>

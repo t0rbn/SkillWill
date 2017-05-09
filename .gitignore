@@ -54,6 +54,9 @@ local.properties
 # Code Recommenders
 .recommenders/
 
+# VS Code settings
+.vscode
+
 # Maven
 target/
 pom.xml.tag

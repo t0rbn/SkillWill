@@ -3,27 +3,17 @@ import config from '../../config.json'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import User from '../user/user'
 import { browserHistory } from 'react-router'
+import { connect } from 'react-redux'
 
-export default class Results extends React.Component {
+class Results extends React.Component {
 	constructor(props) {
 		super(props)
-		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
 		this.state = {
-			searchItems,
-			locationString,
-			dropdownLabel,
-			lastSortedBy: 'fitness',
-			results: [],
-			locationTerm: this.props.location.query.location || '',
-			searchStarted: false,
-			shouldUpdate: false,
-			route: this.props.location.pathname
-		};
+			lastSortedBy: 'fitness'
+		}
 
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
-		this.requestSearch = this.requestSearch.bind(this)
-		this.requestSearch(searchItems, locationString)
 	}
 
 	scrollToResults() {
@@ -31,37 +21,9 @@ export default class Results extends React.Component {
 		window.scrollBy({ top: `${searchbarRect.top - 10}`, behavior: "smooth" })
 	}
 
-	requestSearch(searchTerms, locationString = this.state.locationTerm) {
-		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
-			.then(r => {
-				if (r.status === 400) {
-					this.setState({
-						results: [],
-						searchItems: searchTerms,
-						searchStarted: true,
-						shouldUpdate: true
-					})
-				} else {
-					r.json().then(data => {
-						const updatedSearchTerms = data.searched || searchTerms
-						this.setState({
-							results: data.results,
-							searchStarted: true,
-							searchItems: updatedSearchTerms,
-							route: `search?skills=${updatedSearchTerms}${locationString}`,
-							shouldUpdate: true
-						})
-					})
-				}
-			})
-			.catch(error => {
-				console.error(`requestSearch:${error}`)
-			})
-	}
-
 	sortResults(criterion) {
 		let sortedResults
-		const { results, sortOrder } = this.state
+		const { results } = this.props
 		if (this.state.lastSortedBy === criterion) {
 			sortedResults = results.reverse()
 		} else if (criterion === 'fitness') {
@@ -76,15 +38,14 @@ export default class Results extends React.Component {
 		this.forceUpdate()
 
 		this.setState({
-			sortOrder: sortOrder,
 			lastSortedBy: criterion,
 			results: sortedResults
 		})
 	}
 
 	render() {
-		const { results } = this.state
-		if (results.length > 0) {
+		const { results, searchTerms } = this.props
+		if (results && results.length > 0) {
 			return (
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
@@ -96,10 +57,10 @@ export default class Results extends React.Component {
 							<li class="sort-button-location" onClick={() => this.sortResults('location')}>Sort by Location</li>
 							<li class="sort-button-fitness" onClick={() => this.sortResults('fitness')}>Sort by Fitness</li>
 						</ul>
-						{results.map((data, i) => {
+						{results.map((result, i) => {
 							return (
 								<li class="result-item" key={i}>
-									<User data={data} searchTerms={this.state.searchItems} />
+									<User user={result} searchTerms={searchTerms} />
 								</li>
 							)
 						})}
@@ -115,3 +76,10 @@ export default class Results extends React.Component {
 	}
 }
 
+function mapStateToProps(state) {
+	return {
+		results: state.reducer.results,
+		searchTerms: state.reducer.searchTerms
+	}
+}
+export default connect(mapStateToProps)(Results)

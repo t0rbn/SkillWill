@@ -111,7 +111,6 @@
             width: 33%;
 
             .level {
-                width: 112px;
                 display: inline-block;
                 padding-right: @m-inline;
             }
@@ -130,10 +129,10 @@
     .show-more-link {
         color: @s2-red;
         margin: @m-stack auto;
-        text-transform: capitalize;   
+        text-transform: capitalize;
 
         &::after {
-            content: @more-label;    
+            content: @more-label;
         }
 
         &.open {
@@ -194,7 +193,7 @@
             }
         }
 
-        .delete {   
+        .delete {
             &::after {
                 content: data-uri("@{image-path}/delete.svg");
                 height: 30px;

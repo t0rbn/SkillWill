@@ -1,16 +1,11 @@
 import React from 'react'
 import { Router, Route, Link } from 'react-router'
 import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
-import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 
 export default class SearchBar extends React.Component {
 	constructor(props) {
 		super(props)
-		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.queryParams)
 		this.state = {
-			searchItems,
-			locationString,
-			dropdownLabel,
 			currentValue: '',
 			searchTerms: this.props.searchTerms
 		}
@@ -21,7 +16,7 @@ export default class SearchBar extends React.Component {
 	}
 
 	componentDidMount() {
-		this.input.focus();
+		this.input.focus()
 	}
 
 	getInputValue(event) {
@@ -31,10 +26,10 @@ export default class SearchBar extends React.Component {
 	}
 
 	deleteFilter(event, deleteItem) {
-		const {currentValue, searchTerms} = this.state
-		const {key, type, target} = event
+		const { currentValue, searchTerms } = this.state
+		const { key, type, target } = event
 		const isBackspaceKey = currentValue === "" && key === 'Backspace' && searchTerms !== ""
-		const isMouseClick = type === 'click' && target.dataset.filter === deleteItem
+		const isMouseClick = type === 'cqlick' && target.dataset.filter === deleteItem
 
 		if (isBackspaceKey || isMouseClick) {
 			this.props.onInputDelete(deleteItem)
@@ -43,8 +38,9 @@ export default class SearchBar extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault()
-		const currentValue = this.state.currentValue.trim()
-		if (currentValue && currentValue.length > 0) {
+		const regex = new RegExp(/\s*,+\s*|\s+/, 'g')
+		const currentValue = this.state.currentValue.trim().split(regex).filter(element => element)
+		if (currentValue) {
 			this.props.onInputChange(currentValue)
 		}
 	}

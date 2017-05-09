@@ -1,28 +1,20 @@
-import React from 'react';
+import React from 'react'
 
 export default function setInitialStateFromURL(queryObject) {
-	if(queryObject && queryObject.skills){
-		const {location, skills} = queryObject
-		const dropdownLabel = location ? location : 'Alle Standorte'
-		const queryArray = convertQueryParamsToArray(skills)
-		const locationString = generateLocationToString(location)
+	const {location, skills} = queryObject
+	const dropdownLabel = location || 'Alle Standorte'
+	const locationString = generateLocationToString(location)
+	const searchItems = convertQueryParamsToArray(skills)
 
-		return({
-			searchItems: queryArray,
-			locationString: locationString,
-			dropdownLabel: dropdownLabel
-		})
-	} else {
-		return({
-			searchItems: [],
-			locationString: '',
-			dropdownLabel: 'Alle Standorte'
-		})
-	}
+	return({
+		searchItems,
+		locationString,
+		dropdownLabel
+	})
 }
 
 function convertQueryParamsToArray(skills){
-	if (typeof skills != 'undefined' && skills.length !== 0){
+	if (skills && skills.length > 0){
 		return skills.split(',')
 	} else {
 		return []
@@ -30,7 +22,7 @@ function convertQueryParamsToArray(skills){
 }
 
 function generateLocationToString(location){
-	if (typeof location !== 'undefined'){
+	if (location){
 		return `&location=${location}`
 	} else {
 		return ''

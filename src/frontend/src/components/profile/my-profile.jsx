@@ -5,8 +5,10 @@ import SkillSearch from "../search/skill-search.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import Cookies from 'react-cookie'
+import { getUserProfileData } from '../../actions'
+import { connect } from 'react-redux'
 
-export default class MyProfile extends React.Component {
+class MyProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -33,22 +35,23 @@ export default class MyProfile extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		const elem = this
-		elem.setState({
-			userId: elem.props.params.id
+	componentWillMount() {
+		this.setState({
+			userId: this.props.params.id
 		})
-		elem.getProfileData(elem)
+		// TODO -> remove both request types
+		this.getProfileData()
+		this.props.getUserProfileData(this.props.params.id)
 		if (!this.checkUser()) {
 			browserHistory.push("/my-profile/login")
 		}
 	}
 
-	getProfileData(elem) {
-		fetch(config.backendServer + "/users/" + elem.state.userId)
+	getProfileData() {
+		fetch(config.backendServer + "/users/" + this.state.userId)
 			.then(r => r.json())
-			.then(function (data) {
-				elem.setState({
+			.then(data => {
+				this.setState({
 					data: data,
 					dataLoaded: true
 				})
@@ -59,17 +62,17 @@ export default class MyProfile extends React.Component {
 	}
 
 	checkAndOpenLogin() {
-		let s = this.state.session || Cookies.load("session")
-		if (s != this.state.session || !s) {
-			this.setState({ session: s })
+		const session = this.state.session || Cookies.load("session")
+		if (session != this.state.session || !session) {
+			this.setState({ session: session })
 		}
-		return !!s
+		return !!session
 	}
 
 	checkUser() {
 		// check if the profiles userID matches with the logged in user
-		let u = Cookies.load("user")
-		if (u != this.state.userId) {
+		const user = Cookies.load("user")
+		if (user != this.state.userId) {
 			return false
 		}
 		return true
@@ -159,15 +162,22 @@ export default class MyProfile extends React.Component {
 			this.state.dataLoaded ?
 				this.state.skillSearchOpen ?
 					<div class="profile">
-						<SkillSearch handleEdit={this.editSkill} data={this.state.data} />
+						<SkillSearch handleEdit={this.editSkill} />
 						<div class="back-btn" onClick={this.openCloseSkillSearch}></div>
 					</div>
 					:
 					<div class="profile">
-						<BasicProfile data={this.state.data} thisElem={this} infoLayer={this.infoLayer} openLayerAt={this.state.openLayerAt} showAllSkills={this.state.showAllSkills} checkLogin={this.checkAndOpenLogin} />
+						<BasicProfile
+							user={this.state.data}
+							infoLayer={this.infoLayer}
+							openLayerAt={this.state.openLayerAt}
+							showAllSkills={this.state.showAllSkills}
+							checkLogin={this.checkAndOpenLogin} />
 						<div class="add-skill-btn" onClick={this.openCloseSkillSearch}></div>
 					</div>
 				: ""
 		)
 	}
 }
+
+export default connect(null, { getUserProfileData })(MyProfile)

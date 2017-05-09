@@ -1,10 +1,12 @@
 import React from 'react'
 import SearchBar from './search-bar.jsx'
 import Results from '../results/results.jsx'
-import Skill from '../skill/skill.jsx'
+import SkillEditor from '../skill-editor/skill-editor.jsx'
 import config from '../../config.json'
+import { fetchSkill } from '../../actions'
+import { connect } from 'react-redux'
 
-export default class SkillSearch extends React.Component {
+class SkillSearch extends React.Component {
 
 	constructor(props) {
 		super(props)
@@ -14,48 +16,52 @@ export default class SkillSearch extends React.Component {
 			searchStarted: false,
 			shouldUpdate: false
 		}
-		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
-		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
-	}
 
+		this.toggleUpdate = this.toggleUpdate.bind(this)
+		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
+	}
 
 	handleSearchBarInput(searchString) {
+		const { searchItems } = this.state
 		this.setState({
-			searchItems: this.state.searchItems.concat([searchString])
+			searchItems: searchItems.concat([searchString]),
+			searchStarted: true
 		})
+		this.props.fetchSkill(this.state.searchItems)
 	}
 
-	handleSearchBarDelete(deleteItem) {
-		const { searchItems } = this.state
-		searchItems.splice(searchItems.indexOf(deleteItem), 1)
+	toggleUpdate(bool) {
 		this.setState({
 			searchItems
 		})
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		const { route, searchItems, locationString } = this.state
-		const newRoute = `${route}?skills=${searchItems}${locationString}`
-		const prevSearchString = `search${prevProps.location.search}`
-		document.SearchBar.SearchInput.focus()
-		if (prevSearchString !== newRoute) {
-			this.context.router.push(newRoute)
-			// window.history.pushState({}, "", newRoute)
-		}
-	}
-
 	render() {
-		const { results, searchItems, searchStarted } = this.state
+		const { searchItems } = this.state
+		const { handleEdit, skill, user} = this.props
 		return (
 			<div class="searchbar">
 				<p class="subtitle">Neuen Skill hinzufügen</p>
 				<p class="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
 				<SearchBar
-				onInputChange={this.handleSearchBarInput}
-				onInputDelete={this.handleSearchBarDelete}
-				parent={this}
-				searchTerms={searchItems}/>
+					onInputChange={this.handleSearchBarInput}
+					parent={this}
+					searchTerms={searchItems} />
+				<SkillEditor
+					handleEdit={handleEdit}
+					skill={skill}
+					user={user} />
 			</div>
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	return {
+		skill: state.reducer.skill,
+		user: state.reducer.user,
+		searchTerms: state.reducer.searchTerms
+	}
+}
+
+export default connect(mapStateToProps, { fetchSkill })(SkillSearch)

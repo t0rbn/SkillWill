@@ -4,8 +4,11 @@ import Dropdown from '../dropdown/dropdown.jsx'
 import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import User from '../user/user.jsx'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
+import { browserHistory } from 'react-router'
+import { fetchResults, saveSearchTermsToStore } from '../../actions'
+import { connect } from 'react-redux'
 
-export default class UserSearch extends React.Component {
+class UserSearch extends React.Component {
 	constructor(props) {
 		super(props)
 		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
@@ -23,10 +26,18 @@ export default class UserSearch extends React.Component {
 		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
-	handleSearchBarInput(searchString) {
+	componentWillMount() {
+		const { searchItems, locationString } = this.state
+		this.props.fetchResults(searchItems, locationString)
+		this.props.saveSearchTermsToStore(this.state.searchItems)
+	}
+
+	handleSearchBarInput(searchArray) {
+		const { searchItems } = this.state
 		this.setState({
-			searchItems: this.state.searchItems.concat([searchString])
+			searchItems: searchItems.concat(searchArray)
 		})
+		this.props.saveSearchTermsToStore(this.state.searchItems)
 	}
 
 	handleSearchBarDelete(deleteItem) {
@@ -35,6 +46,7 @@ export default class UserSearch extends React.Component {
 		this.setState({
 			searchItems
 		})
+		this.props.saveSearchTermsToStore(this.state.searchItems)
 	}
 
 	handleDropdownSelect(location) {
@@ -58,8 +70,8 @@ export default class UserSearch extends React.Component {
 		const prevSearchString = `search${prevProps.location.search}`
 		document.SearchBar.SearchInput.focus()
 		if (prevSearchString !== newRoute) {
-			this.context.router.push(newRoute)
-			// window.history.pushState({}, "", newRoute)
+			browserHistory.push(newRoute)
+		}
 	}
 
 	render() {
@@ -80,8 +92,9 @@ export default class UserSearch extends React.Component {
 						searchTerms={searchItems}
 						noResults={results.length === 0} />*/}
 				</SearchBar>
-				{this.props.children}
 			</div>
 		)
 	}
 }
+
+export default connect(null, { fetchResults, saveSearchTermsToStore })(UserSearch)

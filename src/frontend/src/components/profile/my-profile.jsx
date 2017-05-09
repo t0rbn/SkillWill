@@ -169,7 +169,6 @@ class MyProfile extends React.Component {
 					<div class="profile">
 						<BasicProfile
 							user={this.state.data}
-							thisElem={this}
 							infoLayer={this.infoLayer}
 							openLayerAt={this.state.openLayerAt}
 							showAllSkills={this.state.showAllSkills}

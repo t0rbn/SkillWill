@@ -8,7 +8,14 @@ export default class SkillItem extends React.Component {
 	levelIcons = ['💩', '🙂', '😀', '😬']
 
 	render() {
-		const { skill: { name, skillLevel, willLevel }, key } = this.props
+		const {
+			key,
+			skill: {
+				name,
+				skillLevel,
+				willLevel
+			}
+		} = this.props
 		return (
 			<li key={key} class="skill-item" onClick={this.props.onClick}>
 				<p class="skill-name">{name}</p>

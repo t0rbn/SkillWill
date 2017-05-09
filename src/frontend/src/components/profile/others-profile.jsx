@@ -36,7 +36,7 @@ class OthersProfile extends React.Component {
 		const { searchTerms } = this.props
 		return (
 			<li class="searched-skills skill-listing">
-				<div class="listing-header">Gesuchte Skillls</div>
+				<div class="listing-header">Gesuchte Skills</div>
 				<ul class="skills-list">
 					{skills.map((skill, i) => {
 						if (i <= 3)
@@ -58,12 +58,10 @@ class OthersProfile extends React.Component {
 		return (
 			<div class="profile">
 				{dataLoaded ?
-					<div>
 						<BasicProfile
 							user={user}
 							infoLayer={this.infoLayer}
 							additionalSkillListing={this.searchedSkills()} />
-					</div>
 					: ""
 				}
 			</div>

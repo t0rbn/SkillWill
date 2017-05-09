@@ -38,8 +38,7 @@ export default class User extends React.Component {
 						to={`/profile/${id}`}
 						activeClassName="active"
 						id={id}
-						onClick={this.handleClick}
-						params={{ testvalue: 'foobar'}}>
+						onClick={this.handleClick}>
 						{`${firstName} ${lastName}`}
 					</Link>
 					<span class="id">{id}</span>

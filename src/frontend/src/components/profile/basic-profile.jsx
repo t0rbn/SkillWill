@@ -23,7 +23,6 @@ export default class BasicProfile extends React.Component {
 		this.renderSkills = this.renderSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
-		console.log(this.state, this.props)
 	}
 
 	showAllSkills(e) {
@@ -64,26 +63,27 @@ export default class BasicProfile extends React.Component {
 
 	sortSkills() {
 		return this.props.user.skills.sort((a, b) => {
-				return a['name'] < b['name'] ? -1 : 1
+			return a['name'] < b['name'] ? -1 : 1
 		})
 	}
 
 	renderSkills(skill, i) {
+		const { infoLayerAt, showAllSkills } = this.state
 		return (
 			<div>
-				{this.state.infoLayerAt == i
+				{infoLayerAt == i
 					? <div class="close-layer" onClick={this.closeInfoLayer}></div>
 					: ""
 				}
 				<SkillItem skill={skill} key={i} onClick={() => this.openInfoLayer(i)}></SkillItem>
 				{
 					//open Info-Layer on clicked Item
-					this.state.infoLayerAt == i ?
+					infoLayerAt == i ?
 						<div class="info-layer">
 							<p class="skill-title">{skill.name}</p>
 							{
 								// for my-profile only
-								this.props.infoLayer(skill, i, this.state.showAllSkills)
+								this.props.infoLayer(skill, i, showAllSkills)
 							}
 							<a class="close-btn small" onClick={this.closeInfoLayer}></a>
 						</div>
@@ -108,6 +108,11 @@ export default class BasicProfile extends React.Component {
 			}
 		} = this.props
 
+		const {
+			showAllSkills,
+			numberOfSkillsToShow
+		} = this.state
+
 		return (
 			<ul class="basic-profile">
 				<li class="info">
@@ -121,10 +126,10 @@ export default class BasicProfile extends React.Component {
 					<Link class="move" href={`http://move.sinner-schrader.de/?id=${id}`} target="_blank"></Link>
 				</li>
 
-				{this.props.additionalSkillListing} {/*e.g. searched skills}*/}
+				{this.props.additionalSkillListing /*e.g. searched skills*/}
 
 				<li class="top-wills skill-listing ">
-					<div class="listing-header">Top Willls</div>
+					<div class="listing-header">Top Wills</div>
 					<ul class="skills-list">
 						{skills.map((skill, i) => {
 							if (i < 3)
@@ -133,7 +138,7 @@ export default class BasicProfile extends React.Component {
 					</ul>
 				</li>
 				<li class="all-skills skill-listing">
-					<div class="listing-header">Alle Skillls</div>
+					<div class="listing-header">Alle Skills</div>
 
 					<ul class="skills-list">
 						{skills.map((skill, i) => {

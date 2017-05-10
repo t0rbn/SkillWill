@@ -4,14 +4,27 @@ import {
 import {
 	FETCH_RESULTS,
 	FETCH_SKILL,
-	SAVE_SEARCHTERMS_TO_STORE,
+	ADD_SEARCH_TERMS,
+	DELETE_SEARCH_TERM,
+	SET_LOCATION_FILTER,
 	GET_PROFILE_DATA
 } from '../actions'
 
-function saveSearchTermsToStore(state = [], action) {
+function searchTerms(state = [], action) {
 	switch (action.type) {
-		case SAVE_SEARCHTERMS_TO_STORE:
-			return [...action.searchTerms]
+		case ADD_SEARCH_TERMS:
+			return state.concat(action.payload)
+		case DELETE_SEARCH_TERM:
+			return state.filter(searchTerm => searchTerm !== action.payload)
+		default:
+			return state
+	}
+}
+
+function locationFilter(state = [], action) {
+	switch (action.type) {
+		case SET_LOCATION_FILTER:
+			return action.payload
 		default:
 			return state
 	}
@@ -20,7 +33,7 @@ function saveSearchTermsToStore(state = [], action) {
 function fetchResultsBySearchTerms(state = [], action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
-			return {state, results: action.payload.results, searched: action.payload.searched}
+			return {state, user: action.payload.results, searched: action.payload.searched}
 		default:
 			return state
 	}
@@ -44,11 +57,10 @@ function getUserProfileData(state = [], action) {
 	}
 }
 
-const rootReducer = combineReducers({
-	searchTerms: saveSearchTermsToStore,
+export default {
+	searchTerms,
+	locationFilter,
 	results: fetchResultsBySearchTerms,
 	user: getUserProfileData,
 	skill: fetchSkillBySearchTerm
-})
-
-export default rootReducer
+};

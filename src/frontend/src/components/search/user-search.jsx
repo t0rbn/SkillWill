@@ -5,17 +5,13 @@ import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import User from '../user/user.jsx'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import { browserHistory } from 'react-router'
-import { fetchResults, saveSearchTermsToStore } from '../../actions'
+import { getUserBySearchTerms, setLocationFilter } from '../../actions'
 import { connect } from 'react-redux'
 
 class UserSearch extends React.Component {
 	constructor(props) {
 		super(props)
-		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
 		this.state = {
-			searchItems,
-			locationString,
-			dropdownLabel,
 			route: 'search',
 			results: [],
 			searchStarted: false,
@@ -26,66 +22,35 @@ class UserSearch extends React.Component {
 		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
-	componentWillMount() {
-		const { searchItems, locationString } = this.state
-		this.props.fetchResults(searchItems, locationString)
-		this.props.saveSearchTermsToStore(this.state.searchItems)
-	}
-
-	handleSearchBarInput(searchArray) {
-		const { searchItems } = this.state
-		this.setState({
-			searchItems: searchItems.concat(searchArray)
-		})
-		this.props.saveSearchTermsToStore(this.state.searchItems)
+	handleSearchBarInput(newSearchTerms) {
+		this.props.getUserBySearchTerms(newSearchTerms)
 	}
 
 	handleSearchBarDelete(deleteItem) {
-		const { searchItems } = this.state
-		searchItems.splice(searchItems.indexOf(deleteItem), 1)
-		this.setState({
-			searchItems
-		})
-		this.props.saveSearchTermsToStore(this.state.searchItems)
+		this.props.getUserBySearchTerms(deleteItem, 'delete')
 	}
 
 	handleDropdownSelect(location) {
-		if (location !== "all" && typeof location !== 'undefined') {
-			this.setState({
-				locationString: `&location=${location}`,
-				dropdownLabel: location,
-				searchStarted: true
-			})
+		if (location !== "all") {
+			this.props.setLocationFilter(location)
 		} else {
-			this.setState({
-				locationString: "",
-				dropdownLabel: "Alle Standorte"
-			})
-		}
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		const { route, searchItems, locationString } = this.state
-		const newRoute = `${route}?skills=${searchItems}${locationString}`
-		const prevSearchString = `search${prevProps.location.search}`
-		document.SearchBar.SearchInput.focus()
-		if (prevSearchString !== newRoute) {
-			browserHistory.push(newRoute)
+			this.props.setLocationFilter(location)
 		}
 	}
 
 	render() {
 		const { results, dropdownLabel, searchItems, searchStarted } = this.state
+		const { searchTerms, locationFilter } = this.props
 		return (
 			<div class="searchbar">
 				<Dropdown
 					onDropdownSelect={this.handleDropdownSelect}
-					dropdownLabel={dropdownLabel} />
+					dropdownLabel={locationFilter} />
 				<SearchBar
 					onInputChange={this.handleSearchBarInput}
 					onInputDelete={this.handleSearchBarDelete}
 					parent={this}
-					searchTerms={searchItems}
+					searchTerms={searchTerms}
 					noResults={results.length === 0}
 					queryParams={this.props.location.query}>
 					{/*<SearchSuggestions
@@ -96,5 +61,11 @@ class UserSearch extends React.Component {
 		)
 	}
 }
+function mapStateToProps(state){
+	return {
+		searchTerms: state.searchTerms,
+		locationFilter: state.locationFilter
+	}
+}
 
-export default connect(null, { fetchResults, saveSearchTermsToStore })(UserSearch)
+export default connect(mapStateToProps, { getUserBySearchTerms, setLocationFilter })(UserSearch)

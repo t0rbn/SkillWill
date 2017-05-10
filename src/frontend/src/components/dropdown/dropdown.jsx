@@ -7,35 +7,36 @@ export default class Dropdown extends React.Component {
 			dropdownLabel: this.props.dropdownLabel
 		}
 		this.handleDropdownChange = this.handleDropdownChange.bind(this)
-		this.setInitialValue = this.setInitialValue.bind(this)
+		this.setDropdownValue = this.setDropdownValue.bind(this)
+		this.setDropdownLabel = this.setDropdownLabel.bind(this)
 	}
 
 	handleDropdownChange(e) {
 		const location = e.target.value
-		if (this.props.dropdownLabel != location) {
-			this.setState({
-				dropdownLabel: location
-			})
-			/* calls onChange method, defined as a prop in the parent component.
-			This prop is necessary to give the parent access to the selected value */
-			this.props.onDropdownSelect(location)
-		}
+		this.props.onDropdownSelect(location)
 	}
 
-	setInitialValue() {
-		if (typeof this.props.dropdownLabel != 'undefined') {
+	setDropdownValue() {
+		if (this.props.dropdownLabel !== 'all') {
 			return this.props.dropdownLabel
 		} else {
 			return 'all'
+		}
+	}
+	setDropdownLabel() {
+		if (this.props.dropdownLabel !== 'all') {
+			return this.props.dropdownLabel
+		} else {
+			return 'Alle Standorte'
 		}
 	}
 
 	render() {
 		return (
 			<div class="dropdown">
-				<span class="dropdown-label">{this.props.dropdownLabel}</span>
+				<span class="dropdown-label">{this.setDropdownLabel()}</span>
 				<select onChange={this.handleDropdownChange}
-					value={this.setInitialValue()}>
+					value={this.setDropdownValue()}>
 					<option value="all">Alle Standorte</option>
 					<option value="Hamburg">Hamburg</option>
 					<option value="Frankfurt">Frankfurt</option>
@@ -45,3 +46,5 @@ export default class Dropdown extends React.Component {
 		)
 	}
 }
+
+

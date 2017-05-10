@@ -11,7 +11,6 @@ class Results extends React.Component {
 		this.state = {
 			lastSortedBy: 'fitness'
 		}
-
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
 	}
@@ -23,7 +22,7 @@ class Results extends React.Component {
 
 	sortResults(criterion) {
 		let sortedResults
-		const { results } = this.props
+		const { results: {results} } = this.props
 		if (this.state.lastSortedBy === criterion) {
 			sortedResults = results.reverse()
 		} else if (criterion === 'fitness') {
@@ -44,7 +43,7 @@ class Results extends React.Component {
 	}
 
 	render() {
-		const { results, searchTerms } = this.props
+		const { results: {results, searched} } = this.props
 		if (results && results.length > 0) {
 			return (
 				<div class="results-container">
@@ -60,7 +59,7 @@ class Results extends React.Component {
 						{results.map((result, i) => {
 							return (
 								<li class="result-item" key={i}>
-									<User user={result} searchTerms={searchTerms} />
+									<User user={result} searchTerms={searched} />
 								</li>
 							)
 						})}

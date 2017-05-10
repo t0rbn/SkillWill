@@ -20,7 +20,7 @@ function saveSearchTermsToStore(state = [], action) {
 function fetchResultsBySearchTerms(state = [], action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
-			return [...action.payload]
+			return {state, results: action.payload.results, searched: action.payload.searched}
 		default:
 			return state
 	}

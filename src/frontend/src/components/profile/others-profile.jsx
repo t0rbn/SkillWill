@@ -70,7 +70,7 @@ class OthersProfile extends React.Component {
 }
 function mapStateToProps(state) {
 	return {
-		searchTerms: state.reducer.searchTerms
+		searchTerms: state.searchTerms
 	}
 }
 

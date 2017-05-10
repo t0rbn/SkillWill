@@ -58,9 +58,9 @@ class SkillSearch extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		skill: state.reducer.skill,
-		user: state.reducer.user,
-		searchTerms: state.reducer.searchTerms
+		skill: state.skill,
+		user: state.user,
+		searchTerms: state.searchTerms
 	}
 }
 

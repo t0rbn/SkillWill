@@ -17,7 +17,7 @@ export default class SkillItem extends React.Component {
 			}
 		} = this.props
 		return (
-			<li key={key} class="skill-item" onClick={this.props.onClick}>
+			<li key={key} class="skill-item">
 				<p class="skill-name">{name}</p>
 				<p class="level">Skill:
 					<span>{this.levelIcons[skillLevel]}</span>

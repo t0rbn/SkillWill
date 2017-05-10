@@ -26,10 +26,11 @@ export default class SearchBar extends React.Component {
 	}
 
 	deleteFilter(event, deleteItem) {
-		const { currentValue, searchTerms } = this.state
+		const { searchTerms } = this.props
+		const {currentValue} = this.state
 		const { key, type, target } = event
 		const isBackspaceKey = currentValue === "" && key === 'Backspace' && searchTerms !== ""
-		const isMouseClick = type === 'cqlick' && target.dataset.filter === deleteItem
+		const isMouseClick = type === 'click' && target.dataset.filter === deleteItem
 
 		if (isBackspaceKey || isMouseClick) {
 			this.props.onInputDelete(deleteItem)
@@ -53,6 +54,7 @@ export default class SearchBar extends React.Component {
 	}
 
 	render() {
+		const { searchTerms } = this.props
 		return (
 			<div>
 				<form
@@ -62,7 +64,7 @@ export default class SearchBar extends React.Component {
 					<div class="search-container">
 						<div class="input-container">
 							{/*display entered searchTerms in front of the input field*/}
-							{this.state.searchTerms.map((searchTerm, i) => {
+							{this.props.searchTerms.map((searchTerm, i) => {
 								return (
 									<div class="search-term">
 										{searchTerm}
@@ -78,7 +80,7 @@ export default class SearchBar extends React.Component {
 								value={this.state.currentValue}
 								autoFocus="true"
 								onChange={this.getInputValue}
-								onKeyDown={this.deleteFilter}
+								onKeyDown={event => this.deleteFilter(event, searchTerms.slice(-1)[0])}
 								ref={input => { this.input = input }}>
 							</input>
 						</div>

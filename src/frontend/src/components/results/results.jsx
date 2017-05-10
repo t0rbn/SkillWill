@@ -13,6 +13,7 @@ class Results extends React.Component {
 		}
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
+		this.filterUserByLocation = this.filterUserByLocation.bind(this)
 	}
 
 	scrollToResults() {
@@ -22,7 +23,7 @@ class Results extends React.Component {
 
 	sortResults(criterion) {
 		let sortedResults
-		const { results: {results} } = this.props
+		const { results: { user } } = this.props
 		if (this.state.lastSortedBy === criterion) {
 			sortedResults = results.reverse()
 		} else if (criterion === 'fitness') {
@@ -42,13 +43,22 @@ class Results extends React.Component {
 		})
 	}
 
+	filterUserByLocation(user) {
+		const { locationFilter } = this.props
+		if (locationFilter === 'all') {
+			return true
+		} else {
+			return user.location === locationFilter
+		}
+	}
+
 	render() {
-		const { results: {results, searched} } = this.props
-		if (results && results.length > 0) {
+		const { locationFilter, results: { user, searched } } = this.props
+		if (user && user.length > 0) {
 			return (
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
-						<span>{results.length} Ergebnisse</span>
+						<span>{user.length} Ergebnisse</span>
 					</a>
 					<ul class="results">
 						<ul class="sort-buttons">
@@ -56,10 +66,10 @@ class Results extends React.Component {
 							<li class="sort-button-location" onClick={() => this.sortResults('location')}>Sort by Location</li>
 							<li class="sort-button-fitness" onClick={() => this.sortResults('fitness')}>Sort by Fitness</li>
 						</ul>
-						{results.map((result, i) => {
+						{user.filter(this.filterUserByLocation).map((user, i) => {
 							return (
 								<li class="result-item" key={i}>
-									<User user={result} searchTerms={searched} />
+									<User user={user} searchTerms={searched} />
 								</li>
 							)
 						})}
@@ -77,8 +87,9 @@ class Results extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		results: state.reducer.results,
-		searchTerms: state.reducer.searchTerms
+		results: state.results,
+		searchTerms: state.searchTerms,
+		locationFilter: state.locationFilter
 	}
 }
 export default connect(mapStateToProps)(Results)

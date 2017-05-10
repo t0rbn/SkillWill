@@ -38,7 +38,7 @@ class SkillSearch extends React.Component {
 
 	render() {
 		const { searchItems } = this.state
-		const { handleEdit, skill, user} = this.props
+		const { handleEdit, skill, user } = this.props
 		return (
 			<div class="searchbar">
 				<p class="subtitle">Neuen Skill hinzufügen</p>

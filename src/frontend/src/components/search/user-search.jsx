@@ -61,7 +61,7 @@ class UserSearch extends React.Component {
 		)
 	}
 }
-function mapStateToProps(state){
+function mapStateToProps(state) {
 	return {
 		searchTerms: state.searchTerms,
 		locationFilter: state.locationFilter

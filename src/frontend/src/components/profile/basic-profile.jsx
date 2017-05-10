@@ -42,7 +42,7 @@ export default class BasicProfile extends React.Component {
 	}
 
 	sortSkills(criterion) {
-		const {skills} = this.props.user
+		const { skills } = this.props.user
 		return skills.sort((a, b) => {
 			return a[criterion].toUpperCase() < b[criterion].toUpperCase() ? -1 : 1
 		})
@@ -88,7 +88,7 @@ export default class BasicProfile extends React.Component {
 					<ul class="skills-list">
 						{skills.map((skill, i) => {
 							if (i < 3)
-							return <SkillItem skill={skill} key={i}></SkillItem>
+								return <SkillItem skill={skill} key={i}></SkillItem>
 						})}
 					</ul>
 				</li>
@@ -103,7 +103,7 @@ export default class BasicProfile extends React.Component {
 							}
 							else {
 								if (i < (this.state.numberOfSkillsToShow)) {
-								return <SkillItem skill={skill} key={i}></SkillItem>
+									return <SkillItem skill={skill} key={i}></SkillItem>
 								}
 							}
 						}

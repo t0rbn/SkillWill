@@ -1,14 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { AppContainer } from 'react-hot-loader'
 import { Router, Route, browserHistory, IndexRoute } from 'react-router'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-import thunkMiddleware from 'redux-thunk'
 import ReduxPromise from 'redux-promise'
+import queryString from 'query-string'
+import thunk from 'redux-thunk';
 
-import reducer from './reducers'
+import reducers from './reducers'
 
 import App from './app.jsx'
 import UserSearch from './components/search/user-search.jsx'
@@ -20,14 +20,21 @@ import OthersProfile from './components/profile/others-profile.jsx'
 import Login from './components/login/login.jsx'
 import Logout from './components/logout/logout.jsx'
 
-
 const store = createStore(
-	combineReducers({
-		reducer,
-		routing: routerReducer
-	}),
+	combineReducers(
+		Object.assign(
+			{},
+			reducers,
+			{ routing: routerReducer }
+		)
+	),
+	{
+		searchTerms: [],
+		locationFilter: 'all'
+	},
 	applyMiddleware(
-		ReduxPromise
+		ReduxPromise,
+		thunk
 	)
 )
 
@@ -37,7 +44,6 @@ render(
 	<Provider store={store}>
 		<Router history={history}>
 			<Route path="/" component={App}>
-				<Route path="search" name="search" component={Results} />
 				<Route path="profile" component={Layer}>
 					<Route path=":id" component={OthersProfile} />
 				</Route>

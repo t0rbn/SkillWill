@@ -15,12 +15,9 @@ export default class BasicProfile extends React.Component {
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
-			sortedSkills: this.sortSkills()
+			sortedSkills: this.sortSkills('name')
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
-		this.openInfoLayer = this.openInfoLayer.bind(this)
-		this.closeInfoLayer = this.closeInfoLayer.bind(this)
-		this.renderSkills = this.renderSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
 	}
@@ -31,23 +28,6 @@ export default class BasicProfile extends React.Component {
 			showAllSkills: !(this.state.showAllSkills),
 		})
 		e.target.classList.toggle("open")
-	}
-
-	openInfoLayer(i) {
-		if (i == this.state.infoLayerAt) {
-			this.closeInfoLayer()
-		}
-		else {
-			this.setState({
-				infoLayerAt: i //set Layer to index of clicked item
-			})
-		}
-	}
-
-	closeInfoLayer() {
-		this.setState({
-			infoLayerAt: -1 //unset Layer
-		})
 	}
 
 	getAvatarColor() {
@@ -61,36 +41,11 @@ export default class BasicProfile extends React.Component {
 
 	}
 
-	sortSkills() {
-		return this.props.user.skills.sort((a, b) => {
-			return a['name'] < b['name'] ? -1 : 1
+	sortSkills(criterion) {
+		const {skills} = this.props.user
+		return skills.sort((a, b) => {
+			return a[criterion].toUpperCase() < b[criterion].toUpperCase() ? -1 : 1
 		})
-	}
-
-	renderSkills(skill, i) {
-		const { infoLayerAt, showAllSkills } = this.state
-		return (
-			<div>
-				{infoLayerAt == i
-					? <div class="close-layer" onClick={this.closeInfoLayer}></div>
-					: ""
-				}
-				<SkillItem skill={skill} key={i} onClick={() => this.openInfoLayer(i)}></SkillItem>
-				{
-					//open Info-Layer on clicked Item
-					infoLayerAt == i ?
-						<div class="info-layer">
-							<p class="skill-title">{skill.name}</p>
-							{
-								// for my-profile only
-								this.props.infoLayer(skill, i, showAllSkills)
-							}
-							<a class="close-btn small" onClick={this.closeInfoLayer}></a>
-						</div>
-						: ""
-				}
-			</div>
-		)
 	}
 
 	render() {
@@ -133,7 +88,7 @@ export default class BasicProfile extends React.Component {
 					<ul class="skills-list">
 						{skills.map((skill, i) => {
 							if (i < 3)
-								return this.renderSkills(skill, i)
+							return <SkillItem skill={skill} key={i}></SkillItem>
 						})}
 					</ul>
 				</li>
@@ -144,11 +99,11 @@ export default class BasicProfile extends React.Component {
 						{skills.map((skill, i) => {
 							//display show-more-link after maximum skills to show
 							if (this.state.showAllSkills) {
-								return this.renderSkills(skill, i)
+								return <SkillItem skill={skill} key={i}></SkillItem>
 							}
 							else {
 								if (i < (this.state.numberOfSkillsToShow)) {
-									return this.renderSkills(skill, i)
+								return <SkillItem skill={skill} key={i}></SkillItem>
 								}
 							}
 						}

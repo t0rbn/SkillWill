@@ -11,7 +11,7 @@ export function saveSearchTermsToStore(searchTerms){
 export const FETCH_RESULTS = 'FETCH_RESULTS'
 export function fetchResults(searchTerms, locationTerm = '') {
 	const requestURL = `${config.backendServer}/users?skills=${searchTerms}${locationTerm}`
-	const request = fetch(requestURL).then(response => response.json())
+	const request = fetch(requestURL).then(response => response.json()).then(json => json.results)
 	return {
 		type: FETCH_RESULTS,
 		payload: request

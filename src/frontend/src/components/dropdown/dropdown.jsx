@@ -3,9 +3,7 @@ import React from 'react'
 export default class Dropdown extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			dropdownLabel: this.props.dropdownLabel
-		}
+
 		this.handleDropdownChange = this.handleDropdownChange.bind(this)
 		this.setDropdownValue = this.setDropdownValue.bind(this)
 		this.setDropdownLabel = this.setDropdownLabel.bind(this)
@@ -17,15 +15,17 @@ export default class Dropdown extends React.Component {
 	}
 
 	setDropdownValue() {
-		if (this.props.dropdownLabel !== 'all') {
-			return this.props.dropdownLabel
+		const { dropdownLabel } = this.props
+		if (dropdownLabel !== 'all') {
+			return dropdownLabel
 		} else {
 			return 'all'
 		}
 	}
 	setDropdownLabel() {
-		if (this.props.dropdownLabel !== 'all') {
-			return this.props.dropdownLabel
+		const { dropdownLabel } = this.props
+		if (dropdownLabel !== 'all') {
+			return dropdownLabel
 		} else {
 			return 'Alle Standorte'
 		}

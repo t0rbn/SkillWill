@@ -1,17 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router, Route, browserHistory, IndexRoute } from 'react-router'
+import { Router, Route, browserHistory } from 'react-router'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import ReduxPromise from 'redux-promise'
-import thunk from 'redux-thunk';
+import thunk from 'redux-thunk'
 
 import reducers from './reducers'
 
 import App from './app.jsx'
-import UserSearch from './components/search/user-search.jsx'
-import Results from './components/results/results.jsx'
 import SkillSearch from './components/search/skill-search.jsx'
 import Layer from './components/layer/layer.jsx'
 import MyProfile from './components/profile/my-profile.jsx'
@@ -50,7 +48,7 @@ render(
 					<Route path="login" component={Login} />
 					<Route path="logout" component={Logout} />
 					<Route path=":id" component={MyProfile}>
-						<Route path="add-skill" component={Results} />
+						<Route path="add-skill" component={SkillSearch} />
 					</Route>
 				</Route>
 			</Route>

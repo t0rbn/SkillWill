@@ -9,8 +9,7 @@ export default class BasicProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			userAvatarPath: "",
-			showAllSkills: this.props.showAllSkills,
+			shouldShowAllSkills: this.props.shouldShowAllSkills,
 			infoLayerAt: this.props.openLayerAt,
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
@@ -24,8 +23,10 @@ export default class BasicProfile extends React.Component {
 
 	showAllSkills(e) {
 		e.preventDefault()
+		const { shouldShowAllSkills, numberOfSkillsToShow } = this.state
 		this.setState({
-			showAllSkills: !(this.state.showAllSkills),
+			shouldShowAllSkills: !shouldShowAllSkills,
+			numberOfSkillsToShow: numberOfSkillsToShow === 6 ? Infinity : 6
 		})
 		e.target.classList.toggle("open")
 	}
@@ -64,7 +65,7 @@ export default class BasicProfile extends React.Component {
 		} = this.props
 
 		const {
-			showAllSkills,
+			shouldShowAllSkills,
 			numberOfSkillsToShow
 		} = this.state
 
@@ -98,15 +99,10 @@ export default class BasicProfile extends React.Component {
 					<ul class="skills-list">
 						{skills.map((skill, i) => {
 							//display show-more-link after maximum skills to show
-							if (this.state.showAllSkills) {
-								return <SkillItem skill={skill} key={i}></SkillItem>
-							}
-							else {
-								if (i < (this.state.numberOfSkillsToShow)) {
+								if (i < (numberOfSkillsToShow)) {
 									return <SkillItem skill={skill} key={i}></SkillItem>
 								}
 							}
-						}
 						)}
 					</ul>
 					<a class="show-more-link" onClick={this.showAllSkills} href=""></a>

@@ -33,7 +33,11 @@ function locationFilter(state = [], action) {
 function fetchResultsBySearchTerms(state = [], action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
-			return {state, user: action.payload.results, searched: action.payload.searched}
+			return {
+				state,
+				user: action.payload.results,
+				searched: action.payload.searched
+			}
 		default:
 			return state
 	}

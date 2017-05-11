@@ -18,9 +18,8 @@ class MyProfile extends React.Component {
 			dataLoaded: false,
 			editLayerOpen: false,
 			openLayerAt: -1,
-			showAllSkills: false,
-			skillSearchOpen: false,
-
+			shouldShowAllSkills: false,
+			skillSearchOpen: false
 		}
 		this.infoLayer = this.infoLayer.bind(this)
 		this.openCloseEditLayer = this.openCloseEditLayer.bind(this)
@@ -78,17 +77,22 @@ class MyProfile extends React.Component {
 		return true
 	}
 
-	infoLayer(data, i, showAllSkills) {
+	infoLayer(data, i, shouldShowAllSkills) {
 		if (this.state.editLayerOpen && (this.state.openLayerAt == i)) {
 			return (
-				<Editor skillName={data.name} skillLvl={data.skillLevel} willLvl={data.willLevel} handleAccept={this.editSkill} handleClose={this.openCloseEditLayer.bind(null)} />
+				<Editor
+					skillName={data.name}
+					skillLvl={data.skillLevel}
+					willLvl={data.willLevel}
+					handleAccept={this.editSkill}
+					handleClose={this.openCloseEditLayer.bind(null)} />
 			)
 		}
 		else {
 			return (
 				<div class="additional-options">
-					<div class="edit" onClick={this.openCloseEditLayer.bind(null, i, showAllSkills)}></div>
-					<div class="delete" onClick={this.deleteSkill.bind(null, data.name)}></div>
+					<div class="edit" onClick={ () => this.openCloseEditLayer(i, shouldShowAllSkills)}></div>
+					<div class="delete" onClick={ () => this.deleteSkill(data.name)}></div>
 				</div>
 			)
 		}
@@ -98,12 +102,14 @@ class MyProfile extends React.Component {
 		this.setState({
 			openLayerAt: i,
 			editLayerOpen: !this.state.editLayerOpen,
-			showAllSkills: show
+			shouldShowAllSkills: show
 		})
 	}
 
 	openCloseSkillSearch() {
-		this.setState({ skillSearchOpen: !this.state.skillSearchOpen })
+		this.setState({
+			skillSearchOpen: !this.state.skillSearchOpen
+		})
 	}
 
 	editSkill(skill, skillLvl, willLvl) {
@@ -171,7 +177,7 @@ class MyProfile extends React.Component {
 							user={this.state.data}
 							infoLayer={this.infoLayer}
 							openLayerAt={this.state.openLayerAt}
-							showAllSkills={this.state.showAllSkills}
+							shouldShowAllSkills={this.state.shouldShowAllSkills}
 							checkLogin={this.checkAndOpenLogin} />
 						<div class="add-skill-btn" onClick={this.openCloseSkillSearch}></div>
 					</div>

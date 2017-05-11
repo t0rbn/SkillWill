@@ -22,24 +22,21 @@ class Results extends React.Component {
 	}
 
 	sortResults(criterion) {
-		let sortedResults
 		const { results: { user } } = this.props
 		if (this.state.lastSortedBy === criterion) {
-			sortedResults = results.reverse()
+			user.reverse()
 		} else if (criterion === 'fitness') {
-			sortedResults = results.sort((a, b) => {
+			user.sort((a, b) => {
 				return a[criterion] > b[criterion] ? -1 : 1
 			})
 		} else {
-			sortedResults = results.sort((a, b) => {
+			user.sort((a, b) => {
 				return a[criterion] < b[criterion] ? -1 : 1
 			})
 		}
-		this.forceUpdate()
 
 		this.setState({
 			lastSortedBy: criterion,
-			results: sortedResults
 		})
 	}
 
@@ -55,18 +52,19 @@ class Results extends React.Component {
 	render() {
 		const { locationFilter, results: { user, searched } } = this.props
 		if (user && user.length > 0) {
+		const filteredUser = user.filter(this.filterUserByLocation)
 			return (
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
-						<span>{user.length} Ergebnisse</span>
+						<span>{filteredUser.length} Ergebnisse</span>
 					</a>
 					<ul class="results">
 						<ul class="sort-buttons">
-							<li class="sort-button-name" onClick={() => this.sortResults('name')}>Sort by Name</li>
+							<li class="sort-button-name" onClick={() => this.sortResults('lastName')}>Sort by Name</li>
 							<li class="sort-button-location" onClick={() => this.sortResults('location')}>Sort by Location</li>
 							<li class="sort-button-fitness" onClick={() => this.sortResults('fitness')}>Sort by Fitness</li>
 						</ul>
-						{user.filter(this.filterUserByLocation).map((user, i) => {
+						{filteredUser.map((user, i) => {
 							return (
 								<li class="result-item" key={i}>
 									<User user={user} searchTerms={searched} />

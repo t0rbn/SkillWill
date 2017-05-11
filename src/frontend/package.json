@@ -21,7 +21,6 @@
     "less-loader": "^2.2.3",
     "preact": "^7.1.0",
     "preact-compat": "^3.9.4",
-    "query-string": "^4.3.4",
     "react": "^15.4.1",
     "react-cookie": "^1.0.5",
     "react-dom": "^15.4.1",

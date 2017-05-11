@@ -5,7 +5,6 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import ReduxPromise from 'redux-promise'
-import queryString from 'query-string'
 import thunk from 'redux-thunk';
 
 import reducers from './reducers'

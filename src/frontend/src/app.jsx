@@ -1,11 +1,9 @@
-import styles from './styles.less';
-import React from 'react';
-import Header from './components/header/header.jsx';
-import Footer from './components/footer/footer.jsx';
-import UserSearch from './components/search/user-search.jsx';
+import styles from './styles.less'
+import React from 'react'
+import Header from './components/header/header.jsx'
+import Footer from './components/footer/footer.jsx'
+import UserSearch from './components/search/user-search.jsx'
 import Results from './components/results/results.jsx'
-
-import { Router, Route, Link, browserHistory } from 'react-router';
 
 export default class App extends React.Component {
 	render() {

@@ -1,5 +1,4 @@
 import config from '../config.json'
-import { browserHistory } from 'react-router'
 
 export const ADD_SEARCH_TERMS = 'ADD_SEARCH_TERMS'
 export function addSearchTerms(searchTerms){

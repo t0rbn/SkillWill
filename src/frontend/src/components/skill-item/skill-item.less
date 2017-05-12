@@ -4,6 +4,7 @@
 
 .skill-item {
 	display: flex;
+	justify-content: space-between;
 	padding-bottom: @s-stack;
 	&:last-child {
 		padding-bottom: @l-stack;
@@ -11,7 +12,7 @@
 }
 
 .skill-name {
-	width: 50%;
+	flex-basis: 40%;
 	font-weight: 800;
 	color: @s2-red;
 	margin-bottom: @xxs-stack;
@@ -19,7 +20,7 @@
 	padding-right: @m-inline;
 }
 .skill-level {
-	width: 66%;
+	flex-basis: 50%;
 	display: flex;
 }
 .level {

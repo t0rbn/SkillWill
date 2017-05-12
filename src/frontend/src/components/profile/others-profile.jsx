@@ -34,7 +34,9 @@ class OthersProfile extends React.Component {
 	searchedSkills() {
 		const { skills } = this.state.user
 		const { searchTerms } = this.props
-		console.log(searchTerms)
+		if (searchTerms.length <= 0) {
+			return
+		}
 		return (
 			<li class="searched-skills skill-listing">
 				<div class="listing-header">Gesuchte Skills</div>

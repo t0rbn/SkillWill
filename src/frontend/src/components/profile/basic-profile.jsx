@@ -14,7 +14,8 @@ export default class BasicProfile extends React.Component {
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
-			sortedSkills: this.sortSkills('name')
+			sortedSkills: this.sortSkills('name'),
+			topWills: this.sortSkills('willLevel', 'desc')
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
@@ -42,11 +43,24 @@ export default class BasicProfile extends React.Component {
 
 	}
 
-	sortSkills(criterion) {
-		const { skills } = this.props.user
-		return skills.sort((a, b) => {
-			return a[criterion].toUpperCase() < b[criterion].toUpperCase() ? -1 : 1
-		})
+	sortSkills(criterion, order = 'asc') {
+		const skills = [...this.props.user.skills]
+		console.log('sortskills',criterion)
+		return skills
+			.sort((a, b) => {
+				if (order === 'asc') {
+					return a[criterion].toString().toUpperCase() < b[criterion].toString().toUpperCase() ? -1 : 1
+				} else {
+					return a[criterion].toString().toUpperCase() < b[criterion].toString().toUpperCase() ? 1 : -1
+				}
+			})
+	}
+
+	sortAscending(a, b) {
+		return a - b
+	}
+	sortDescending(a, b) {
+		return b - a
 	}
 
 	render() {
@@ -66,7 +80,9 @@ export default class BasicProfile extends React.Component {
 
 		const {
 			shouldShowAllSkills,
-			numberOfSkillsToShow
+			numberOfSkillsToShow,
+			sortedSkills,
+			topWills
 		} = this.state
 
 		return (
@@ -87,22 +103,30 @@ export default class BasicProfile extends React.Component {
 				<li class="top-wills skill-listing ">
 					<div class="listing-header">Top Wills</div>
 					<ul class="skills-list">
-						{skills.map((skill, i) => {
-							if (i < 3)
+						{topWills.map((skill, i) => {
+							if (i < 5 && skill['willLevel'] > 1)
 								return <SkillItem skill={skill} key={i}></SkillItem>
 						})}
 					</ul>
 				</li>
 				<li class="all-skills skill-listing">
-					<div class="listing-header">Alle Skills</div>
-
+					<div class="listing-header">Alle Skills
+						<ul class="sort-buttons">
+							<li class="sort-button sort-button-name" onClick={() => this.setState({ sortedSkills: this.sortSkills('name', 'asc') })}
+							><span class="sort-button-label">Name</span></li>
+							<li class="sort-button sort-button-skill" onClick={() => this.setState({ sortedSkills: this.sortSkills('skillLevel', 'desc') })}
+							><span class="sort-button-label">Skill</span></li>
+							<li class="sort-button sort-button-will" onClick={() => this.setState({ sortedSkills: this.sortSkills('willLevel', 'desc') })}
+							><span class="sort-button-label">Will</span></li>
+						</ul>
+					</div>
 					<ul class="skills-list">
-						{skills.map((skill, i) => {
+						{sortedSkills.map((skill, i) => {
 							//display show-more-link after maximum skills to show
-								if (i < (numberOfSkillsToShow)) {
-									return <SkillItem skill={skill} key={i}></SkillItem>
-								}
+							if (i < (numberOfSkillsToShow)) {
+								return <SkillItem skill={skill} key={i}></SkillItem>
 							}
+						}
 						)}
 					</ul>
 					<a class="show-more-link" onClick={this.showAllSkills} href=""></a>

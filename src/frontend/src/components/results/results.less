@@ -60,10 +60,24 @@
 .results {
 	padding: 0;
 }
+
 .result-item {
 	width: auto;
 	height: auto;
 	border-bottom: @base-border;
+	background-position-y: bottom;
+	background-image: linear-gradient(to bottom, hsla(174, 22%, 56%, .1) 50%, transparent 50%);
+	background-size: 200% 200%;
+
+	&:hover {
+		animation: .2s ease-in .1s curtain;
+		animation-fill-mode: forwards;
+	}
+
+	@keyframes curtain {
+		from {background-position-y: bottom;}
+		to {background-position-y: top;}
+	}
 
 	.user {
 		display: flex;
@@ -104,7 +118,7 @@
 	}
 
 	.location {
-		flex-basis: 10%;
+		flex-basis: 15%;
 		padding: @l-stack @l-inline 0 @l-inline;
 	}
 
@@ -114,29 +128,5 @@
 		display: inline-flex;
 		flex-direction: row-reverse;
 
-		.skills-list {
-			.skill-item {
-				padding-bottom: @s-stack;
-
-				.level {
-					width: 112px;
-					display: inline-block;
-					padding-right: @m-inline;
-				}
-
-				.skill-name {
-					width: 100%;
-					font-weight: 800;
-					color: @s2-red;
-					margin-bottom: @xxs-stack;
-					display: inline-block;
-					padding-right: @m-inline;
-				}
-
-				&:last-child {
-					padding-bottom: @l-stack;
-				}
-			}
-		}
 	}
 }

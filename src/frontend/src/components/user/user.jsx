@@ -31,30 +31,29 @@ export default class User extends React.Component {
 		} = this.props.user
 
 		return (
-			<ul class="user">
-				<li class="info">
-					<Link
-						class="name"
-						to={`/profile/${id}`}
-						activeClassName="active"
-						id={id}
-						onClick={this.handleClick}>
-						{`${firstName} ${lastName}`}
-					</Link>
-					<span class="id">{id}</span>
-					<span class="department">{title}</span>
-				</li>
-				<li class="location">{location}</li>
-				<li class="skills">
-					<ul class="skills-list">
-						{this.state.skillsToShow.map((skill, i) => {
-							return (
-								<SkillItem key={i} skill={skill} />
-							)
-						})}
-					</ul>
-				</li>
-			</ul>
+			<Link
+				to={`/profile/${id}`}
+				activeClassName="active"
+				id={id}
+				onClick={this.handleClick}>
+				<ul class="user">
+					<li class="info">
+						<span class="name">{`${firstName} ${lastName}`}</span>
+						<span class="id">{id}</span>
+						<span class="department">{title}</span>
+					</li>
+					<li class="location">{location}</li>
+					<li class="skills">
+						<ul class="skills-list">
+							{this.state.skillsToShow.map((skill, i) => {
+								return (
+									<SkillItem key={i} skill={skill} />
+								)
+							})}
+						</ul>
+					</li>
+				</ul>
+			</Link>
 		)
 	}
 }

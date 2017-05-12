@@ -19,11 +19,13 @@ export default class SkillItem extends React.Component {
 		return (
 			<li key={key} class="skill-item">
 				<p class="skill-name">{name}</p>
-				<div class="level">
-					<div class={`skillBar levelBar levelBar--${skillLevel}`}></div>
-				</div>
-				<div class="level">
-					<div class={`willBar levelBar levelBar--${willLevel}`}></div>
+				<div class="skill-level">
+					<div class="level">
+						<div class={`skillBar levelBar levelBar--${skillLevel}`}></div>
+					</div>
+					<div class="level">
+						<div class={`willBar levelBar levelBar--${willLevel}`}></div>
+					</div>
 				</div>
 			</li>
 		)

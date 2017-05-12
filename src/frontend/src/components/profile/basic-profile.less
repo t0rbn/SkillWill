@@ -95,6 +95,7 @@
     flex-wrap: wrap;
 
     .listing-header {
+				width: 100%;
         font-size: @xs-title-font-size;
         line-height: @xs-title-font-size;
         font-weight: @s-title-font-weight;
@@ -116,7 +117,6 @@
             }
 
             .skill-name {
-                width: 100%;
                 font-weight: 800;
                 color: @s2-red;
                 margin-bottom: @xxs-stack;
@@ -242,13 +242,42 @@
 
 }
 
-.all-skills {
-    .skills-list {
-        .skill-name {
-            cursor: pointer;
-        }
-    }
-}
+	.sort-buttons {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+
+
+		.sort-button {
+			flex-basis: 25%;
+
+			&-label {
+				cursor: pointer;
+				position: relative;
+
+				&::before {
+				content: '';
+				position: absolute;
+				width: 100%;
+				height: 1px;
+				bottom: 0;
+				left: 0;
+				background-color: #b3b3b3;
+				visibility: hidden;
+				transform: scaleX(0);
+				transition: all 0.2s ease-in-out 0s;
+			}
+
+			&:hover::before {
+				visibility: visible;
+				transform: scaleX(1);
+			}
+		}
+			}
+		.sort-button-name {
+			flex-basis: 50%
+		}
+	}
 
 .add-skill-btn {
     position: fixed;

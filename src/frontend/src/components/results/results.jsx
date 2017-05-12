@@ -52,7 +52,7 @@ class Results extends React.Component {
 	render() {
 		const { locationFilter, results: { user, searched } } = this.props
 		if (user && user.length > 0) {
-		const filteredUser = user.filter(this.filterUserByLocation)
+			const filteredUser = user.filter(this.filterUserByLocation)
 			return (
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
@@ -60,9 +60,15 @@ class Results extends React.Component {
 					</a>
 					<ul class="results">
 						<ul class="sort-buttons">
-							<li class="sort-button-name" onClick={() => this.sortResults('lastName')}>Sort by Name</li>
-							<li class="sort-button-location" onClick={() => this.sortResults('location')}>Sort by Location</li>
-							<li class="sort-button-fitness" onClick={() => this.sortResults('fitness')}>Sort by Fitness</li>
+							<li class="sort-button sort-button-name" onClick={() => this.sortResults('lastName')}>
+								<span class="sort-button-label">Sort by Name</span>
+							</li>
+							<li class="sort-button sort-button-location" onClick={() => this.sortResults('location')}>
+								<span class="sort-button-label">Sort by Location</span>
+							</li>
+							<li class="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
+								<span class="sort-button-label">Sort by Fitness</span>
+								</li>
 						</ul>
 						{filteredUser.map((user, i) => {
 							return (

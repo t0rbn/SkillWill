@@ -45,7 +45,6 @@ export default class BasicProfile extends React.Component {
 
 	sortSkills(criterion, order = 'asc') {
 		const skills = [...this.props.user.skills]
-		console.log('sortskills',criterion)
 		return skills
 			.sort((a, b) => {
 				if (order === 'asc') {

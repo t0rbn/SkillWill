@@ -1,0 +1,83 @@
+.skill-item {
+	display: flex;
+}
+
+.skill-name {
+	width: auto;
+}
+
+.level {
+	width: 100%;
+	height: 16px;
+	position: relative;
+	display: inline-block;
+	background-color: hsl(0,0%,90%);
+}
+.levelBar {
+	display: inline-block;
+	text-align: end;
+	position: absolute;
+	font-size: 24px;
+	height: 100%;
+
+	&--0 {
+	width: 0;
+	}
+	&--1 {
+	animation-duration: 1s;
+	animation-delay: 0.3ms;
+	animation-fill-mode: forwards;
+	animation-timing-function: ease-in;
+	animation-name: fillBars-33;
+	}
+	&--2 {
+	animation-duration: 1s;
+	animation-delay: 0.3ms;
+	animation-fill-mode: forwards;
+	animation-timing-function: ease-in;
+	animation-name: fillBars-66;
+	}
+	&--3 {
+	animation-duration: 1s;
+	animation-delay: 0.3ms;
+	animation-fill-mode: forwards;
+	animation-timing-function: ease-in;
+	animation-name: fillBars-100;
+	}
+}
+
+.skillBar {
+	background:#40E0D0;
+	right: 0;
+	text-align: start;
+	text-indent: -10px;
+}
+.willBar {
+	background:#ff0354;
+	text-indent: 100%;
+}
+
+@keyframes fillBars-33 {
+	from {
+		width: 0;
+	}
+	to {
+		width: 33%;
+	}
+}
+@keyframes fillBars-66 {
+	from {
+		width: 0;
+	}
+	to {
+		width: 66%;
+	}
+}
+@keyframes fillBars-100 {
+	from {
+		width: 0;
+	}
+	to {
+		width: 100%;
+	}
+}

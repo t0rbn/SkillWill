@@ -5,7 +5,7 @@ export default class SkillItem extends React.Component {
 		super(props)
 	}
 
-	levelIcons = ['💩', '🙂', '😀', '😬']
+	levelIcons = ['0', '1', '2', '⭐️']
 
 	render() {
 		const {
@@ -19,12 +19,12 @@ export default class SkillItem extends React.Component {
 		return (
 			<li key={key} class="skill-item">
 				<p class="skill-name">{name}</p>
-				<p class="level">Skill:
-					<span>{this.levelIcons[skillLevel]}</span>
-				</p>
-				<p class="level">Will:
-					<span>{this.levelIcons[willLevel]}</span>
-				</p>
+				<div class="level">
+					<div class={`skillBar levelBar levelBar--${skillLevel}`}></div>
+				</div>
+				<div class="level">
+					<div class={`willBar levelBar levelBar--${willLevel}`}></div>
+				</div>
 			</li>
 		)
 	}

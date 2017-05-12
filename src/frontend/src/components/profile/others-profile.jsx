@@ -34,16 +34,19 @@ class OthersProfile extends React.Component {
 	searchedSkills() {
 		const { skills } = this.state.user
 		const { searchTerms } = this.props
+		console.log(searchTerms)
 		return (
 			<li class="searched-skills skill-listing">
 				<div class="listing-header">Gesuchte Skills</div>
 				<ul class="skills-list">
-					{skills.map((skill, i) => {
-						if (i <= 3)
+					{skills
+						.filter(skill => searchTerms.indexOf(skill.name) !== -1)
+						.map((skill, i) => {
 							return (
 								<SkillItem key={i} skill={skill} />
 							)
-					})}
+						})
+					}
 				</ul>
 			</li>
 		)

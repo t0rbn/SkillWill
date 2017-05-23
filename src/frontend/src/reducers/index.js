@@ -3,11 +3,13 @@ import {
 } from 'redux'
 import {
 	FETCH_RESULTS,
-	FETCH_SKILL,
+	FETCH_SKILLS,
 	ADD_SEARCH_TERMS,
 	DELETE_SEARCH_TERM,
 	SET_LOCATION_FILTER,
-	GET_PROFILE_DATA
+	GET_PROFILE_DATA,
+	ADD_SKILL_SEARCH,
+	DELETE_SKILL_SEARCH
 } from '../actions'
 
 function searchTerms(state = [], action) {
@@ -16,6 +18,18 @@ function searchTerms(state = [], action) {
 			return state.concat(action.payload)
 		case DELETE_SEARCH_TERM:
 			return state.filter(searchTerm => searchTerm !== action.payload)
+		default:
+			return state
+	}
+}
+
+function skillSearchTerms(state = [], action) {
+	switch (action.type) {
+		case ADD_SKILL_SEARCH:
+			return action.payload
+		case DELETE_SKILL_SEARCH:
+			console.log('action ', action)
+			return []
 		default:
 			return state
 	}
@@ -43,10 +57,10 @@ function fetchResultsBySearchTerms(state = [], action) {
 	}
 }
 
-function fetchSkillBySearchTerm(state = [], action) {
+function fetchSkillsBySearchTerm(state = [], action) {
 	switch (action.type) {
-		case FETCH_SKILL:
-			return Object.assign({}, ...action.payload)
+		case FETCH_SKILLS:
+			return [...action.payload.map(skill => skill.name)]
 		default:
 			return state
 	}
@@ -66,5 +80,6 @@ export default {
 	locationFilter,
 	results: fetchResultsBySearchTerms,
 	user: getUserProfileData,
-	skill: fetchSkillBySearchTerm
+	skills: fetchSkillsBySearchTerm,
+	skillSearchTerms
 };

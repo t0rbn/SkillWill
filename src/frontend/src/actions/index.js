@@ -1,7 +1,7 @@
 import config from '../config.json'
 
 export const ADD_SEARCH_TERMS = 'ADD_SEARCH_TERMS'
-export function addSearchTerms(searchTerms){
+export function addSearchTerms(searchTerms) {
 	return {
 		type: ADD_SEARCH_TERMS,
 		payload: searchTerms
@@ -9,7 +9,7 @@ export function addSearchTerms(searchTerms){
 }
 
 export const DELETE_SEARCH_TERM = 'DELETE_SEARCH_TERM'
-export function deleteSearchTerms(searchTerm){
+export function deleteSearchTerms(searchTerm) {
 	return {
 		type: DELETE_SEARCH_TERM,
 		payload: searchTerm
@@ -17,7 +17,7 @@ export function deleteSearchTerms(searchTerm){
 }
 
 export const SET_LOCATION_FILTER = 'SET_LOCATION_FILTER'
-export function setLocationFilter(location){
+export function setLocationFilter(location) {
 	return {
 		type: SET_LOCATION_FILTER,
 		payload: location
@@ -34,25 +34,57 @@ export function fetchResults(searchTerms) {
 	}
 }
 
-export function getUserBySearchTerms(term, method){
+export function getUserBySearchTerms(term, method) {
 	return function (dispatch, getState) {
-		if(method === 'delete'){
+		if (method === 'delete') {
 			dispatch(deleteSearchTerms(term))
 		} else {
 			dispatch(addSearchTerms(term))
 		}
-		const {searchTerms} = getState()
+		const {
+			searchTerms
+		} = getState()
 		dispatch(fetchResults(searchTerms))
 	}
 }
 
-export const FETCH_SKILL = 'FETCH_SKILL'
-export function fetchSkill(searchTerms) {
-	const requestURL = `${config.backendServer}/skills?search=${searchTerms}`
+export const ADD_SKILL_SEARCH = 'ADD_SKILL_SEARCH'
+export function addSkillSearch(searchTerm) {
+	return {
+		type: ADD_SKILL_SEARCH,
+		payload: searchTerm
+	}
+}
+
+export const DELETE_SKILL_SEARCH = 'DELETE_SKILL_SEARCH'
+export function deleteSkillSearch(searchTerm) {
+	return {
+		type: DELETE_SKILL_SEARCH,
+		payload: searchTerm
+	}
+}
+
+export const FETCH_SKILLS = 'FETCH_SKILLS'
+export function fetchSkills(searchTerm) {
+	const requestURL = `${config.backendServer}/skills?search=${searchTerm}`
 	const request = fetch(requestURL).then(response => response.json())
 	return {
-		type: FETCH_SKILL,
+		type: FETCH_SKILLS,
 		payload: request
+	}
+}
+
+export function getSkillBySearchTerms(term, method) {
+	return function (dispatch, getState) {
+		if (method === 'delete') {
+			dispatch(deleteSkillSearch(term))
+		} else {
+			dispatch(addSkillSearch(term))
+		}
+		const {
+			skillSearchTerms
+		} = getState()
+		dispatch(fetchSkills(skillSearchTerms))
 	}
 }
 

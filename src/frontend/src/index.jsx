@@ -27,6 +27,7 @@ const store = createStore(
 	),
 	{
 		searchTerms: [],
+		skills: [],
 		locationFilter: 'all'
 	},
 	applyMiddleware(

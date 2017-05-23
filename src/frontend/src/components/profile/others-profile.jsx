@@ -33,8 +33,8 @@ class OthersProfile extends React.Component {
 
 	searchedSkills() {
 		const { skills } = this.state.user
-		const { searchTerms } = this.props
-		if (searchTerms.length <= 0) {
+		const { searched } = this.props
+		if (!searched || searched.length <= 0) {
 			return
 		}
 		return (
@@ -42,7 +42,7 @@ class OthersProfile extends React.Component {
 				<div class="listing-header">Gesuchte Skills</div>
 				<ul class="skills-list">
 					{skills
-						.filter(skill => searchTerms.indexOf(skill.name) !== -1)
+						.filter(skill => searched.indexOf(skill.name) !== -1)
 						.map((skill, i) => {
 							return (
 								<SkillItem key={i} skill={skill} />
@@ -75,7 +75,7 @@ class OthersProfile extends React.Component {
 }
 function mapStateToProps(state) {
 	return {
-		searchTerms: state.searchTerms
+		searched: state.results.searched
 	}
 }
 

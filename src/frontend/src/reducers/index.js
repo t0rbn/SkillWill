@@ -28,7 +28,6 @@ function skillSearchTerms(state = [], action) {
 		case ADD_SKILL_SEARCH:
 			return action.payload
 		case DELETE_SKILL_SEARCH:
-			console.log('action ', action)
 			return []
 		default:
 			return state

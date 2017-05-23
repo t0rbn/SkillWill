@@ -91,8 +91,8 @@ class MyProfile extends React.Component {
 		else {
 			return (
 				<div class="additional-options">
-					<div class="edit" onClick={ () => this.openCloseEditLayer(i, shouldShowAllSkills)}></div>
-					<div class="delete" onClick={ () => this.deleteSkill(data.name)}></div>
+					<div class="edit" onClick={() => this.openCloseEditLayer(i, shouldShowAllSkills)}></div>
+					<div class="delete" onClick={() => this.deleteSkill(data.name)}></div>
 				</div>
 			)
 		}
@@ -112,11 +112,15 @@ class MyProfile extends React.Component {
 		})
 	}
 
-	editSkill(skill, skillLvl, willLvl) {
+	editSkill(skill, skillLevel, willLevel) {
+		if (skillLevel === '0' && willLevel === '0') {
+			alert('not allowed')
+			return
+		}
 		let postData = new FormData()
 		postData.append("skill", skill)
-		postData.append("skill_level", skillLvl)
-		postData.append("will_level", willLvl)
+		postData.append("skill_level", skillLevel)
+		postData.append("will_level", willLevel)
 		postData.append("session", this.state.session)
 
 		fetch(config.backendServer + "/users/" + this.state.userId + "/skills", { method: "POST", body: postData })
@@ -124,7 +128,7 @@ class MyProfile extends React.Component {
 				if (res.status == 401) {
 					this.setState({ session: undefined })
 					Cookies.remove("session")
-					this.editSkill(skill, skillLvl, willLvl)
+					this.editSkill(skill, skillLevel, willLevel)
 					this.setState({ editLayerOpen: false })
 					this.getProfileData(this)
 				}

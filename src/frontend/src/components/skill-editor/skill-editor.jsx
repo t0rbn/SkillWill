@@ -29,7 +29,7 @@ export default class Skill extends React.Component {
 	// if so, set current levels to Editor
 	checkSkillLvls() {
 		this.props.user.skills.map((skill) => {
-			if (skill.name === this.props.skill.name) {
+			if (skill.name === this.props.skill) {
 				this.setState({
 					skillLvl: skill.skillLevel,
 					willLvl: skill.willLevel
@@ -39,18 +39,17 @@ export default class Skill extends React.Component {
 	}
 
 	render() {
-		const { name, handleEdit } = this.props.skill
+		const { skill, handleEdit } = this.props
 		const { editorIsOpen, skillLvl, willLvl } = this.state
-
 		return (
 			<ul class={`skill ${editorIsOpen ? "toggled" : ""}`}>
 				<li class="name" onClick={this.toggleEditor}>
-					{name}
+					{skill}
 				</li>
 				<li class="add" onClick={this.toggleEditor}></li>
 				{editorIsOpen ?
 					<li class="editor-container">
-						<Editor skillName={name}
+						<Editor skillName={skill}
 							skillLvl={skillLvl}
 							willLvl={willLvl}
 							handleAccept={handleEdit}

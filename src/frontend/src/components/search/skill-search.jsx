@@ -3,7 +3,7 @@ import SearchBar from './search-bar.jsx'
 import Results from '../results/results.jsx'
 import SkillEditor from '../skill-editor/skill-editor.jsx'
 import config from '../../config.json'
-import { fetchSkill } from '../../actions'
+import { getSkillBySearchTerms } from '../../actions'
 import { connect } from 'react-redux'
 
 class SkillSearch extends React.Component {
@@ -19,15 +19,15 @@ class SkillSearch extends React.Component {
 
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
+		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
-	handleSearchBarInput(searchString) {
-		const { searchItems } = this.state
-		this.setState({
-			searchItems: searchItems.concat([searchString]),
-			searchStarted: true
-		})
-		this.props.fetchSkill(this.state.searchItems)
+	handleSearchBarInput(newSearchTerms) {
+		this.props.getSkillBySearchTerms(newSearchTerms)
+	}
+
+	handleSearchBarDelete(deleteItem) {
+		this.props.getSkillBySearchTerms(deleteItem, 'delete')
 	}
 
 	toggleUpdate(bool) {
@@ -37,20 +37,22 @@ class SkillSearch extends React.Component {
 	}
 
 	render() {
-		const { searchItems } = this.state
-		const { handleEdit, skill, user } = this.props
+		const { handleEdit, skills, user, skillSearchTerms } = this.props
 		return (
 			<div class="searchbar">
 				<p class="subtitle">Neuen Skill hinzufügen</p>
 				<p class="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
 				<SearchBar
 					onInputChange={this.handleSearchBarInput}
+					onInputDelete={this.handleSearchBarDelete}
 					parent={this}
-					searchTerms={searchItems} />
-				<SkillEditor
-					handleEdit={handleEdit}
-					skill={skill}
-					user={user} />
+					searchTerms={skillSearchTerms} />
+				{skills.map(skill => {
+					return <SkillEditor
+						handleEdit={handleEdit}
+						skill={skill}
+						user={user} />
+				})}
 			</div>
 		)
 	}
@@ -58,10 +60,10 @@ class SkillSearch extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		skill: state.skill,
+		skills: state.skills,
 		user: state.user,
-		searchTerms: state.searchTerms
+		skillSearchTerms: state.skillSearchTerms
 	}
 }
 
-export default connect(mapStateToProps, { fetchSkill })(SkillSearch)
+export default connect(mapStateToProps, { getSkillBySearchTerms })(SkillSearch)

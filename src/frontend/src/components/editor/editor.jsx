@@ -40,9 +40,17 @@ export default class Editor extends React.Component {
 				</div>
 				<div class="slider-container">
 					<p class="slider-description">Dein Skill-Level</p>
-					<RangeSlider onSlide={this.handleSliderChange} type="skill" defaultValue={this.state.skillLevel} legend={Config.skillLegend} />
+					<RangeSlider
+						onSlide={this.handleSliderChange}
+						type="skill"
+						defaultValue={this.state.skillLevel}
+						legend={Config.skillLegend} />
 					<p class="slider-description">Dein Will-Level</p>
-					<RangeSlider onSlide={this.handleSliderChange} type="will" defaultValue={this.state.willLevel} legend={Config.willLegend} />
+					<RangeSlider
+						onSlide={this.handleSliderChange}
+						type="will"
+						defaultValue={this.state.willLevel}
+						legend={Config.willLegend} />
 				</div>
 			</div>
 		)

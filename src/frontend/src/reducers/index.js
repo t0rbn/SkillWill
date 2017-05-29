@@ -12,7 +12,7 @@ import {
 	DELETE_SKILL_SEARCH
 } from '../actions'
 
-function searchTerms(state = [], action) {
+function setSearchTerms(state = [], action) {
 	switch (action.type) {
 		case ADD_SEARCH_TERMS:
 			return state.concat(action.payload)
@@ -23,7 +23,7 @@ function searchTerms(state = [], action) {
 	}
 }
 
-function skillSearchTerms(state = [], action) {
+function setSkillSearchTerms(state = [], action) {
 	switch (action.type) {
 		case ADD_SKILL_SEARCH:
 			return action.payload
@@ -34,7 +34,7 @@ function skillSearchTerms(state = [], action) {
 	}
 }
 
-function locationFilter(state = [], action) {
+function setLocationFilter(state = [], action) {
 	switch (action.type) {
 		case SET_LOCATION_FILTER:
 			return action.payload
@@ -75,10 +75,10 @@ function getUserProfileData(state = [], action) {
 }
 
 export default {
-	searchTerms,
-	locationFilter,
+	searchTerms: setSearchTerms,
+	locationFilter: setLocationFilter,
 	results: fetchResultsBySearchTerms,
 	user: getUserProfileData,
 	skills: fetchSkillsBySearchTerm,
-	skillSearchTerms
+	skillSearchTerms: setSkillSearchTerms
 };

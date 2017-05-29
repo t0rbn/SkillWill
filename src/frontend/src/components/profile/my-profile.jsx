@@ -123,21 +123,21 @@ class MyProfile extends React.Component {
 		postData.append("will_level", willLevel)
 		postData.append("session", this.state.session)
 
-		fetch(config.backendServer + "/users/" + this.state.userId + "/skills", { method: "POST", body: postData })
+		fetch(`${config.backendServer}/users/${this.state.userId}/skills`, { method: "POST", body: postData })
 			.then(res => {
-				if (res.status == 401) {
+				if (res.status === 401) {
 					this.setState({ session: undefined })
 					Cookies.remove("session")
-					this.editSkill(skill, skillLevel, willLevel)
+					alert('Session abgelaufen')
 					this.setState({ editLayerOpen: false })
-					this.getProfileData(this)
+					this.getProfileData()
 				}
 
-				if (res.status != 200) {
+				if (res.status !== 200) {
 					throw Error("error while editing skills")
 				}
 				else {
-					this.getProfileData(this)
+					this.getProfileData()
 				}
 
 			})

@@ -74,7 +74,7 @@ export function fetchSkills(searchTerm) {
 	}
 }
 
-export function getSkillBySearchTerms(term, method) {
+export function getSkillsBySearchTerm(term, method) {
 	return function (dispatch, getState) {
 		if (method === 'delete') {
 			dispatch(deleteSkillSearch(term))

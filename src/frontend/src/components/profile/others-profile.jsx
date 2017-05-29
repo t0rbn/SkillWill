@@ -14,7 +14,7 @@ class OthersProfile extends React.Component {
 			dataLoaded: false,
 			infoLayerAt: 0
 		}
-		this.searchedSkills = this.searchedSkills.bind(this)
+		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
 	}
 
 	componentDidMount() {
@@ -31,10 +31,10 @@ class OthersProfile extends React.Component {
 			})
 	}
 
-	searchedSkills() {
+	renderSearchedSkills() {
 		const { skills } = this.state.user
-		const { searched } = this.props
-		if (!searched || searched.length <= 0) {
+		const { searchedSkills } = this.props
+		if (!searchedSkills || searchedSkills.length <= 0) {
 			return
 		}
 		return (
@@ -42,7 +42,7 @@ class OthersProfile extends React.Component {
 				<div class="listing-header">Gesuchte Skills</div>
 				<ul class="skills-list">
 					{skills
-						.filter(skill => searched.indexOf(skill.name) !== -1)
+						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
 						.map((skill, i) => {
 							return (
 								<SkillItem key={i} skill={skill} />
@@ -66,7 +66,7 @@ class OthersProfile extends React.Component {
 					<BasicProfile
 						user={user}
 						infoLayer={this.infoLayer}
-						additionalSkillListing={this.searchedSkills()} />
+						additionalSkillListing={this.renderSearchedSkills()} />
 					: ""
 				}
 			</div>
@@ -75,7 +75,7 @@ class OthersProfile extends React.Component {
 }
 function mapStateToProps(state) {
 	return {
-		searched: state.results.searched
+		searchedSkills: state.results.searched
 	}
 }
 

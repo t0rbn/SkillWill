@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import config from '../../config.json'
 import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import User from '../user/user'
@@ -14,6 +15,16 @@ class Results extends React.Component {
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
 		this.filterUserByLocation = this.filterUserByLocation.bind(this)
+		this.removeAnimationClass = this.removeAnimationClass.bind(this)
+	}
+
+	componentDidMount() {
+		ReactDOM.findDOMNode(this).addEventListener('animationend', this.removeAnimationClass)
+	}
+
+	removeAnimationClass() {
+		ReactDOM.findDOMNode(this).classList.remove('animateable')
+		ReactDOM.findDOMNode(this).removeEventListener('animationend', this.removeAnimationClass)
 	}
 
 	scrollToResults() {
@@ -54,7 +65,7 @@ class Results extends React.Component {
 		if (user && user.length > 0) {
 			const filteredUser = user.filter(this.filterUserByLocation)
 			return (
-				<div class="results-container">
+				<div class="results-container animateable">
 					<a class="counter" onClick={this.scrollToResults}>
 						<span>{filteredUser.length} Ergebnisse</span>
 					</a>
@@ -68,7 +79,7 @@ class Results extends React.Component {
 							</li>
 							<li class="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
 								<span class="sort-button-label">Sort by Fitness</span>
-								</li>
+							</li>
 						</ul>
 						{filteredUser.map((user, i) => {
 							return (

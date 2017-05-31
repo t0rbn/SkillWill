@@ -47,7 +47,7 @@ export default class User extends React.Component {
 						<ul class="skills-list">
 							{this.state.skillsToShow.map((skill, i) => {
 								return (
-									<SkillItem key={i} skill={skill} />
+									<SkillItem key={skill.name} skill={skill} />
 								)
 							})}
 						</ul>

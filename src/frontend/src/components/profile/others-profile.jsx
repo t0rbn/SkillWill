@@ -45,7 +45,7 @@ class OthersProfile extends React.Component {
 						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
 						.map((skill, i) => {
 							return (
-								<SkillItem key={i} skill={skill} />
+								<SkillItem key={skill.name} skill={skill} />
 							)
 						})
 					}

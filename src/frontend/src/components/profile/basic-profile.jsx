@@ -87,7 +87,7 @@ export default class BasicProfile extends React.Component {
 
 	renderTopWills(skills) {
 		return (
-			<li class="top-wills skill-listing ">
+			<li class="top-wills skill-listing">
 				<div class="listing-header">Top Wills</div>
 				<ul class="skills-list">
 					{skills.map((skill, i) => {
@@ -106,7 +106,7 @@ export default class BasicProfile extends React.Component {
 				{skills.map((skill, i) => {
 					//display show-more-link after maximum skills to show
 					if (i < (numberOfSkillsToShow)) {
-						return <SkillItem skill={skill} key={skill.name}></SkillItem>
+						return <SkillItem skill={skill} key={skill.name} />
 					}
 				}
 				)}
@@ -159,7 +159,7 @@ export default class BasicProfile extends React.Component {
 					<p class="location phone">{location} / TEL. {phone}</p>
 					<Link class="mail" href={`mailto:${mail}`} target="_blank"></Link>
 					<Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${firstName.toLowerCase()}.${lastName.toLowerCase()}`} target="_blank"></Link>
-					<Link class="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank"></Link>
+					<Link class="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank" />
 				</li>
 
 				{this.props.additionalSkillListing /*e.g. searched skills*/}

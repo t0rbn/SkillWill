@@ -77,4 +77,22 @@ public class LoginControllerTest {
     assertEquals(HttpStatus.BAD_REQUEST, loginController.logout("NotQuiteASessionId").getStatusCode());
   }
 
+  @Test
+  public void testCheckSessionValid() throws JSONException {
+    String session = new JSONObject(loginController.login("foobar", "fleischcreme").getBody()).getString("session");
+    ResponseEntity<String> res = loginController.checkSession(session, "foobar");
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals(session, new JSONObject(res.getBody()).getString("session"));
+    assertTrue(new JSONObject(res.getBody()).getBoolean("valid"));
+  }
+
+  @Test
+  public void testCheckSessionInvalid() throws JSONException {
+    String session = "bananenmousse";
+    ResponseEntity<String> res = loginController.checkSession(session, "foobar");
+    assertEquals(HttpStatus.OK, res.getStatusCode());
+    assertEquals(session, new JSONObject(res.getBody()).getString("session"));
+    assertFalse(new JSONObject(res.getBody()).getBoolean("valid"));
+  }
+
 }

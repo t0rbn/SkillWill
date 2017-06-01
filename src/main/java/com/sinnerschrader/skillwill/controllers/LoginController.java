@@ -3,6 +3,7 @@ package com.sinnerschrader.skillwill.controllers;
 import com.sinnerschrader.skillwill.exceptions.CredentialsException;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.services.LoginService;
+import com.sinnerschrader.skillwill.services.SessionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,6 +38,9 @@ public class LoginController {
 
   @Autowired
   private LoginService loginService;
+
+  @Autowired
+  private SessionService sessionService;
 
   /**
    * User Login
@@ -84,6 +88,27 @@ public class LoginController {
     } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(new StatusJSON("session key not found").toString(), HttpStatus.BAD_REQUEST);
     }
+  }
+
+  /**
+   * Check sessionkey
+   */
+  @ApiOperation(value = "session checker", nickname = "session checker")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "username", value = "Username", required = true, paramType = "query"),
+    @ApiImplicitParam(name = "session", value = "User's session key", required = true, paramType = "query")
+  })
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 400, message = "Bad Request"),
+    @ApiResponse(code = 500, message = "Failure")})
+  @RequestMapping(path = "/sessioncheck", method = RequestMethod.GET)
+  public ResponseEntity<String> checkSession(@RequestParam(value = "session") String session, @RequestParam(value = "username") String username) {
+    JSONObject json = new JSONObject();
+    json.put("session", session);
+    json.put("username", username);
+    json.put("valid", sessionService.isValidSession(username, session));
+    return new ResponseEntity<>(json.toString(), HttpStatus.OK);
   }
 
 }

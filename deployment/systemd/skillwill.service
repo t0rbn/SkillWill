@@ -1,0 +1,8 @@
+[Unit]
+Description=SkillWill
+[Service]
+ExecStart=/usr/bin/java -jar /srv/http/skillwill.jar
+User=torben
+Type=simple
+[Install]
+WantedBy=multi-user.target

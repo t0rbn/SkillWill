@@ -1,0 +1,8 @@
+[Unit]
+Description=SkillWill oauth
+[Service]
+ExecStart=/srv/http/oauth_proxy/oauth2_proxy -config=/srv/http/oauth_proxy/oauth_proxy.conf
+User=torben
+Type=simple
+[Install]
+WantedBy=multi-user.target

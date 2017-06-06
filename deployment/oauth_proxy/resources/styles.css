@@ -1,0 +1,92 @@
+@font-face {
+  font-family: 's2';
+  font-style: normal;
+  font-weight: normal;
+  src: url('/auth-resources/fonts/MaisonWEB-Regular.woff2') format('woff2'), url('/auth-resources/fonts/MaisonWEB-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 's2';
+  font-style: normal;
+  font-weight: bold;
+  src: url('/auth-resources/fonts/MaisonWEB-Bold.woff2') format('woff2'), url('/auth-resources/fonts/MaisonWEB-Bold.woff') format('woff');
+}
+
+html, body {
+  box-sizing: border-box;
+  color: #3b4151;
+  font-family: 's2', sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+.header {
+  background-image: url('/auth-resources/images/s2-logo.svg');
+  background-repeat: no-repeat;
+  position: fixed;
+  background-size: contain;
+  height: 24px;
+  left: 0;
+  margin-left: 18px;
+  margin-top: 6px;
+  top: 0;
+  width: 104px;
+}
+
+.background-layer::after {
+  background-color: #f4f7fa;
+  content: "";
+  height: 455px;
+  left: -50%;
+  position: absolute;
+  top: 160px;
+  transform: rotate(-22deg);
+  width: 200%;
+  z-index: -1;
+}
+
+.content {
+  background-image: url('/auth-resources/images/header-img.svg');
+  background-position: 50% 0%;
+  background-repeat: no-repeat;
+  background-size: 65vw;
+  margin: 0 15%;
+  padding-top: 102px;
+  text-align: center;
+}
+
+.title {
+  color: #ff0354;
+  font-size: 90px;
+  font-weight: bold;
+  line-height: 90px;
+  margin: 0;
+  padding: 0;
+}
+
+.subtitle {
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 34px;
+  margin: 0 0 126px 0;
+  padding: 0;
+}
+
+.text {
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.button {
+  background: #4502da;
+  border: 1px solid #b3b3b3;
+  border-radius: 6px;
+  color: #fff;
+  line-height: 16px;
+  padding: 16px;
+}
+
+.button:hover {
+  opacity: 0.8;
+}

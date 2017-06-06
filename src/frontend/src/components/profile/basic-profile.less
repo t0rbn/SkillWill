@@ -156,26 +156,23 @@
 			margin: 0 auto;
 			cursor: pointer;
 		}
+	}
+		.edit {
+			background: data-uri("@{image-path}/edit.svg");
+		}
+		.delete {
+			background: data-uri("@{image-path}/delete.svg");
+		}
 		.edit,
 		.delete {
 			display: inline-block;
-			margin: @s-stack @s-inline;
+			background-size: contain;
+			background-repeat: no-repeat;
+			height: 16px;
+			width: 16px;
+			cursor: pointer;
+			// margin: @s-stack @s-inline;
 		}
-		.edit {
-			&::after {
-				content: data-uri("@{image-path}/edit.svg");
-				height: 30px;
-				width: 30px;
-			}
-		}
-		.delete {
-			&::after {
-				content: data-uri("@{image-path}/delete.svg");
-				height: 30px;
-				width: 30px;
-			}
-		}
-	}
 	@media (min-width: @tablet-portrait-up) {
 		.info-layer {
 			width: auto;
@@ -217,7 +214,7 @@
 	display: flex;
 	justify-content: space-between;
 	.sort-button {
-		flex-basis: 25%;
+		flex-basis: 30%;
 		&-label {
 			cursor: pointer;
 			position: relative;
@@ -240,7 +237,7 @@
 		}
 	}
 	.sort-button-name {
-		flex-basis: 50%
+		flex-basis: 45%
 	}
 }
 

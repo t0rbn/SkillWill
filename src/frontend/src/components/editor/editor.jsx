@@ -27,11 +27,15 @@ export default class Editor extends React.Component {
 	}
 
 	handleAccept() {
-		this.props.handleAccept(this.props.skillName, this.state.skillLevel, this.state.willLevel)
+		const { skillName } = this.props
+		const { skillLevel, willLevel } = this.state
+		this.props.handleAccept(skillName, skillLevel, willLevel, 'POST')
 		this.props.handleClose()
 	}
 
 	render() {
+		const { skillLevel, willLevel } = this.state
+
 		return (
 			<div class="editor">
 				<div class="action-buttons">
@@ -43,13 +47,13 @@ export default class Editor extends React.Component {
 					<RangeSlider
 						onSlide={this.handleSliderChange}
 						type="skill"
-						defaultValue={this.state.skillLevel}
+						defaultValue={skillLevel}
 						legend={Config.skillLegend} />
 					<p class="slider-description">Dein Will-Level</p>
 					<RangeSlider
 						onSlide={this.handleSliderChange}
 						type="will"
-						defaultValue={this.state.willLevel}
+						defaultValue={willLevel}
 						legend={Config.willLegend} />
 				</div>
 			</div>

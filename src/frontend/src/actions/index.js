@@ -27,7 +27,8 @@ export function setLocationFilter(location) {
 export const FETCH_RESULTS = 'FETCH_RESULTS'
 export function fetchResults(searchTerms) {
 	const requestURL = `${config.backendServer}/users?skills=${searchTerms}`
-	const request = fetch(requestURL).then(response => response.json())
+	const options = { credentials: 'same-origin' }
+	const request = fetch(requestURL, options).then(response => response.json())
 	return {
 		type: FETCH_RESULTS,
 		payload: request
@@ -67,7 +68,8 @@ export function deleteSkillSearch(searchTerm) {
 export const FETCH_SKILLS = 'FETCH_SKILLS'
 export function fetchSkills(searchTerm) {
 	const requestURL = `${config.backendServer}/skills?search=${searchTerm}`
-	const request = fetch(requestURL).then(response => response.json())
+	const options = { credentials: 'same-origin' }
+	const request = fetch(requestURL, options).then(response => response.json())
 	return {
 		type: FETCH_SKILLS,
 		payload: request
@@ -91,7 +93,8 @@ export function getSkillsBySearchTerm(term, method) {
 export const GET_PROFILE_DATA = 'GET_PROFILE_DATA'
 export function getUserProfileData(profile) {
 	const requestURL = `${config.backendServer}/users/${profile}`
-	const request = fetch(requestURL).then(response => response.json())
+	const options = { credentials: 'same-origin' }
+	const request = fetch(requestURL, options).then(response => response.json())
 	return {
 		type: GET_PROFILE_DATA,
 		payload: request

@@ -13,7 +13,7 @@ class MyProfile extends React.Component {
 		super(props)
 		this.state = {
 			session: undefined,
-			userId: "id",
+			userId: this.props.params.id,
 			data: null,
 			dataLoaded: false,
 			editLayerOpen: false,
@@ -24,7 +24,7 @@ class MyProfile extends React.Component {
 		this.infoLayer = this.infoLayer.bind(this)
 		this.openCloseEditLayer = this.openCloseEditLayer.bind(this)
 		this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this)
-		this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this)
+		this.toggleSkillsSearch = this.toggleSkillsSearch.bind(this)
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
 		this.getProfileData = this.getProfileData.bind(this)
@@ -35,9 +35,6 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		this.setState({
-			userId: this.props.params.id
-		})
 		// TODO -> remove both request types
 		this.getProfileData()
 		this.props.getUserProfileData(this.props.params.id)
@@ -47,7 +44,8 @@ class MyProfile extends React.Component {
 	}
 
 	getProfileData() {
-		fetch(config.backendServer + "/users/" + this.state.userId)
+		const { userId } = this.state
+		fetch(`${config.backendServer}/users/${userId}`, { credentials: 'same-origin' })
 			.then(r => r.json())
 			.then(data => {
 				this.setState({
@@ -69,21 +67,24 @@ class MyProfile extends React.Component {
 	}
 
 	checkUser() {
+		const { userId } = this.state
 		// check if the profiles userID matches with the logged in user
 		const user = Cookies.load("user")
-		if (user != this.state.userId) {
+		if (user != userId) {
 			return false
 		}
 		return true
 	}
 
 	infoLayer(data, i, shouldShowAllSkills) {
-		if (this.state.editLayerOpen && (this.state.openLayerAt == i)) {
+		const { name, skillLevel, willLevel } = data
+		const { editLayerOpen, openLayerAt } = this.state
+		if (editLayerOpen && (openLayerAt == i)) {
 			return (
 				<Editor
-					skillName={data.name}
-					skillLvl={data.skillLevel}
-					willLvl={data.willLevel}
+					skillName={name}
+					skillLvl={skillLevel}
+					willLvl={willLevel}
 					handleAccept={this.editSkill}
 					handleClose={this.openCloseEditLayer.bind(null)} />
 			)
@@ -92,7 +93,7 @@ class MyProfile extends React.Component {
 			return (
 				<div class="additional-options">
 					<div class="edit" onClick={() => this.openCloseEditLayer(i, shouldShowAllSkills)}></div>
-					<div class="delete" onClick={() => this.deleteSkill(data.name)}></div>
+					<div class="delete" onClick={() => this.deleteSkill(name)}></div>
 				</div>
 			)
 		}
@@ -106,13 +107,14 @@ class MyProfile extends React.Component {
 		})
 	}
 
-	openCloseSkillSearch() {
+	toggleSkillsSearch() {
 		this.setState({
 			skillSearchOpen: !this.state.skillSearchOpen
 		})
 	}
 
-	editSkill(skill, skillLevel, willLevel) {
+	editSkill(skill, skillLevel, willLevel, method) {
+		const { userId, session } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
 			alert('not allowed')
 			return
@@ -121,15 +123,19 @@ class MyProfile extends React.Component {
 		postData.append("skill", skill)
 		postData.append("skill_level", skillLevel)
 		postData.append("will_level", willLevel)
-		postData.append("session", this.state.session)
+		postData.append("session", session)
 
-		fetch(`${config.backendServer}/users/${this.state.userId}/skills`, { method: "POST", body: postData })
+		const options = { method: "POST", body: postData, credentials: 'same-origin' }
+		const requestURL = `${config.backendServer}/users/${userId}/skills`
+		fetch(requestURL, options)
 			.then(res => {
 				if (res.status === 401) {
-					this.setState({ session: undefined })
 					Cookies.remove("session")
 					alert('Session abgelaufen')
-					this.setState({ editLayerOpen: false })
+					this.setState({
+						session: undefined,
+						editLayerOpen: false
+					})
 					this.getProfileData()
 				}
 
@@ -145,14 +151,18 @@ class MyProfile extends React.Component {
 	}
 
 	deleteSkill(skill) {
-
-		fetch(config.backendServer + "/users/" + this.state.userId + "/skills?session=" + this.state.session + "&skill=" + skill, { method: "DELETE" })
+		const { userId, session } = this.state
+		const options = { method: "DELETE", credentials: 'same-origin' }
+		const requestURL = `${config.backendServer}/users/${userId}/skills?session=${session}&skill=${skill}`
+		fetch(requestURL, options)
 			.then(res => {
 				if (res.status == 401) {
-					this.setState({ session: undefined })
+					alert('Session abgelaufen')
 					Cookies.remove("session")
-					this.deleteSkill(skill)
-					this.setState({ editLayerOpen: false })
+					this.setState({
+						session: undefined,
+						editLayerOpen: false
+					})
 					this.getProfileData(this)
 				}
 
@@ -168,22 +178,30 @@ class MyProfile extends React.Component {
 	}
 
 	render() {
+		const {
+			dataLoaded,
+			skillSearchOpen,
+			data,
+			openLayerAt,
+			shouldShowAllSkills
+		} = this.state
 		return (
-			this.state.dataLoaded ?
-				this.state.skillSearchOpen ?
+			dataLoaded ?
+				skillSearchOpen ?
 					<div class="profile">
 						<SkillSearch handleEdit={this.editSkill} />
-						<div class="back-btn" onClick={this.openCloseSkillSearch}></div>
+						<div class="back-btn" onClick={this.toggleSkillsSearch}></div>
 					</div>
 					:
 					<div class="profile">
 						<BasicProfile
-							user={this.state.data}
+							user={data}
 							infoLayer={this.infoLayer}
-							openLayerAt={this.state.openLayerAt}
-							shouldShowAllSkills={this.state.shouldShowAllSkills}
-							checkLogin={this.checkAndOpenLogin} />
-						<div class="add-skill-btn" onClick={this.openCloseSkillSearch}></div>
+							openLayerAt={openLayerAt}
+							shouldShowAllSkills={shouldShowAllSkills}
+							checkLogin={this.checkAndOpenLogin}
+							canEditSkills={true} />
+						<div class="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
 					</div>
 				: ""
 		)

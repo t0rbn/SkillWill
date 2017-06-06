@@ -90,7 +90,8 @@ export default class Login extends React.Component {
 		const postData = this.generatePostData()
 		const options = {
 			method: "POST",
-			body: postData
+			body: postData,
+			credentials: 'same-origin'
 		}
 		fetch(`${config.backendServer}/login`, options)
 			.then(response => {

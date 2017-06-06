@@ -27,7 +27,8 @@ export default class Logout extends React.Component {
 	requestLogout(postData){
 		const options = {
 			method: "POST",
-			body: postData
+			body: postData,
+			credentials: 'same-origin'
 		}
 		fetch(`${config.backendServer}/logout`, options)
 			.then(response => {

@@ -18,7 +18,7 @@ class OthersProfile extends React.Component {
 	}
 
 	componentDidMount() {
-		fetch(`${config.backendServer}/users/${this.state.userId}`)
+		fetch(`${config.backendServer}/users/${this.state.userId}`, { credentials: 'same-origin' })
 			.then(response => response.json())
 			.then(user => {
 				this.setState({

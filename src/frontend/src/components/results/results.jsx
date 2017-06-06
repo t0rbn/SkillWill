@@ -78,7 +78,7 @@ class Results extends React.Component {
 								<span class="sort-button-label">Sort by Location</span>
 							</li>
 							<li class="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
-								<span class="sort-button-label">Sort by Fitness</span>
+								<span class="sort-button-label">Sort by Match</span>
 							</li>
 						</ul>
 						{filteredUser.map((user, i) => {

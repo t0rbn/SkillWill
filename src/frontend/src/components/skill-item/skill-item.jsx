@@ -27,6 +27,7 @@ export default class SkillItem extends React.Component {
 						<div class={`willBar levelBar levelBar--${willLevel}`}></div>
 					</div>
 				</div>
+				<div class="delete" onClick={() => this.props.deleteSkill(name)}></div>
 			</li>
 		)
 	}

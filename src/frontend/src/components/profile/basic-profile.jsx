@@ -16,7 +16,8 @@ export default class BasicProfile extends React.Component {
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
 			sortedSkills: this.sortSkills('name'),
-			topWills: this.sortSkills('willLevel', 'desc')
+			topWills: this.sortSkills('willLevel', 'desc'),
+			isSkillEditActive: false
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
@@ -25,6 +26,7 @@ export default class BasicProfile extends React.Component {
 		this.renderSkills = this.renderSkills.bind(this)
 		this.renderSortButtons = this.renderSortButtons.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
+		this.toggleSkillEdit = this.toggleSkillEdit.bind(this)
 	}
 
 	componentDidMount() {
@@ -44,6 +46,13 @@ export default class BasicProfile extends React.Component {
 			numberOfSkillsToShow: numberOfSkillsToShow === 6 ? Infinity : 6
 		})
 		e.target.classList.toggle("open")
+	}
+
+	toggleSkillEdit() {
+		this.setState({
+			isSkillEditActive: !this.state.isSkillEditActive
+		})
+		console.log(this.state.isSkillEditActive)
 	}
 
 	getAvatarColor() {
@@ -106,7 +115,7 @@ export default class BasicProfile extends React.Component {
 				{skills.map((skill, i) => {
 					//display show-more-link after maximum skills to show
 					if (i < (numberOfSkillsToShow)) {
-						return <SkillItem skill={skill} key={skill.name} />
+						return <SkillItem deleteSkill={this.props.deleteSkill} skill={skill} key={skill.name} />
 					}
 				}
 				)}
@@ -151,6 +160,7 @@ export default class BasicProfile extends React.Component {
 
 		return (
 			<ul class="basic-profile animateable">
+				<div onClick={this.toggleSkillEdit}>Edit Skills</div>
 				<li class="info">
 					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
 					<p class="name">{firstName} {lastName}</p>

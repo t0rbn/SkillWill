@@ -14,7 +14,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,14 +61,13 @@ public class SkillController {
       @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "search", value = "Name to search", paramType = "query", required = false),
+      @ApiImplicitParam(name = "search", value = "Name to search", paramType = "query"),
+      @ApiImplicitParam(name = "exclude_hidden", value = "Do not return hidden skills", paramType = "query", defaultValue = "true"),
   })
   @RequestMapping(path = "/skills", method = RequestMethod.GET)
-  public ResponseEntity<String> getSkills(@RequestParam(required = false) String search) {
-    logger.debug("Successfully got autocompletion for {}", search);
-
+  public ResponseEntity<String> getSkills(@RequestParam(required = false) String search, @RequestParam(required = false, defaultValue = "true") boolean exclude_hidden) {
     JSONArray skillsArr = new JSONArray(
-        skillService.getSkills(search)
+        skillService.getSkills(search, exclude_hidden)
             .stream()
             .map(KnownSkill::toJSON)
             .collect(Collectors.toList())
@@ -98,7 +100,7 @@ public class SkillController {
 
   /**
    * suggest next skill to enter
-   * -> This is not the autocomplete for skill search (see getSkills for that)
+   * -> This is not the autocomplete for skill search (see getSkillsExcludeHidden for that)
    * -> Recommender System: "Users who searched this also searched for that"
    */
   @ApiOperation(value = "suggest next skill", nickname = "suggest next skill", notes = "suggest next skill")
@@ -151,19 +153,28 @@ public class SkillController {
   @ApiImplicitParams({
       @ApiImplicitParam(name = "name", value = "new skill's name", paramType = "form", required = true),
       @ApiImplicitParam(name = "icon_descriptor", value = "new skill's icon description", paramType = "form", required = true),
+      @ApiImplicitParam(name = "hidden", value = "hide skill in search/suggestions", paramType = "form", defaultValue = "false"),
+      @ApiImplicitParam(name = "subskills", value = "list of subskills (separated with comma)", paramType = "form")
   })
   @RequestMapping(path = "/skills", method = RequestMethod.POST)
-  public ResponseEntity<String> addSkill(@RequestParam String name,
-      @RequestParam String icon_descriptor) {
+  public ResponseEntity<String> addSkill(
+      @RequestParam String name,
+      @RequestParam String icon_descriptor,
+      @RequestParam(required = false, defaultValue = "false") boolean hidden,
+      @RequestParam(required = false, defaultValue = "") String subSkills) {
 
     try {
-      skillService.createSkill(name, icon_descriptor);
+      skillService.createSkill(name, icon_descriptor, hidden, createSubSkillSet(subSkills));
       logger.info("Successfully created new skill {}", name);
       return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
     } catch (EmptyArgumentException | DuplicateSkillException e) {
       logger.debug("Failed to create skill {}: argument empty or skill already exists", name);
       return new ResponseEntity<>(new StatusJSON(e.getMessage()).toString(),
           HttpStatus.BAD_REQUEST);
+    } catch (SkillNotFoundException e) {
+      logger.debug("Failed to add skill {}, subskill not found", name);
+      return new ResponseEntity<>(new StatusJSON(e.getMessage()).toString(),
+        HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -203,16 +214,20 @@ public class SkillController {
       @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "name", value = "skill's new name", paramType = "form", required = true),
-      @ApiImplicitParam(name = "icon_descriptor", value = "skill's new icon description", paramType = "form", required = true),
+      @ApiImplicitParam(name = "name", value = "skill's new name", paramType = "form", required = false),
+      @ApiImplicitParam(name = "icon_descriptor", value = "skill's new icon description", paramType = "form", required = false),
+      @ApiImplicitParam(name = "hidden", value = "hide skill", paramType = "form", required = false),
+      @ApiImplicitParam(name = "subskills", value = "skill's new subskills", paramType = "form", required = false),
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.PUT)
-  public ResponseEntity<String> updateSkill(@PathVariable String skill, @RequestParam String name,
-      @RequestParam String icon_descriptor) {
+  public ResponseEntity<String> updateSkill(@PathVariable String skill,
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) String icon_descriptor,
+      @RequestParam(required = false) Boolean hidden,
+      @RequestParam(required = false) String subskills) {
 
     try {
-      skillService.updateSkill(skill, name, icon_descriptor);
-      logger.info("Successfully updated skill {}", skill);
+      skillService.updateSkill(skill, name, icon_descriptor, hidden, createSubSkillSet(subskills));
       return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to update skill {}: not found", skill);
@@ -221,6 +236,12 @@ public class SkillController {
       logger.debug("Failed to update skill {}: illegal argument or skill already exists", skill);
       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+  }
+
+  private Set<String> createSubSkillSet(String s) {
+    return StringUtils.isEmpty(s)
+      ? new HashSet<>()
+      : new HashSet<>(Arrays.asList(StringUtils.tokenizeToStringArray(s, ",")));
   }
 
 }

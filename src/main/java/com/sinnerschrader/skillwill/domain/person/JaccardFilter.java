@@ -1,5 +1,7 @@
 package com.sinnerschrader.skillwill.domain.person;
 
+import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,10 +21,11 @@ public class JaccardFilter {
   }
 
   private static double getJaccardIndex(Person a, Person b) {
-    double intersectionCount = a.getSkills().stream()
-        .filter(s -> b.getSkill(s.getName()) != null)
-        .count();
-    double unionCount = a.getSkills().size() + b.getSkills().size() - intersectionCount;
+    Collection<PersonalSkill> aSkills = a.getSkillsExcludeHidden();
+    Collection<PersonalSkill> bSkills = b.getSkillsExcludeHidden();
+
+    double intersectionCount = aSkills.stream().filter(s -> b.getSkill(s.getName()) != null).count();
+    double unionCount = aSkills.size() + bSkills.size() - intersectionCount;
 
     return intersectionCount / unionCount;
   }

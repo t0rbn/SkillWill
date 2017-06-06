@@ -1,8 +1,10 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -55,9 +57,11 @@ public class KnownSkillTest {
   @Test
   public void testToJSON() throws JSONException {
     JSONObject obj = skill.toJSON();
-    assertEquals(2, obj.length());
+    assertEquals(4, obj.length());
     assertEquals("Java", obj.getString("name"));
     assertEquals("icon descriptor", obj.getString("iconDescriptor"));
+    assertFalse(obj.getBoolean("hidden"));
+    assertEquals(new JSONArray(), obj.getJSONArray("subskills"));
   }
 
 }

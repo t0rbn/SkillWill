@@ -11,7 +11,8 @@ import {
 	ADD_SKILL_SEARCH,
 	DELETE_SKILL_SEARCH,
 	TOGGLE_SKILLS_EDIT_MODE,
-	EDIT_SKILL
+	EDIT_SKILL,
+	EXIT_SKILLS_EDIT_MODE
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -94,6 +95,8 @@ function setSkillsEditMode(state = false, action) {
 			} else {
 				return true
 			}
+		case EXIT_SKILLS_EDIT_MODE:
+			return false
 		default:
 			return state
 	}

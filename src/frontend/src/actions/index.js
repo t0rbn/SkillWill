@@ -107,6 +107,12 @@ export function toggleSkillsEditMode(){
 		type: TOGGLE_SKILLS_EDIT_MODE
 	}
 }
+export const EXIT_SKILLS_EDIT_MODE = 'EXIT_SKILLS_EDIT_MODE'
+export function exitSkillsEditMode(){
+	return {
+		type: EXIT_SKILLS_EDIT_MODE
+	}
+}
 
 export const EDIT_SKILL = 'EDIT_SKILL'
 export function editSkill(requestURL, options){

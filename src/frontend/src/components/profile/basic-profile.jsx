@@ -15,7 +15,7 @@ class BasicProfile extends React.Component {
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
-			sortedSkills: this.sortSkills('name'),
+			sortedSkills: this.sortSkills('skillLevel', 'desc'),
 			topWills: this.sortSkills('willLevel', 'desc'),
 			isSkillEditActive: false
 		}

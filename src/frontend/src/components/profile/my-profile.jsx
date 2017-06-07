@@ -5,7 +5,7 @@ import SkillSearch from "../search/skill-search.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import Cookies from 'react-cookie'
-import { getUserProfileData, toggleSkillsEditMode, editSkill } from '../../actions'
+import { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy } from '../../actions'
 import { connect } from 'react-redux'
 
 class MyProfile extends React.Component {
@@ -21,24 +21,19 @@ class MyProfile extends React.Component {
 			shouldShowAllSkills: false,
 			skillSearchOpen: false,
 		}
-		this.infoLayer = this.infoLayer.bind(this)
-		this.openCloseEditLayer = this.openCloseEditLayer.bind(this)
 		this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this)
 		this.toggleSkillsSearch = this.toggleSkillsSearch.bind(this)
 		this.toggleSkillsEdit = this.toggleSkillsEdit.bind(this)
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
 		this.getProfileData = this.getProfileData.bind(this)
-
 		if (!this.checkAndOpenLogin()) {
 			browserHistory.push("/my-profile/login")
 		}
 	}
 
 	componentWillMount() {
-		// TODO -> remove both request types
-		this.getProfileData()
-		this.props.getUserProfileData(this.props.params.id)
+		this.props.getUserProfileData(this.state.userId)
 		if (!this.checkUser()) {
 			browserHistory.push("/my-profile/login")
 		}
@@ -77,37 +72,6 @@ class MyProfile extends React.Component {
 		return true
 	}
 
-	infoLayer(data, i, shouldShowAllSkills) {
-		const { name, skillLevel, willLevel } = data
-		const { editLayerOpen, openLayerAt } = this.state
-		if (editLayerOpen && (openLayerAt == i)) {
-			return (
-				<Editor
-					skillName={name}
-					skillLvl={skillLevel}
-					willLvl={willLevel}
-					handleAccept={this.editSkill}
-					handleClose={this.openCloseEditLayer.bind(null)} />
-			)
-		}
-		else {
-			return (
-				<div class="additional-options">
-					<div class="edit" onClick={() => this.openCloseEditLayer(i, shouldShowAllSkills)}></div>
-					<div class="delete" onClick={() => this.deleteSkill(name)}></div>
-				</div>
-			)
-		}
-	}
-
-	openCloseEditLayer(i, show) {
-		this.setState({
-			openLayerAt: i,
-			editLayerOpen: !this.state.editLayerOpen,
-			shouldShowAllSkills: show
-		})
-	}
-
 	toggleSkillsSearch() {
 		this.setState({
 			skillSearchOpen: !this.state.skillSearchOpen
@@ -115,7 +79,8 @@ class MyProfile extends React.Component {
 	}
 
 	toggleSkillsEdit() {
-		this.props.getUserProfileData(this.props.params.id)
+
+		this.props.getUserProfileData(this.state.userId)
 		this.props.toggleSkillsEditMode()
 	}
 
@@ -133,27 +98,6 @@ class MyProfile extends React.Component {
 		const options = { method: "POST", body: postData, credentials: 'same-origin' }
 		const requestURL = `${config.backendServer}/users/${userId}/skills`
 		this.props.editSkill(requestURL, options)
-		// fetch(requestURL, options)
-		// 	.then(res => {
-		// 		if (res.status === 401) {
-		// 			Cookies.remove("session")
-		// 			alert('Session abgelaufen')
-		// 			this.setState({
-		// 				session: undefined,
-		// 				editLayerOpen: false
-		// 			})
-		// 			this.getProfileData()
-		// 		}
-
-		// 		if (res.status !== 200) {
-		// 			throw Error("error while editing skills")
-		// 		}
-		// 		else {
-		// 			this.getProfileData()
-		// 		}
-
-		// 	})
-		// 	.catch(err => console.log(err))
 	}
 
 	deleteSkill(skill) {
@@ -192,7 +136,7 @@ class MyProfile extends React.Component {
 			shouldShowAllSkills
 		} = this.state
 		return (
-			dataLoaded ?
+			this.props.userLoaded ?
 				skillSearchOpen ?
 					<div class="profile">
 						<SkillSearch handleEdit={this.editSkill} />
@@ -201,12 +145,12 @@ class MyProfile extends React.Component {
 					:
 					<div class="profile">
 						<BasicProfile
-							user={data}
-							infoLayer={this.infoLayer}
 							openLayerAt={openLayerAt}
 							shouldShowAllSkills={shouldShowAllSkills}
 							checkLogin={this.checkAndOpenLogin}
-							editSkill={this.editSkill} />
+							editSkill={this.editSkill}
+							setLastSortedBy={this.props.setLastSortedBy}
+							lastSortedBy={this.props.lastSortedBy} />
 						<div class="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
 						<div class="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
 					</div>
@@ -214,5 +158,10 @@ class MyProfile extends React.Component {
 		)
 	}
 }
-
-export default connect(null, { getUserProfileData, toggleSkillsEditMode, editSkill })(MyProfile)
+function mapStateToProps(state) {
+	return {
+		userLoaded: state.user.userLoaded,
+		lastSortedBy: state.lastSortedBy
+	}
+}
+export default connect(mapStateToProps, { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy })(MyProfile)

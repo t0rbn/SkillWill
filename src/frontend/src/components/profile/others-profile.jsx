@@ -3,6 +3,7 @@ import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
 import config from '../../config.json'
 import SkillItem from '../skill-item/skill-item.jsx'
+import { getUserProfileData } from '../../actions'
 
 import { connect } from 'react-redux'
 
@@ -11,47 +12,10 @@ class OthersProfile extends React.Component {
 		super(props)
 		this.state = {
 			userId: this.props.params.id || "id",
-			dataLoaded: false,
+			dataLoaded: true,
 			infoLayerAt: 0
 		}
-		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
-	}
-
-	componentDidMount() {
-		fetch(`${config.backendServer}/users/${this.state.userId}`, { credentials: 'same-origin' })
-			.then(response => response.json())
-			.then(user => {
-				this.setState({
-					user,
-					dataLoaded: true
-				})
-			})
-			.catch(function (error) {
-				console.error(error)
-			})
-	}
-
-	renderSearchedSkills() {
-		const { skills } = this.state.user
-		const { searchedSkills } = this.props
-		if (!searchedSkills || searchedSkills.length <= 0) {
-			return
-		}
-		return (
-			<li class="searched-skills skill-listing">
-				<div class="listing-header">Gesuchte Skills</div>
-				<ul class="skills-list">
-					{skills
-						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
-						.map((skill, i) => {
-							return (
-								<SkillItem key={skill.name} skill={skill} />
-							)
-						})
-					}
-				</ul>
-			</li>
-		)
+		this.props.getUserProfileData(this.state.userId)
 	}
 
 	infoLayer(data) {
@@ -61,22 +25,20 @@ class OthersProfile extends React.Component {
 	render() {
 		const { dataLoaded, user } = this.state
 		return (
-			<div class="profile">
-				{dataLoaded ?
+			this.props.userLoaded ?
+				<div class="profile">
 					<BasicProfile
-						user={user}
 						infoLayer={this.infoLayer}
-						additionalSkillListing={this.renderSearchedSkills()} />
-					: ""
-				}
+						renderSearchedSkills={true} />
 			</div>
+		: ""
 		)
 	}
 }
 function mapStateToProps(state) {
 	return {
-		searchedSkills: state.results.searched
+		userLoaded: state.user.userLoaded
 	}
 }
 
-export default connect(mapStateToProps)(OthersProfile)
+export default connect(mapStateToProps, { getUserProfileData })(OthersProfile)

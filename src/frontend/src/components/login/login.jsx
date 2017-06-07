@@ -2,8 +2,10 @@ import React from 'react'
 import config from '../../config.json'
 import Cookies from 'react-cookie'
 import { Router, Link, browserHistory } from 'react-router'
+import { getUserProfileData } from '../../actions'
+import { connect } from 'react-redux'
 
-export default class Login extends React.Component {
+class Login extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -58,6 +60,7 @@ export default class Login extends React.Component {
 			session: session,
 			isUserLogedIn: true
 		})
+		this.props.getUserProfileData(this.props.params.id)
 		browserHistory.push(`/my-profile/${this.state.user}`)
 	}
 
@@ -133,3 +136,5 @@ export default class Login extends React.Component {
 		)
 	}
 }
+
+export default connect(null, { getUserProfileData })(Login)

@@ -5,13 +5,13 @@ import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
+import { connect } from 'react-redux'
 
-export default class BasicProfile extends React.Component {
+class BasicProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			shouldShowAllSkills: this.props.shouldShowAllSkills,
-			infoLayerAt: this.props.openLayerAt,
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
@@ -27,6 +27,7 @@ export default class BasicProfile extends React.Component {
 		this.renderSortButtons = this.renderSortButtons.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.toggleSkillEdit = this.toggleSkillEdit.bind(this)
+		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
 	}
 
 	componentDidMount() {
@@ -100,7 +101,13 @@ export default class BasicProfile extends React.Component {
 				<ul class="skills-list">
 					{skills.map((skill, i) => {
 						if (i < 5 && skill['willLevel'] > 1) {
-							return <SkillItem editSkill={this.props.editSkill} skill={skill} key={skill.name} />
+							return (
+								<SkillItem
+									editSkill={this.props.editSkill}
+									skill={skill}
+									key={skill.name}
+								/>
+							)
 						}
 					})}
 				</ul>
@@ -112,9 +119,15 @@ export default class BasicProfile extends React.Component {
 		return (
 			<ul class="skills-list">
 				{skills.map((skill, i) => {
-					//display show-more-link after maximum skills to show
 					if (i < numberOfSkillsToShow) {
-						return <SkillItem editSkill={this.props.editSkill} deleteSkill={this.props.deleteSkill} skill={skill} key={skill.name} />
+						return (
+							<SkillItem
+								editSkill={this.props.editSkill}
+								deleteSkill={this.props.deleteSkill}
+								skill={skill}
+								key={skill.name}
+							/>
+						)
 					}
 				}
 				)}
@@ -132,6 +145,29 @@ export default class BasicProfile extends React.Component {
 				<li class="sort-button sort-button-will" onClick={() => this.setState({ sortedSkills: this.sortSkills('willLevel', 'desc') })}
 				><span class="sort-button-label">Will</span></li>
 			</ul>
+		)
+	}
+
+		renderSearchedSkills() {
+		const { skills } = this.props.user
+		const { searchedSkills } = this.props
+		if (!searchedSkills || searchedSkills.length <= 0) {
+			return
+		}
+		return (
+			<li class="searched-skills skill-listing">
+				<div class="listing-header">Gesuchte Skills</div>
+				<ul class="skills-list">
+					{skills
+						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
+						.map((skill, i) => {
+							return (
+								<SkillItem key={skill.name} skill={skill} />
+							)
+						})
+					}
+				</ul>
+			</li>
 		)
 	}
 
@@ -158,8 +194,8 @@ export default class BasicProfile extends React.Component {
 		} = this.state
 
 		return (
-			<ul class="basic-profile animateable">
-]				<li class="info">
+			<ul class={`basic-profile ${this.props.shouldSkillsAnimate ? "animateable" : ""}`}>
+				<li class="info">
 					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
 					<p class="name">{firstName} {lastName}</p>
 					<p class="id">{id}</p>
@@ -170,7 +206,7 @@ export default class BasicProfile extends React.Component {
 					<Link class="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank" />
 				</li>
 
-				{this.props.additionalSkillListing /*e.g. searched skills*/}
+				{this.renderSearchedSkills()}
 
 				{this.renderTopWills(topWills)}
 
@@ -187,3 +223,12 @@ export default class BasicProfile extends React.Component {
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	return {
+		shouldSkillsAnimate: state.shouldSkillsAnimate,
+		searchedSkills: state.results.searched,
+		user: state.user
+	}
+}
+export default connect(mapStateToProps)(BasicProfile)

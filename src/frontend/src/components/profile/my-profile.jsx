@@ -5,7 +5,7 @@ import SkillSearch from "../search/skill-search.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import Cookies from 'react-cookie'
-import { getUserProfileData } from '../../actions'
+import { getUserProfileData, toggleSkillsEditMode, editSkill } from '../../actions'
 import { connect } from 'react-redux'
 
 class MyProfile extends React.Component {
@@ -19,12 +19,13 @@ class MyProfile extends React.Component {
 			editLayerOpen: false,
 			openLayerAt: -1,
 			shouldShowAllSkills: false,
-			skillSearchOpen: false
+			skillSearchOpen: false,
 		}
 		this.infoLayer = this.infoLayer.bind(this)
 		this.openCloseEditLayer = this.openCloseEditLayer.bind(this)
 		this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this)
 		this.toggleSkillsSearch = this.toggleSkillsSearch.bind(this)
+		this.toggleSkillsEdit = this.toggleSkillsEdit.bind(this)
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
 		this.getProfileData = this.getProfileData.bind(this)
@@ -113,7 +114,12 @@ class MyProfile extends React.Component {
 		})
 	}
 
-	editSkill(skill, skillLevel, willLevel, method) {
+	toggleSkillsEdit() {
+		this.props.getUserProfileData(this.props.params.id)
+		this.props.toggleSkillsEditMode()
+	}
+
+	editSkill(skill, skillLevel, willLevel) {
 		const { userId, session } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
 			alert('not allowed')
@@ -124,30 +130,30 @@ class MyProfile extends React.Component {
 		postData.append("skill_level", skillLevel)
 		postData.append("will_level", willLevel)
 		postData.append("session", session)
-
 		const options = { method: "POST", body: postData, credentials: 'same-origin' }
 		const requestURL = `${config.backendServer}/users/${userId}/skills`
-		fetch(requestURL, options)
-			.then(res => {
-				if (res.status === 401) {
-					Cookies.remove("session")
-					alert('Session abgelaufen')
-					this.setState({
-						session: undefined,
-						editLayerOpen: false
-					})
-					this.getProfileData()
-				}
+		this.props.editSkill(requestURL, options)
+		// fetch(requestURL, options)
+		// 	.then(res => {
+		// 		if (res.status === 401) {
+		// 			Cookies.remove("session")
+		// 			alert('Session abgelaufen')
+		// 			this.setState({
+		// 				session: undefined,
+		// 				editLayerOpen: false
+		// 			})
+		// 			this.getProfileData()
+		// 		}
 
-				if (res.status !== 200) {
-					throw Error("error while editing skills")
-				}
-				else {
-					this.getProfileData()
-				}
+		// 		if (res.status !== 200) {
+		// 			throw Error("error while editing skills")
+		// 		}
+		// 		else {
+		// 			this.getProfileData()
+		// 		}
 
-			})
-			.catch(err => console.log(err))
+		// 	})
+		// 	.catch(err => console.log(err))
 	}
 
 	deleteSkill(skill) {
@@ -200,12 +206,13 @@ class MyProfile extends React.Component {
 							openLayerAt={openLayerAt}
 							shouldShowAllSkills={shouldShowAllSkills}
 							checkLogin={this.checkAndOpenLogin}
-							canEditSkills={true} />
+							editSkill={this.editSkill} />
 						<div class="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
+						<div class="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
 					</div>
 				: ""
 		)
 	}
 }
 
-export default connect(null, { getUserProfileData })(MyProfile)
+export default connect(null, { getUserProfileData, toggleSkillsEditMode, editSkill })(MyProfile)

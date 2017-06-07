@@ -6,10 +6,6 @@ class SkillItemEditor extends React.Component {
 		super(props)
 	}
 
-	editSkill() {
-
-	}
-
 	render() {
 		const {
 			name,
@@ -45,7 +41,6 @@ class SkillItem extends React.Component {
 			skillLevel: this.props.skill.skillLevel,
 			willLevel: this.props.skill.willLevel
 		}
-		console.log('const const')
 		this.editSkill = this.editSkill.bind(this)
 	}
 

@@ -9,7 +9,9 @@ import {
 	SET_LOCATION_FILTER,
 	GET_PROFILE_DATA,
 	ADD_SKILL_SEARCH,
-	DELETE_SKILL_SEARCH
+	DELETE_SKILL_SEARCH,
+	TOGGLE_SKILLS_EDIT_MODE,
+	EDIT_SKILL
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -74,11 +76,36 @@ function getUserProfileData(state = [], action) {
 	}
 }
 
+function editSkill(state = {}, action) {
+	switch (action.type) {
+		case EDIT_SKILL:
+			console.log(action.payload)
+			return action.payload
+		default:
+			return state
+	}
+}
+
+function setSkillsEditMode(state = false, action) {
+	switch (action.type) {
+		case TOGGLE_SKILLS_EDIT_MODE:
+			if (state) {
+				return false
+			} else {
+				return true
+			}
+		default:
+			return state
+	}
+}
+
 export default {
 	searchTerms: setSearchTerms,
 	locationFilter: setLocationFilter,
 	results: fetchResultsBySearchTerms,
 	user: getUserProfileData,
 	skills: fetchSkillsBySearchTerm,
-	skillSearchTerms: setSkillSearchTerms
+	skillSearchTerms: setSkillSearchTerms,
+	isSkillEditActive: setSkillsEditMode,
+	editSkill
 };

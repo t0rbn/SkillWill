@@ -100,3 +100,19 @@ export function getUserProfileData(profile) {
 		payload: request
 	}
 }
+
+export const TOGGLE_SKILLS_EDIT_MODE = 'TOGGLE_SKILLS_EDIT_MODE'
+export function toggleSkillsEditMode(){
+	return {
+		type: TOGGLE_SKILLS_EDIT_MODE
+	}
+}
+
+export const EDIT_SKILL = 'EDIT_SKILL'
+export function editSkill(requestURL, options){
+	const request = fetch(requestURL, options).then(response => response.json())
+	return {
+		type: EDIT_SKILL,
+		payload: request
+	}
+}

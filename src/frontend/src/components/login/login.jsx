@@ -44,8 +44,8 @@ export default class Login extends React.Component {
 	}
 
 	saveCookies(session){
-		Cookies.save("session", session, { path: '/' })
-		Cookies.save("user", this.state.user, { path: '/' })
+		Cookies.save("session", session, { path: '/', maxAge: 86400 })
+		Cookies.save("user", this.state.user, { path: '/', maxAge: 86400 })
 	}
 
 	retrieveSession(session) {

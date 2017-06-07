@@ -52,7 +52,6 @@ export default class BasicProfile extends React.Component {
 		this.setState({
 			isSkillEditActive: !this.state.isSkillEditActive
 		})
-		console.log(this.state.isSkillEditActive)
 	}
 
 	getAvatarColor() {
@@ -101,7 +100,7 @@ export default class BasicProfile extends React.Component {
 				<ul class="skills-list">
 					{skills.map((skill, i) => {
 						if (i < 5 && skill['willLevel'] > 1) {
-							return <SkillItem skill={skill} key={`${skill.name}`} />
+							return <SkillItem editSkill={this.props.editSkill} skill={skill} key={skill.name} />
 						}
 					})}
 				</ul>
@@ -114,8 +113,8 @@ export default class BasicProfile extends React.Component {
 			<ul class="skills-list">
 				{skills.map((skill, i) => {
 					//display show-more-link after maximum skills to show
-					if (i < (numberOfSkillsToShow)) {
-						return <SkillItem deleteSkill={this.props.deleteSkill} skill={skill} key={skill.name} />
+					if (i < numberOfSkillsToShow) {
+						return <SkillItem editSkill={this.props.editSkill} deleteSkill={this.props.deleteSkill} skill={skill} key={skill.name} />
 					}
 				}
 				)}
@@ -160,8 +159,7 @@ export default class BasicProfile extends React.Component {
 
 		return (
 			<ul class="basic-profile animateable">
-				<div onClick={this.toggleSkillEdit}>Edit Skills</div>
-				<li class="info">
+]				<li class="info">
 					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
 					<p class="name">{firstName} {lastName}</p>
 					<p class="id">{id}</p>

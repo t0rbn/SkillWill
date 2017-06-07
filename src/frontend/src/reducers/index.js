@@ -71,7 +71,7 @@ function fetchSkillsBySearchTerm(state = [], action) {
 function getUserProfileData(state = [], action) {
 	switch (action.type) {
 		case GET_PROFILE_DATA:
-			return Object.assign({}, state, action.payload)
+			return Object.assign({}, state, action.payload, {userLoaded : true})
 		default:
 			return state
 	}
@@ -80,7 +80,6 @@ function getUserProfileData(state = [], action) {
 function editSkill(state = {}, action) {
 	switch (action.type) {
 		case EDIT_SKILL:
-			console.log(action.payload)
 			return action.payload
 		default:
 			return state
@@ -102,6 +101,17 @@ function setSkillsEditMode(state = false, action) {
 	}
 }
 
+function shouldSkillsAnimate(state = true, action) {
+	switch (action.type) {
+		case FETCH_RESULTS:
+			return true
+		case TOGGLE_SKILLS_EDIT_MODE:
+			return false
+		default:
+			return state
+	}
+}
+
 export default {
 	searchTerms: setSearchTerms,
 	locationFilter: setLocationFilter,
@@ -110,5 +120,6 @@ export default {
 	skills: fetchSkillsBySearchTerm,
 	skillSearchTerms: setSkillSearchTerms,
 	isSkillEditActive: setSkillsEditMode,
-	editSkill
+	editSkill,
+	shouldSkillsAnimate
 };

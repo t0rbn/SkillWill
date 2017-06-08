@@ -75,7 +75,7 @@ class SkillItem extends React.Component {
 					</div>
 					{
 						this.props.isSkillEditActive
-							? <SkillItemEditor editSkill={this.editSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} />
+							? <SkillItemEditor editSkill={this.editSkill} deleteSkill={this.props.deleteSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} />
 							: ""
 					}
 				</div>

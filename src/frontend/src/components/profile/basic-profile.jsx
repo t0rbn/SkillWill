@@ -104,6 +104,7 @@ class BasicProfile extends React.Component {
 							return (
 								<SkillItem
 									editSkill={this.props.editSkill}
+									deleteSkill={this.props.deleteSkill}
 									skill={skill}
 									key={skill.name}
 								/>

@@ -149,6 +149,7 @@ class MyProfile extends React.Component {
 							shouldShowAllSkills={shouldShowAllSkills}
 							checkLogin={this.checkAndOpenLogin}
 							editSkill={this.editSkill}
+							deleteSkill={this.deleteSkill}
 							setLastSortedBy={this.props.setLastSortedBy}
 							lastSortedBy={this.props.lastSortedBy} />
 						<div class="add-skill-btn" onClick={this.toggleSkillsSearch}></div>

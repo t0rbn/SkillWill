@@ -15,20 +15,20 @@ class SkillItemEditor extends React.Component {
 			deleteSkill
 		} = this.props
 		return (
-			<div class="skill-item-editor">
+			<div className="skill-item-editor">
 				<input
-					class="skill-item-editor__skill-editor"
+					className="skill-item-editor__skill-editor"
 					name={`skillLevel_${name}`}
 					type="range" value={skillLevel}
 					max="3"
 					onChange={(e) => editSkill(name, e.target.value, willLevel)} />
 				<input
-					class="skill-item-editor__will-editor"
+					className="skill-item-editor__will-editor"
 					name={`willLevel_${name}`}
 					type="range" value={willLevel}
 					max="3"
 					onChange={(e) => editSkill(name, skillLevel, e.target.value)} />
-				<div class="skill-item-editor__delete delete" onClick={() => deleteSkill(name)}></div>
+				<div className="skill-item-editor__delete delete" onClick={() => deleteSkill(name)}></div>
 			</div>
 		)
 	}
@@ -39,9 +39,11 @@ class SkillItem extends React.Component {
 		super(props)
 		this.state = {
 			skillLevel: this.props.skill.skillLevel,
-			willLevel: this.props.skill.willLevel
+			willLevel: this.props.skill.willLevel,
+			renderSkill: true
 		}
 		this.editSkill = this.editSkill.bind(this)
+		this.deleteSkill = this.deleteSkill.bind(this)
 	}
 
 	editSkill(name, skillLevel, willLevel) {
@@ -50,6 +52,13 @@ class SkillItem extends React.Component {
 			willLevel
 		})
 		this.props.editSkill(name, skillLevel, willLevel)
+	}
+
+	deleteSkill(name) {
+		this.setState({
+			renderSkill: false
+		})
+		this.props.deleteSkill(name)
 	}
 
 	render() {
@@ -64,22 +73,24 @@ class SkillItem extends React.Component {
 			willLevel
 		} = this.state
 		return (
-			<li key={key} class="skill-item">
-				<p class="skill-name">{name}</p>
-				<div class="skill-level">
-					<div class="level">
-						<div class={`skillBar levelBar levelBar--${skillLevel}`}></div>
+			this.state.renderSkill ?
+			<li key={key} className="skill-item">
+				<p className="skill-name">{name}</p>
+				<div className="skill-level">
+					<div className="level">
+						<div className={`skillBar levelBar levelBar--${skillLevel}`}></div>
 					</div>
-					<div class="level">
-						<div class={`willBar levelBar levelBar--${willLevel}`}></div>
+					<div className="level">
+						<div className={`willBar levelBar levelBar--${willLevel}`}></div>
 					</div>
 					{
 						this.props.isSkillEditActive
-							? <SkillItemEditor editSkill={this.editSkill} deleteSkill={this.props.deleteSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} />
-							: ""
+							? <SkillItemEditor editSkill={this.editSkill} deleteSkill={this.deleteSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} />
+							: null
 					}
 				</div>
 			</li>
+			: null
 		)
 	}
 }

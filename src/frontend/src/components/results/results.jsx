@@ -65,25 +65,25 @@ class Results extends React.Component {
 		if (user && user.length > 0) {
 			const filteredUser = user.filter(this.filterUserByLocation)
 			return (
-				<div class="results-container animateable">
-					<a class="counter" onClick={this.scrollToResults}>
+				<div className="results-container animateable">
+					<a className="counter" onClick={this.scrollToResults}>
 						<span>{filteredUser.length} Ergebnisse</span>
 					</a>
-					<ul class="results">
-						<ul class="sort-buttons">
-							<li class="sort-button sort-button-name" onClick={() => this.sortResults('lastName')}>
-								<span class="sort-button-label">Sort by Name</span>
+					<ul className="results">
+						<ul className="sort-buttons">
+							<li className="sort-button sort-button-name" onClick={() => this.sortResults('lastName')}>
+								<span className="sort-button-label">Sort by Name</span>
 							</li>
-							<li class="sort-button sort-button-location" onClick={() => this.sortResults('location')}>
-								<span class="sort-button-label">Sort by Location</span>
+							<li className="sort-button sort-button-location" onClick={() => this.sortResults('location')}>
+								<span className="sort-button-label">Sort by Location</span>
 							</li>
-							<li class="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
-								<span class="sort-button-label">Sort by Match</span>
+							<li className="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
+								<span className="sort-button-label">Sort by Match</span>
 							</li>
 						</ul>
 						{filteredUser.map((user, i) => {
 							return (
-								<li class="result-item" key={i}>
+								<li className="result-item" key={user.id}>
 									<User user={user} searchTerms={searched} />
 								</li>
 							)
@@ -94,7 +94,7 @@ class Results extends React.Component {
 		}
 		else {
 			return (
-				<div class="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
+				<div className="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
 			)
 		}
 	}

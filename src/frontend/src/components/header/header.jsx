@@ -11,36 +11,39 @@ export default class Header extends React.Component {
 		this.handleClick = this.handleClick.bind(this)
 		this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
 
+	}
+	componentDidMount() {
 		this.checkUserIdCookie()
 	}
 
 	handleClick(e) {
 		this.setState({
-				isNavOpen: !this.state.isNavOpen
+			isNavOpen: !this.state.isNavOpen
 		})
 		this.checkUserIdCookie()
 	}
 
 	checkUserIdCookie() {
-		const user =  Cookies.load("user")
+		const user = Cookies.load("user")
 		if (user != this.state.userId) {
-			this.setState({userId: user})
+			this.setState({ userId: user })
 		}
 		return !!user
 	}
 
-	renderLogOut(){
-		if(this.checkUserIdCookie()){
-			return(
-				<li class="nav-item">
-					<Link class="nav-link" to={`/my-profile/logout`}>Logout</Link>
+	renderLogOut() {
+		const user = Cookies.load("user")
+		if (!!user) {
+			return (
+				<li className="nav-item">
+					<Link className="nav-link" to={`/my-profile/logout`}>Logout</Link>
 				</li>
 			)
 		}
 	}
 
-	returnMyProfileLink(){
-		if (typeof this.state.userId != 'undefined'){
+	returnMyProfileLink() {
+		if (typeof this.state.userId != 'undefined') {
 			return this.state.userId
 		} else {
 			return 'login'
@@ -48,25 +51,35 @@ export default class Header extends React.Component {
 	}
 
 	render() {
-		return(
-			<header class="mod-navigation-container">
-				<div class={`mod-navigation nav-open-is-${this.state.isNavOpen}`}>
-					<Link class="s2-logo" to="/"></Link>
-					<label class="burger" title="Show navigation" onClick={this.handleClick}>
-						<div class="burger-layer-wrapper">
-							<span class="burger-layer"></span>
-							<span class="burger-layer"></span>
-							<span class="burger-layer"></span>
-							<span class="burger-layer"></span>
+		return (
+			<header className="mod-navigation-container">
+				<div className={`mod-navigation nav-open-is-${this.state.isNavOpen}`}>
+					<Link className="s2-logo" to="/"></Link>
+					<label className="burger" title="Show navigation" onClick={this.handleClick}>
+						<div className="burger-layer-wrapper">
+							<span className="burger-layer"></span>
+							<span className="burger-layer"></span>
+							<span className="burger-layer"></span>
+							<span className="burger-layer"></span>
 						</div>
 					</label>
-					<nav class="nav">
-						<ul class="nav-list">
-							<li class="nav-item">
-									<Link class="nav-link" to="/">Suche</Link>
+					<nav className="nav">
+						<ul className="nav-list">
+							<li className="nav-item">
+								<Link
+									onClick={this.handleClick}
+									className="nav-link"
+									to="/">
+									Suche
+								</Link>
 							</li>
-							<li class="nav-item">
-								<Link class="nav-link" to={`/my-profile/${this.returnMyProfileLink()}`}>Dein Profil</Link>
+							<li className="nav-item">
+								<Link
+									onClick={this.handleClick}
+									className="nav-link"
+									to={`/my-profile/${this.returnMyProfileLink()}`}>
+									Dein Profil
+								</Link>
 							</li>
 							{this.renderLogOut()}
 						</ul>

@@ -33,14 +33,13 @@ class UserSearch extends React.Component {
 	render() {
 		const { searchTerms, locationFilter } = this.props
 		return (
-			<div class="searchbar">
+			<div className="searchbar">
 				<Dropdown
 					onDropdownSelect={this.handleDropdownSelect}
 					dropdownLabel={locationFilter} />
 				<SearchBar
 					onInputChange={this.handleSearchBarInput}
 					onInputDelete={this.handleSearchBarDelete}
-					parent={this}
 					searchTerms={searchTerms}>
 					{/*<SearchSuggestions
 						searchTerms={searchItems}

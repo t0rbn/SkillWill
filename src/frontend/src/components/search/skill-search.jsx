@@ -39,9 +39,9 @@ class SkillSearch extends React.Component {
 	render() {
 		const { handleEdit, skills, user, skillSearchTerms } = this.props
 		return (
-			<div class="searchbar">
-				<p class="subtitle">Neuen Skill hinzufügen</p>
-				<p class="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
+			<div className="searchbar">
+				<p className="subtitle">Neuen Skill hinzufügen</p>
+				<p className="search-description">Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
 				<SearchBar
 					onInputChange={this.handleSearchBarInput}
 					onInputDelete={this.handleSearchBarDelete}

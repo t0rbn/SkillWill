@@ -27,12 +27,12 @@ class MyProfile extends React.Component {
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
 		this.getProfileData = this.getProfileData.bind(this)
-		if (!this.checkAndOpenLogin()) {
-			browserHistory.push("/my-profile/login")
-		}
 	}
 
 	componentWillMount() {
+		if (!this.checkAndOpenLogin()) {
+			browserHistory.push("/my-profile/login")
+		}
 		this.props.getUserProfileData(this.state.userId)
 		if (!this.checkUser()) {
 			browserHistory.push("/my-profile/login")
@@ -138,12 +138,12 @@ class MyProfile extends React.Component {
 		return (
 			this.props.userLoaded ?
 				skillSearchOpen ?
-					<div class="profile">
+					<div className="profile">
 						<SkillSearch handleEdit={this.editSkill} />
-						<div class="back-btn" onClick={this.toggleSkillsSearch}></div>
+						<div className="back-btn" onClick={this.toggleSkillsSearch}></div>
 					</div>
 					:
-					<div class="profile">
+					<div className="profile">
 						<BasicProfile
 							openLayerAt={openLayerAt}
 							shouldShowAllSkills={shouldShowAllSkills}
@@ -152,10 +152,10 @@ class MyProfile extends React.Component {
 							deleteSkill={this.deleteSkill}
 							setLastSortedBy={this.props.setLastSortedBy}
 							lastSortedBy={this.props.lastSortedBy} />
-						<div class="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
-						<div class="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
+						<div className="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
+						<div className="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
 					</div>
-				: ""
+				: null
 		)
 	}
 }

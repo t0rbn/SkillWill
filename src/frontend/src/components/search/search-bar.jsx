@@ -43,6 +43,9 @@ export default class SearchBar extends React.Component {
 		if (currentValue) {
 			this.props.onInputChange(currentValue)
 		}
+			this.setState({
+			currentValue: ''
+		})
 	}
 
 	handleSuggestionSelected(name) {
@@ -59,21 +62,21 @@ export default class SearchBar extends React.Component {
 				<form
 					onSubmit={this.handleSubmit}
 					name="SearchBar"
-					autocomplete="off">
-					<div class="search-container">
-						<div class="input-container">
+					autoComplete="off">
+					<div className="search-container">
+						<div className="input-container">
 							{/*display entered searchTerms in front of the input field*/}
 							{searchTerms.map((searchTerm, i) => {
 								return (
-									<div class="search-term">
+									<div className="search-term" key={searchTerm}>
 										{searchTerm}
-										<a class="close" data-filter={searchTerm} key={i} onClick={event => this.deleteFilter(event, searchTerm)}>&#9747;</a>
+										<a className="close" data-filter={searchTerm} key={`delete_${searchTerm}`} onClick={event => this.deleteFilter(event, searchTerm)}>&#9747;</a>
 									</div>
 								)
 							})}
 							<input
 								name="SearchInput"
-								autocomplete="off"
+								autoComplete="off"
 								placeholder="Nach welchem Skill suchst du?"
 								type="search"
 								value={this.state.currentValue}
@@ -83,10 +86,10 @@ export default class SearchBar extends React.Component {
 								ref={input => { this.input = input }}>
 							</input>
 						</div>
-						<button type="submit" class="submit-search-button" />
+						<button type="submit" className="submit-search-button" />
 					</div>
 				</form>
-				{React.cloneElement(this.props.children, { handleSuggestionSelected: this.handleSuggestionSelected, currentValue: this.state.currentValue })}
+				{/*{React.cloneElement(this.props.children, { handleSuggestionSelected: this.handleSuggestionSelected, currentValue: this.state.currentValue })}*/}
 			</div>
 		)
 	}

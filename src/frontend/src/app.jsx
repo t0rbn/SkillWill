@@ -10,10 +10,10 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<Header />
-				<div class="background-layer"></div>
-				<div class="content">
-					<h1 class="title">SkillWill</h1>
-					<h3 class="subtitle">Wir haben Talent</h3>
+				<div className="background-layer"></div>
+				<div className="content">
+					<h1 className="title">SkillWill</h1>
+					<h3 className="subtitle">Wir haben Talent</h3>
 					<UserSearch location={this.props.location} />
 					<Results />
 					{this.props.children}

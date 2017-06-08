@@ -37,19 +37,19 @@ export default class Editor extends React.Component {
 		const { skillLevel, willLevel } = this.state
 
 		return (
-			<div class="editor">
-				<div class="action-buttons">
-					<a class="check" onClick={this.handleAccept}></a>
-					<a class="cancel" onClick={this.props.handleClose}></a>
+			<div className="editor">
+				<div className="action-buttons">
+					<a className="check" onClick={this.handleAccept}></a>
+					<a className="cancel" onClick={this.props.handleClose}></a>
 				</div>
-				<div class="slider-container">
-					<p class="slider-description">Dein Skill-Level</p>
+				<div className="slider-container">
+					<p className="slider-description">Dein Skill-Level</p>
 					<RangeSlider
 						onSlide={this.handleSliderChange}
 						type="skill"
 						defaultValue={skillLevel}
 						legend={Config.skillLegend} />
-					<p class="slider-description">Dein Will-Level</p>
+					<p className="slider-description">Dein Will-Level</p>
 					<RangeSlider
 						onSlide={this.handleSliderChange}
 						type="will"

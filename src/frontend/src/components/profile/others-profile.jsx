@@ -26,12 +26,12 @@ class OthersProfile extends React.Component {
 		const { dataLoaded, user } = this.state
 		return (
 			this.props.userLoaded ?
-				<div class="profile">
+				<div className="profile">
 					<BasicProfile
 						infoLayer={this.infoLayer}
 						renderSearchedSkills={true} />
 			</div>
-		: ""
+		: null
 		)
 	}
 }

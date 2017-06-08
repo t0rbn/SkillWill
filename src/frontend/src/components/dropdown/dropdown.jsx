@@ -33,8 +33,8 @@ export default class Dropdown extends React.Component {
 
 	render() {
 		return (
-			<div class="dropdown">
-				<span class="dropdown-label">{this.setDropdownLabel()}</span>
+			<div className="dropdown">
+				<span className="dropdown-label">{this.setDropdownLabel()}</span>
 				<select onChange={this.handleDropdownChange}
 					value={this.setDropdownValue()}>
 					<option value="all">Alle Standorte</option>

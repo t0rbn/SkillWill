@@ -25,8 +25,8 @@ export default class SearchSuggestions extends React.Component {
       searchTerms = this.props.searchTerms
     }
     let suggestionUrl = config.backendServer + '/skills/next?count=5&search=' + searchTerms.join(',')
-    let autocompleteUrl = config.backendServer + '/skills?count=5&search=' + this.props.currentValue
-    fetch(this.state.doAutoComplete ? autocompleteUrl : suggestionUrl)
+    let autoCompleteUrl = config.backendServer + '/skills?count=5&search=' + this.props.currentValue
+    fetch(this.state.doAutoComplete ? autoCompleteUrl : suggestionUrl)
     .then(res => res.status == 200 ? res.json() : [])
     .then(data => this.setState({ results : data }))
     .catch(err => console.log(err))
@@ -44,9 +44,9 @@ export default class SearchSuggestions extends React.Component {
 
   render() {
     return(
-      <div class={this.state.results.length > 0 ? 'search-suggestions' : 'search-suggestions hidden'}>
-        <p class="info">{this.getHint()}</p>
-        <ul class="search-suggestions-list">
+      <div className={this.state.results.length > 0 ? 'search-suggestions' : 'search-suggestions hidden'}>
+        <p className="info">{this.getHint()}</p>
+        <ul className="search-suggestions-list">
           {this.state.results.length > 0
             ? this.state.results.map(s => {
 							<SuggestionItem name={s.name} handleSuggestionSelected={this.props.handleSuggestionSelected} />

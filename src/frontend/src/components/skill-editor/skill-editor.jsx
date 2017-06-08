@@ -42,13 +42,13 @@ export default class Skill extends React.Component {
 		const { skill, handleEdit } = this.props
 		const { editorIsOpen, skillLvl, willLvl } = this.state
 		return (
-			<ul class={`skill ${editorIsOpen ? "toggled" : ""}`}>
-				<li class="name" onClick={this.toggleEditor}>
+			<ul className={`skill ${editorIsOpen ? "toggled" : ""}`}>
+				<li className="name" onClick={this.toggleEditor}>
 					{skill}
 				</li>
-				<li class="add" onClick={this.toggleEditor}></li>
+				<li className="add" onClick={this.toggleEditor}></li>
 				{editorIsOpen ?
-					<li class="editor-container">
+					<li className="editor-container">
 						<Editor skillName={skill}
 							skillLvl={skillLvl}
 							willLvl={willLvl}

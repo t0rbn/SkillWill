@@ -24,28 +24,28 @@ class Login extends React.Component {
 		this.handleResponseStatus = this.handleResponseStatus.bind(this)
 	}
 
-	componentWillMount(){
-		if(this.state.isUserLogedIn){
+	componentWillMount() {
+		if (this.state.isUserLogedIn) {
 			browserHistory.push(`/my-profile/${this.state.user}`)
 		}
 	}
 
 	handleUserchange(e) {
-		this.setState({user: e.target.value})
+		this.setState({ user: e.target.value })
 	}
 
 	handlePasswordChange(e) {
-		this.setState({password: e.target.value})
+		this.setState({ password: e.target.value })
 	}
 
-	generatePostData(){
+	generatePostData() {
 		const postData = new FormData()
 		postData.append("username", this.state.user)
 		postData.append("password", this.state.password)
 		return postData
 	}
 
-	saveCookies(session){
+	saveCookies(session) {
 		Cookies.save("session", session, { path: '/', maxAge: 86400 })
 		Cookies.save("user", this.state.user, { path: '/', maxAge: 86400 })
 	}
@@ -64,7 +64,7 @@ class Login extends React.Component {
 		browserHistory.push(`/my-profile/${this.state.user}`)
 	}
 
-	handleResponseStatus(response){
+	handleResponseStatus(response) {
 		if (response.status == 200) {
 			this.setState({
 				password: undefined,
@@ -98,18 +98,18 @@ class Login extends React.Component {
 		}
 		fetch(`${config.backendServer}/login`, options)
 			.then(response => {
-				if(this.handleResponseStatus(response)){
+				if (this.handleResponseStatus(response)) {
 					return response.json()
 				}
 			})
 			.then(data => this.retrieveSession(data.session))
-		.catch(err => console.log(err))
+			.catch(err => console.log(err))
 	}
 
 	render() {
-		return(
-			<div class="login">
-				<h1 class="subtitle">Haaalt stop! Erstmal einloggen!</h1>
+		return (
+			<div className="login">
+				<h1 className="subtitle">Haaalt stop! Erstmal einloggen!</h1>
 				<form onSubmit={this.handleLogin}>
 					<input
 						name="username"
@@ -126,11 +126,11 @@ class Login extends React.Component {
 						onChange={this.handlePasswordChange}>
 					</input>
 					<input
-						class="submit-btn"
+						className="submit-btn"
 						type="submit"
 						value="Login">
 					</input>
-					<p class="error">{this.state.errormessage}</p>
+					<p className="error">{this.state.errormessage}</p>
 				</form>
 			</div>
 		)

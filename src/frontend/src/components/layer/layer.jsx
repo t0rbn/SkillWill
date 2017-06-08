@@ -22,10 +22,10 @@ class Layer extends React.Component {
 
 	render() {
 		return (
-			<div class="layer-container">
-				<Link onClick={this.handleClose} class="close-layer"></Link>
-				<Link onClick={this.handleClose} class="close-btn"></Link>
-				<div class="layer">
+			<div className="layer-container">
+				<Link onClick={this.handleClose} className="close-layer"></Link>
+				<Link onClick={this.handleClose} className="close-btn"></Link>
+				<div className="layer">
 					{this.props.children}
 				</div>
 			</div>

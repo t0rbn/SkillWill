@@ -15,8 +15,6 @@ class BasicProfile extends React.Component {
 			showMoreLabel: "Mehr",
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
-			sortedSkills: this.sortSkills('skillLevel', 'desc'),
-			topWills: this.sortSkills('willLevel', 'desc'),
 			isSkillEditActive: false
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
@@ -28,6 +26,13 @@ class BasicProfile extends React.Component {
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.toggleSkillEdit = this.toggleSkillEdit.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
+	}
+
+	componentWillMount() {
+		this.setState({
+			sortedSkills: this.sortSkills('skillLevel', 'desc'),
+			topWills: this.sortSkills('willLevel', 'desc')
+		})
 	}
 
 	componentDidMount() {
@@ -96,9 +101,9 @@ class BasicProfile extends React.Component {
 
 	renderTopWills(skills) {
 		return (
-			<li class="top-wills skill-listing">
-				<div class="listing-header">Top Wills</div>
-				<ul class="skills-list">
+			<li className="top-wills skill-listing">
+				<div className="listing-header">Top Wills</div>
+				<ul className="skills-list">
 					{skills.map((skill, i) => {
 						if (i < 5 && skill['willLevel'] > 1) {
 							return (
@@ -118,7 +123,7 @@ class BasicProfile extends React.Component {
 
 	renderSkills(skills, numberOfSkillsToShow) {
 		return (
-			<ul class="skills-list">
+			<ul className="skills-list">
 				{skills.map((skill, i) => {
 					if (i < numberOfSkillsToShow) {
 						return (
@@ -138,27 +143,27 @@ class BasicProfile extends React.Component {
 
 	renderSortButtons() {
 		return (
-			<ul class="sort-buttons">
-				<li class="sort-button sort-button-name" onClick={() => this.setState({ sortedSkills: this.sortSkills('name', 'asc') })}
-				><span class="sort-button-label">Name</span></li>
-				<li class="sort-button sort-button-skill" onClick={() => this.setState({ sortedSkills: this.sortSkills('skillLevel', 'desc') })}
-				><span class="sort-button-label">Skill</span></li>
-				<li class="sort-button sort-button-will" onClick={() => this.setState({ sortedSkills: this.sortSkills('willLevel', 'desc') })}
-				><span class="sort-button-label">Will</span></li>
+			<ul className="sort-buttons">
+				<li className="sort-button sort-button-name" onClick={() => this.setState({ sortedSkills: this.sortSkills('name', 'asc') })}
+				><span className="sort-button-label">Name</span></li>
+				<li className="sort-button sort-button-skill" onClick={() => this.setState({ sortedSkills: this.sortSkills('skillLevel', 'desc') })}
+				><span className="sort-button-label">Skill</span></li>
+				<li className="sort-button sort-button-will" onClick={() => this.setState({ sortedSkills: this.sortSkills('willLevel', 'desc') })}
+				><span className="sort-button-label">Will</span></li>
 			</ul>
 		)
 	}
 
-		renderSearchedSkills() {
+	renderSearchedSkills() {
 		const { skills } = this.props.user
 		const { searchedSkills } = this.props
 		if (!searchedSkills || searchedSkills.length <= 0) {
 			return
 		}
 		return (
-			<li class="searched-skills skill-listing">
-				<div class="listing-header">Gesuchte Skills</div>
-				<ul class="skills-list">
+			<li className="searched-skills skill-listing">
+				<div className="listing-header">Gesuchte Skills</div>
+				<ul className="skills-list">
 					{skills
 						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
 						.map((skill, i) => {
@@ -193,32 +198,31 @@ class BasicProfile extends React.Component {
 			sortedSkills,
 			topWills
 		} = this.state
-
 		return (
-			<ul class={`basic-profile ${this.props.shouldSkillsAnimate ? "animateable" : ""}`}>
-				<li class="info">
-					<div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
-					<p class="name">{firstName} {lastName}</p>
-					<p class="id">{id}</p>
-					<p class="department">{title}</p>
-					<p class="location phone">{location} / TEL. {phone}</p>
-					<Link class="mail" href={`mailto:${mail}`} target="_blank"></Link>
-					<Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${firstName.toLowerCase()}.${lastName.toLowerCase()}`} target="_blank"></Link>
-					<Link class="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank" />
+			<ul className={`basic-profile ${this.props.shouldSkillsAnimate ? "animateable" : ""}`}>
+				<li className="info">
+					<div className={`avatar avatar-${this.getAvatarColor()}`}><span className="fallback-letter">{firstName.charAt(0).toUpperCase()}</span></div>
+					<p className="name">{firstName} {lastName}</p>
+					<p className="id">{id}</p>
+					<p className="department">{title}</p>
+					<p className="location phone">{location} / TEL. {phone}</p>
+					<Link className="mail" href={`mailto:${mail}`} target="_blank"></Link>
+					<Link className="slack" href={`https://sinnerschrader.slack.com/messages/@${firstName.toLowerCase()}.${lastName.toLowerCase()}`} target="_blank"></Link>
+					<Link className="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank" />
 				</li>
 
 				{this.renderSearchedSkills()}
 
 				{this.renderTopWills(topWills)}
 
-				<li class="all-skills skill-listing">
-					<div class="listing-header">Alle Skills
+				<li className="all-skills skill-listing">
+					<div className="listing-header">Alle Skills
 						{this.renderSortButtons()}
 					</div>
 
 					{this.renderSkills(sortedSkills, numberOfSkillsToShow)}
 
-					<a class="show-more-link" onClick={this.showAllSkills} href=""></a>
+					<a className="show-more-link" onClick={this.showAllSkills} href=""></a>
 				</li>
 			</ul>
 		)

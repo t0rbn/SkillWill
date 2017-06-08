@@ -19,7 +19,7 @@ class MyProfile extends React.Component {
 			editLayerOpen: false,
 			openLayerAt: -1,
 			shouldShowAllSkills: false,
-			skillSearchOpen: false,
+			skillSearchOpen: false
 		}
 		this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this)
 		this.toggleSkillsSearch = this.toggleSkillsSearch.bind(this)

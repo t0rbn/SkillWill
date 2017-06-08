@@ -2,8 +2,10 @@ import React from 'react'
 import config from '../../config.json'
 import Cookies from 'react-cookie'
 import { Router, Link, browserHistory } from 'react-router'
+import { connect } from 'react-redux'
+import { clearUserData } from '../../actions'
 
-export default class Logout extends React.Component {
+class Logout extends React.Component {
 	constructor(props) {
 		super(props)
 
@@ -12,19 +14,19 @@ export default class Logout extends React.Component {
 		this.requestLogout = this.requestLogout.bind(this)
 	}
 
-	generatePostData(){
+	generatePostData() {
 		const session = Cookies.load("session")
 		const postData = new FormData()
 		postData.append("session", session)
 		return postData
 	}
 
-	removeCookies(){
+	removeCookies() {
 		Cookies.remove('session', { path: '/' })
 		Cookies.remove('user', { path: '/' })
 	}
 
-	requestLogout(postData){
+	requestLogout(postData) {
 		const options = {
 			method: "POST",
 			body: postData,
@@ -37,11 +39,13 @@ export default class Logout extends React.Component {
 					userId: undefined,
 					user: undefined
 				})
+				this.props.clearUserData()
 				browserHistory.push('/')
-		})
+			})
+
 	}
 
-	componentWillMount(){
+	componentWillMount() {
 		const postData = this.generatePostData()
 		this.requestLogout(postData)
 	}
@@ -50,3 +54,9 @@ export default class Logout extends React.Component {
 		return null
 	}
 }
+function mapStateToProps(state){
+	return {
+		user: state.user
+	}
+}
+export default connect(mapStateToProps, { clearUserData })(Logout)

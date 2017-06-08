@@ -13,7 +13,7 @@ export default class User extends React.Component {
 	}
 
 	getSkillsToShow(searchTerms) {
-		const {user: { skills } } = this.props
+		const { user: { skills } } = this.props
 		return skills.filter(skill => searchTerms.indexOf(skill.name) > -1)
 	}
 
@@ -22,11 +22,11 @@ export default class User extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.searchTerms && nextProps.searchTerms !== this.props.searchTerms){
-		this.setState({
-			skillsToShow: this.getSkillsToShow(nextProps.searchTerms)
-		})
-	}
+		if (nextProps.searchTerms && nextProps.searchTerms !== this.props.searchTerms) {
+			this.setState({
+				skillsToShow: this.getSkillsToShow(nextProps.searchTerms)
+			})
+		}
 	}
 
 	render() {

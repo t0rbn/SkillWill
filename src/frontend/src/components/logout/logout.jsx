@@ -54,9 +54,5 @@ class Logout extends React.Component {
 		return null
 	}
 }
-function mapStateToProps(state){
-	return {
-		user: state.user
-	}
-}
-export default connect(mapStateToProps, { clearUserData })(Logout)
+
+export default connect(null, { clearUserData })(Logout)

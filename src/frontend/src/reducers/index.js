@@ -77,7 +77,7 @@ function getUserProfileData(state = {}, action) {
 			})
 		case CLEAR_USER_DATA:
 			return Object.assign({}, {
-				userLoaded: false,
+				userLoaded: false
 			})
 		default:
 			return state

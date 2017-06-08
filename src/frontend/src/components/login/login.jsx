@@ -136,9 +136,5 @@ class Login extends React.Component {
 		)
 	}
 }
-function mapStateToProps(state){
-	return {
-		user: state.user
-	}
-}
-export default connect(mapStateToProps, { getUserProfileData })(Login)
+
+export default connect(null, { getUserProfileData })(Login)

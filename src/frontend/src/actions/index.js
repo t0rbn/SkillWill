@@ -101,6 +101,14 @@ export function getUserProfileData(profile) {
 	}
 }
 
+export const CLEAR_USER_DATA = 'CLEAR_USER_DATA'
+export function clearUserData(){
+	return {
+		type: CLEAR_USER_DATA,
+		payload: {}
+	}
+}
+
 export const TOGGLE_SKILLS_EDIT_MODE = 'TOGGLE_SKILLS_EDIT_MODE'
 export function toggleSkillsEditMode(){
 	return {

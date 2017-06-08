@@ -12,7 +12,8 @@ import {
 	DELETE_SKILL_SEARCH,
 	TOGGLE_SKILLS_EDIT_MODE,
 	EDIT_SKILL,
-	EXIT_SKILLS_EDIT_MODE
+	EXIT_SKILLS_EDIT_MODE,
+	CLEAR_USER_DATA
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -68,10 +69,16 @@ function fetchSkillsBySearchTerm(state = [], action) {
 	}
 }
 
-function getUserProfileData(state = [], action) {
+function getUserProfileData(state = {}, action) {
 	switch (action.type) {
 		case GET_PROFILE_DATA:
-			return Object.assign({}, state, action.payload, {userLoaded : true})
+			return Object.assign({}, state, action.payload, {
+				userLoaded: true
+			})
+		case CLEAR_USER_DATA:
+			return Object.assign({}, {
+				userLoaded: false,
+			})
 		default:
 			return state
 	}

@@ -89,7 +89,6 @@ export default class SearchBar extends React.Component {
 						<button type="submit" className="submit-search-button" />
 					</div>
 				</form>
-				{/*{React.cloneElement(this.props.children, { handleSuggestionSelected: this.handleSuggestionSelected, currentValue: this.state.currentValue })}*/}
 			</div>
 		)
 	}

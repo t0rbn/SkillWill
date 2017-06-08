@@ -24,28 +24,28 @@ class Login extends React.Component {
 		this.handleResponseStatus = this.handleResponseStatus.bind(this)
 	}
 
-	componentWillMount() {
-		if (this.state.isUserLogedIn) {
+	componentWillMount(){
+		if(this.state.isUserLogedIn){
 			browserHistory.push(`/my-profile/${this.state.user}`)
 		}
 	}
 
 	handleUserchange(e) {
-		this.setState({ user: e.target.value })
+		this.setState({user: e.target.value})
 	}
 
 	handlePasswordChange(e) {
-		this.setState({ password: e.target.value })
+		this.setState({password: e.target.value})
 	}
 
-	generatePostData() {
+	generatePostData(){
 		const postData = new FormData()
 		postData.append("username", this.state.user)
 		postData.append("password", this.state.password)
 		return postData
 	}
 
-	saveCookies(session) {
+	saveCookies(session){
 		Cookies.save("session", session, { path: '/', maxAge: 86400 })
 		Cookies.save("user", this.state.user, { path: '/', maxAge: 86400 })
 	}
@@ -60,11 +60,11 @@ class Login extends React.Component {
 			session: session,
 			isUserLogedIn: true
 		})
-		this.props.getUserProfileData(this.props.params.id)
+		this.props.getUserProfileData(this.state.user)
 		browserHistory.push(`/my-profile/${this.state.user}`)
 	}
 
-	handleResponseStatus(response) {
+	handleResponseStatus(response){
 		if (response.status == 200) {
 			this.setState({
 				password: undefined,
@@ -98,16 +98,16 @@ class Login extends React.Component {
 		}
 		fetch(`${config.backendServer}/login`, options)
 			.then(response => {
-				if (this.handleResponseStatus(response)) {
+				if(this.handleResponseStatus(response)){
 					return response.json()
 				}
 			})
 			.then(data => this.retrieveSession(data.session))
-			.catch(err => console.log(err))
+		.catch(err => console.log(err))
 	}
 
 	render() {
-		return (
+		return(
 			<div className="login">
 				<h1 className="subtitle">Haaalt stop! Erstmal einloggen!</h1>
 				<form onSubmit={this.handleLogin}>
@@ -136,5 +136,9 @@ class Login extends React.Component {
 		)
 	}
 }
-
-export default connect(null, { getUserProfileData })(Login)
+function mapStateToProps(state){
+	return {
+		user: state.user
+	}
+}
+export default connect(mapStateToProps, { getUserProfileData })(Login)

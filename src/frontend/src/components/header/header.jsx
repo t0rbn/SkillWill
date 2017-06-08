@@ -36,7 +36,12 @@ export default class Header extends React.Component {
 		if (!!user) {
 			return (
 				<li className="nav-item">
-					<Link className="nav-link" to={`/my-profile/logout`}>Logout</Link>
+					<Link
+						onClick={this.handleClick}
+						className="nav-link"
+						to={`/my-profile/logout`}>
+						Logout
+					</Link>
 				</li>
 			)
 		}

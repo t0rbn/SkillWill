@@ -62,6 +62,17 @@ class Results extends React.Component {
 							dropdownLabel={sortFilter}
 							options={sortFilterOptions} />
 					</div>
+					<div className="results-legend-wrapper">
+						<div className="results-legend container">
+							<div className="results-legend-item name">Name</div>
+							<div className="results-legend-item location">Standort</div>
+							<div className="results-legend-item skills">
+								<div className="skill-label">Skill</div>
+								<div className="skill-level">Skill level</div>
+								<div className="will-level">Will level</div>
+							</div>
+						</div>
+					</div>
 					<div className="results">
 						<ul className="results-list container">
 							{sortedUserList.map((user, i) => {

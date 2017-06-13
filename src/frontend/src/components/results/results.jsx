@@ -45,15 +45,7 @@ class Results extends React.Component {
 			setSortFilter,
 			setDirectionFilter
 		} = this.props
-		const directionFilterOptions = [
-			{ value: "ascending", display: "aufsteigend" },
-			{ value: "descending", display: "absteigend" }
-		]
-		const sortFilterOptions = [
-			{ value: "fitness", display: "Match" },
-			{ value: "lastName", display: "Name" },
-			{ value: "location", display: "Standort" }
-		]
+		const { directionFilterOptions, sortFilterOptions } = config
 		if (users && users.length > 0) {
 			const sortedUserList = sortAndFilter(users, sortFilter, directionFilter, locationFilter)
 			return (

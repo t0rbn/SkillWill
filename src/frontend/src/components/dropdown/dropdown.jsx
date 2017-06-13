@@ -29,20 +29,21 @@ export default class Dropdown extends React.Component {
 			return (
 				<option
 					key={`${option["value"]}`}
-					value={`${option["value"]}`}
-				>{`${option["display"]}`}</option>
+					value={`${option["value"]}`}>
+					{`${option["display"]}`}
+				</option>
 			)
 		})
 	}
 
 	render() {
-		const { options } = this.props
+		const { options, dropdownLabel } = this.props
 		return (
 			<div className="dropdown">
 				<span className="dropdown-label">{this.setDropdownLabel()}</span>
 				<select
 					onChange={this.handleDropdownChange}
-					value={this.props.dropdownLabel}>
+					value={dropdownLabel}>
 					{this.renderOptions()}
 				</select>
 			</div>

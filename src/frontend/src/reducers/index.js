@@ -40,11 +40,20 @@ function setSkillSearchTerms(state = [], action) {
 	}
 }
 
+function isResultsLoaded(state = false, action) {
+	switch (action.type) {
+		case FETCH_RESULTS:
+			return true
+		default:
+			return state
+	}
+}
+
 function fetchResultsBySearchTerms(state = [], action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
 			return {
-				state,
+				...state,
 				users: action.payload.results,
 				searched: action.payload.searched
 			}
@@ -106,6 +115,7 @@ function locationFilter(state = '', action) {
 			return state
 	}
 }
+
 function directionFilter(state = '', action) {
 	switch (action.type) {
 		case SET_DIRECTION_FILTER:
@@ -152,5 +162,6 @@ export default {
 	shouldSkillsAnimate,
 	lastSortedBy,
 	locationFilter,
-	directionFilter
+	directionFilter,
+	isResultsLoaded
 };

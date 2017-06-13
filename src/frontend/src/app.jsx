@@ -4,11 +4,14 @@ import Header from './components/header/header.jsx'
 import Footer from './components/footer/footer.jsx'
 import UserSearch from './components/search/user-search.jsx'
 import Results from './components/results/results.jsx'
+import { connect } from 'react-redux'
 
-export default class App extends React.Component {
+class App extends React.Component {
 	render() {
+		const { isResultsLoaded } = this.props
+		console.log(isResultsLoaded)
 		return (
-			<div>
+			<div className={isResultsLoaded ? "results-loaded" : ""}>
 				<Header />
 				<div className="search">
 					<div className="heading">
@@ -29,3 +32,9 @@ export default class App extends React.Component {
 		)
 	}
 }
+function mapStateToProps(state) {
+	return {
+		isResultsLoaded: state.isResultsLoaded
+	}
+}
+export default connect(mapStateToProps)(App)

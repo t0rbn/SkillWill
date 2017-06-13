@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 class App extends React.Component {
 	render() {
 		const { isResultsLoaded } = this.props
-		console.log(isResultsLoaded)
 		return (
 			<div className={isResultsLoaded ? "results-loaded" : ""}>
 				<Header />

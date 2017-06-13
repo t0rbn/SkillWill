@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.repository.Query;
  */
 public interface PersonRepository extends MongoRepository<Person, String> {
 
-  Person findById(String id);
+  Person findByIdIgnoreCase(String id);
 
   @Query("{ 'skills._id' : '?0' }")
   List<Person> findBySkill(String skillName);

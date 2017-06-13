@@ -42,7 +42,7 @@ public class LoginService {
 
     // Insert User if not already exisitng
     // So a user does not need to create an account fist
-    if (personRepo.findById(username) == null) {
+    if (personRepo.findByIdIgnoreCase(username) == null) {
       try {
         Person newPerson = new Person(username);
         personRepo.insert(newPerson);

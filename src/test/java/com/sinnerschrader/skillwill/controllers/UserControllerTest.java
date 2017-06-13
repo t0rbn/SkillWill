@@ -217,8 +217,8 @@ public class UserControllerTest {
   public void testModifySkillsValid() {
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "3", "0", "abc123");
     assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(3, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(0, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(3, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(0, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
@@ -237,8 +237,8 @@ public class UserControllerTest {
   public void testModifySkillsSessionInvalid() {
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "InvalidSession");
     assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
-    assertEquals(2, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(2, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(3, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
@@ -250,38 +250,38 @@ public class UserControllerTest {
 
     ResponseEntity<String> res = userController.updateSkills("IAmUnknown", "Java", "0", "0", "2342");
     assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
-    assertEquals(2, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(2, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(3, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsSkillUnknown() {
     ResponseEntity<String> res = userController.updateSkills("foobar", "UnknownSkill", "0", "0", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(2, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(2, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(3, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsSkillLevelOutOfRange() {
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "5", "0", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(2, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(2, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(3, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsWillLevelOutOfRange() {
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "5", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(2, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findById("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(2, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(3, personRepo.findByIdIgnoreCase("foobar").getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsHidden() {
     assertEquals(HttpStatus.BAD_REQUEST, userController.updateSkills("foobar", "hidden", "0", "3", "abc123").getStatusCode());
-    assertNull(personRepo.findById("foobar").getSkillExcludeHidden("hidden"));
+    assertNull(personRepo.findByIdIgnoreCase("foobar").getSkillExcludeHidden("hidden"));
   }
 
   @Test

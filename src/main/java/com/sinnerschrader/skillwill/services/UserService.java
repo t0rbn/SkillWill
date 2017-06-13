@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +92,7 @@ public class UserService {
   }
 
   public Person getUser(String id) {
-    Person p = personRepository.findById(id);
+    Person p = personRepository.findByIdIgnoreCase(id);
 
     if (p == null) {
       logger.debug("Failed to find user {}: not found", id);
@@ -117,7 +116,7 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    Person person = personRepository.findById(username);
+    Person person = personRepository.findByIdIgnoreCase(username);
 
     if (person == null) {
       logger.debug("Failed to add/modify {}'s skills: user not found", username);
@@ -151,7 +150,7 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    Person person = personRepository.findById(username);
+    Person person = personRepository.findByIdIgnoreCase(username);
 
     if (person == null) {
       logger.debug("Failed to remove {}'s skills: user not found", username);
@@ -176,7 +175,7 @@ public class UserService {
       throw new EmptyArgumentException("username must not be empty");
     }
 
-    Person person = personRepository.findById(username);
+    Person person = personRepository.findByIdIgnoreCase(username);
 
     if (person == null) {
       logger.debug("Failed to modify {}'s comment: user not found", username);

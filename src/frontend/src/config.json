@@ -1,5 +1,44 @@
 {
-    "backendServer": "http://localhost:1337",
-    "skillLegend": ["n/a", "Grundkenntnisse", "Fortgeschritten", "Experte"],
-    "willLegend": ["nope", "Ist OK", "gerne", "unbedingt!"]
+  "backendServer": "http://localhost:1337",
+  "skillLegend": ["n/a", "Grundkenntnisse", "Fortgeschritten", "Experte"],
+  "willLegend": ["nope", "Ist OK", "gerne", "unbedingt!"],
+  "directionFilterOptions": [{
+      "value": "ascending",
+      "display": "aufsteigend"
+    },
+    {
+      "value": "descending",
+      "display": "absteigend"
+    }
+  ],
+  "sortFilterOptions": [{
+      "value": "fitness",
+      "display": "Match"
+    },
+    {
+      "value": "lastName",
+      "display": "Name"
+    },
+    {
+      "value": "location",
+      "display": "Standort"
+    }
+  ],
+  "locationFilterOptions": [{
+      "value": "all",
+      "display": "Alle Standorte"
+    },
+    {
+      "value": "Hamburg",
+      "display": "Hamburg"
+    },
+    {
+      "value": "Frankfurt",
+      "display": "Frankfurt"
+    },
+    {
+      "value": "München",
+      "display": "München"
+    }
+  ]
 }

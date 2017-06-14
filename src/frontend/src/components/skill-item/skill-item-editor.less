@@ -18,4 +18,25 @@
 		right: 0;
 		transform: translateX(200%)
 	}
+  
+  input[type="range"] {
+    height: inherit;
+    width: 100%;
+    &::-moz-range-track {
+      position: relative;
+      height: 2px;
+      opacity: 0;
+    }
+    &::-moz-range-thumb {
+      height: 12px;
+      width: 12px;
+      background-color: @s2-white;
+      border: 2px solid @s2-black;
+      border-radius: 50%;
+    }
+    &::-moz-focusring {
+      outline: 1px solid white;
+      outline-offset: -1px;
+    }
+  }
 }

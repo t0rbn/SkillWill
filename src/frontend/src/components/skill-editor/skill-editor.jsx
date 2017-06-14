@@ -16,10 +16,14 @@ export default class Skill extends React.Component {
 		}
 		this.toggleEditor = this.toggleEditor.bind(this)
 		this.checkSkillLvls = this.checkSkillLvls.bind(this)
+	}
+
+	componentWillMount() {
 		this.checkSkillLvls()
 	}
 
-	toggleEditor(e) {
+	toggleEditor() {
+		this.checkSkillLvls()
 		this.setState({
 			editorIsOpen: !this.state.editorIsOpen
 		})
@@ -49,7 +53,8 @@ export default class Skill extends React.Component {
 				<li className="add" onClick={this.toggleEditor}></li>
 				{editorIsOpen ?
 					<li className="editor-container">
-						<Editor skillName={skill}
+						<Editor
+							skillName={skill}
 							skillLvl={skillLvl}
 							willLvl={willLvl}
 							handleAccept={handleEdit}

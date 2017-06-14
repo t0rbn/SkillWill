@@ -51,6 +51,7 @@ class SkillSearch extends React.Component {
 					return <SkillEditor
 						handleEdit={handleEdit}
 						skill={skill}
+						key={skill}
 						user={user} />
 				})}
 			</div>

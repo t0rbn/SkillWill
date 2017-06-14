@@ -1,12 +1,30 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.SkillStemUtils;
+import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
+import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
+import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.services.SessionService;
+import com.sinnerschrader.skillwill.services.SkillService;
+import com.sinnerschrader.skillwill.services.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -23,23 +41,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
-import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.misc.StatusJSON;
-import com.sinnerschrader.skillwill.services.SessionService;
-import com.sinnerschrader.skillwill.services.SkillService;
-import com.sinnerschrader.skillwill.services.UserService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller handling /users/{foo}
@@ -94,9 +95,21 @@ public class UserController {
     returnJsonObj.put("results", new JSONArray(matches.stream()
       .map(Person::toJSON)
       .collect(Collectors.toList())));
-    returnJsonObj.put("searched", new JSONArray(sanitizedSkills.stream()
-      .map(KnownSkill::getName)
-      .collect(Collectors.toList())));
+
+    Map<String, String> sanitizedNameSkillMap = new HashMap<>();
+    sanitizedSkills.forEach(s -> sanitizedNameSkillMap.put(s.getNameStem(), s.getName()));
+
+    List<JSONObject> searchedSkills = skillList.stream().map(s -> {
+      if (sanitizedNameSkillMap.containsKey(SkillStemUtils.nameToStem(s))) {
+        JSONObject json = new JSONObject();
+        json.put("input", s);
+        json.put("found", sanitizedNameSkillMap.get(SkillStemUtils.nameToStem(s)));
+        return json;
+      }
+      return null;
+    }).filter(Objects::nonNull).collect(Collectors.toList());
+    returnJsonObj.put("searched", new JSONArray(searchedSkills));
+
     return new ResponseEntity<>(returnJsonObj.toString(), HttpStatus.OK);
   }
 

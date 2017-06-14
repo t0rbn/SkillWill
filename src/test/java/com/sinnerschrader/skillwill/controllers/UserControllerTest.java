@@ -100,7 +100,7 @@ public class UserControllerTest {
     ResponseEntity<String> res = userController.getUsers("Java", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
@@ -151,7 +151,7 @@ public class UserControllerTest {
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("searched").length());
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
     assertTrue(new JSONObject(res.getBody()).has("results"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
@@ -168,7 +168,7 @@ public class UserControllerTest {
     ResponseEntity<String> res = userController.getUsers("Java", "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
@@ -189,7 +189,7 @@ public class UserControllerTest {
     ResponseEntity<String> res = userController.getUsers("JaVa", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
@@ -200,7 +200,7 @@ public class UserControllerTest {
     ResponseEntity<String> res = userController.getUsers("j#a)_V®a", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getString(0));
+    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
     assertEquals("foobar", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));

@@ -35,7 +35,6 @@ export default class Editor extends React.Component {
 
 	render() {
 		const { skillLevel, willLevel } = this.state
-
 		return (
 			<div className="editor">
 				<div className="action-buttons">
@@ -47,13 +46,13 @@ export default class Editor extends React.Component {
 					<RangeSlider
 						onSlide={this.handleSliderChange}
 						type="skill"
-						defaultValue={skillLevel}
+						value={skillLevel}
 						legend={Config.skillLegend} />
 					<p className="slider-description">Dein Will-Level</p>
 					<RangeSlider
 						onSlide={this.handleSliderChange}
 						type="will"
-						defaultValue={willLevel}
+						value={willLevel}
 						legend={Config.willLegend} />
 				</div>
 			</div>

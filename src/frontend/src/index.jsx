@@ -29,7 +29,9 @@ const store = createStore(
 		searchTerms: [],
 		skills: [],
 		locationFilter: 'all',
-		lastSortedBy: 'fitness',
+		lastSortedBy: {
+			lastSortedBy: 'fitness'
+		},
 		directionFilter: 'descending'
 	},
 	applyMiddleware(

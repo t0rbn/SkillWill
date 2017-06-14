@@ -41,8 +41,10 @@ export function setLastSortedBy(sortFilter, lastSortedBy) {
 	}
 }
 export function setSortFilter(criterion) {
-	return function (dispatch, getState){
-		const { sortFilter } = getState().lastSortedBy
+	return function (dispatch, getState) {
+		const {
+			sortFilter
+		} = getState().lastSortedBy
 		dispatch(setLastSortedBy(criterion, sortFilter))
 	}
 }
@@ -70,7 +72,9 @@ export function getUserBySearchTerms(term, method) {
 		}
 		const {
 			searchTerms,
-			lastSortedBy
+			lastSortedBy: {
+				lastSortedBy
+			}
 		} = getState()
 		dispatch(fetchResults(searchTerms))
 		dispatch(setSortFilter(lastSortedBy))

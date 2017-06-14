@@ -95,10 +95,10 @@ function editSkill(state = {}, action) {
 	}
 }
 
-function lastSortedBy(state = '', action) {
+function lastSortedBy(state = {}, action) {
 	switch (action.type) {
 		case SET_LAST_SORTED_BY:
-			return { ...state,
+			return {
 				sortFilter: action.sortFilter,
 				lastSortedBy: action.lastSortedBy
 			}

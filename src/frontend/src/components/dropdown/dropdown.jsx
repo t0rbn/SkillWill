@@ -20,7 +20,6 @@ export default class Dropdown extends React.Component {
 			return option['value'] === dropdownLabel
 		})
 		return findOption['display']
-
 	}
 
 	renderOptions() {

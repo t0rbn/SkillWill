@@ -42,9 +42,11 @@ export function setLastSortedBy(sortFilter, lastSortedBy) {
 }
 export function setSortFilter(criterion) {
 	return function (dispatch, getState) {
-		const {
-			sortFilter
+		let {
+			sortFilter,
+			lastSortedBy
 		} = getState().lastSortedBy
+		sortFilter = sortFilter || lastSortedBy
 		dispatch(setLastSortedBy(criterion, sortFilter))
 	}
 }

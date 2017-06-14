@@ -166,3 +166,10 @@ export function editSkill(requestURL, options) {
 		payload: request
 	}
 }
+
+export function updateUserSkills(options, skill, user) {
+	const requestURL = `${config.backendServer}/users/${user}/skills`
+	return function(dispatch, getState) {
+		dispatch(editSkill(requestURL, options)).then(() => dispatch(getUserProfileData(user)))
+	}
+}

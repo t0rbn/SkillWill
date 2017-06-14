@@ -5,7 +5,7 @@ import SkillSearch from "../search/skill-search.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import Cookies from 'react-cookie'
-import { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy } from '../../actions'
+import { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills } from '../../actions'
 import { connect } from 'react-redux'
 
 class MyProfile extends React.Component {
@@ -88,8 +88,8 @@ class MyProfile extends React.Component {
 		this.props.getUserProfileData(this.state.userId)
 		this.props.toggleSkillsEditMode()
 		this.setState({
-      skillEditOpen: !this.state.skillEditOpen
-    })
+			skillEditOpen: !this.state.skillEditOpen
+		})
 	}
 
 	editSkill(skill, skillLevel, willLevel) {
@@ -104,8 +104,7 @@ class MyProfile extends React.Component {
 		postData.append("will_level", willLevel)
 		postData.append("session", session)
 		const options = { method: "POST", body: postData, credentials: 'same-origin' }
-		const requestURL = `${config.backendServer}/users/${userId}/skills`
-		this.props.editSkill(requestURL, options)
+		this.props.updateUserSkills(options, skill, userId)
 	}
 
 	deleteSkill(skill) {
@@ -147,7 +146,7 @@ class MyProfile extends React.Component {
 			this.props.userLoaded ?
 				skillSearchOpen ?
 					<div className="profile">
-						<SkillSearch handleEdit={this.editSkill} />
+						<SkillSearch handleEdit={this.editSkill}/>
 						<div className="back-btn" onClick={this.toggleSkillsSearch}></div>
 					</div>
 					:
@@ -176,7 +175,7 @@ class MyProfile extends React.Component {
 function mapStateToProps(state) {
 	return {
 		userLoaded: state.user.userLoaded,
-		lastSortedBy: state.lastSortedBy
+		lastSortedBy: state.lastSortedBy,
 	}
 }
-export default connect(mapStateToProps, { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy })(MyProfile)
+export default connect(mapStateToProps, { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills })(MyProfile)

@@ -2,7 +2,8 @@
   background-color: @s2-verydarkblue;
   height: auto;
   min-height: 100vh;
-  transform: height 0.2s ease-in;
+  max-height: 1000vh;
+  transition: all 0.4s ease-in;
 
   &:after {
     content: "";
@@ -19,20 +20,20 @@
     top: @4xl-stack;
     left: 50%;
     transform: translateX(-50%);
-    transition: all .2s ease-in;
+    transition: all .4s ease-in;
     transition-delay: .2s;
 
     .title {
       color: @s2-red;
       line-height: 1em;
-      transition: all .3s ease-in;
+      transition: all .4s ease-in;
       transition-delay: .2s;
     }
 
     .subtitle {
       color: @s2-white;
       margin-top: 0.5em;
-      transition: all .1s ease-in;
+      transition: all .2s ease-in;
       user-select: none;
     }
 
@@ -41,13 +42,14 @@
   .container {
     padding-top: @6xl-stack;
     padding-bottom: @4xl-stack;
-    transition: all .2s ease-in;
+    transition: all .4s ease-in;
     transition-delay: .2s;
   }
   
   @media (min-width: @tablet-portrait-up) {
     .results-loaded & {
-      min-height: 1px;
+      min-height: 430px;
+      max-height: 100vh;
       
       .container {
         padding-top: @xl-stack;
@@ -61,7 +63,8 @@
           font-weight: 400;
           font-size: @s-title-font-size;
           animation-name: titleAnimation;
-          animation-duration: 0.9s;
+          animation-duration: .8s;
+          animation-delay: .2s;
           animation-timing-function: ease-in;
           will-change: font-size, transform;
         }

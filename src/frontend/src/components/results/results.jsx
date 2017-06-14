@@ -20,6 +20,7 @@ class Results extends React.Component {
 
 	componentDidMount() {
 		ReactDOM.findDOMNode(this).addEventListener('animationend', this.removeAnimationClass)
+		document.body.classList.add('results-view')
 	}
 
 	removeAnimationClass() {

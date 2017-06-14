@@ -53,6 +53,7 @@ export default class Header extends React.Component {
 			<header className="mod-navigation-container">
 				<div className="mod-navigation">
 					<Link className="s2-logo" to="/"></Link>
+					<Link className="sw-title" to="/">skill/will</Link>
 					<nav className="nav">
 						<ul className="nav-list">
 							<li className="nav-item">

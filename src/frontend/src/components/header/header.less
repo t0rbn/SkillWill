@@ -7,6 +7,7 @@
 
   .my-profile-open & {
     position: fixed;
+    position: fixed;
     background-color: @s2-verydarkblue;
     z-index: 1000;
   }
@@ -34,6 +35,29 @@
   height: 30px;
 }
 
+.sw-title {
+  position: absolute;
+  left: 50%;
+  display: inline-block;
+  transform: translateX(-50%);
+  color: @s2-red;
+  font-size: @s-title-font-size;
+  opacity: 0;
+  
+  &:hover {
+    color: @s2-white;
+  }
+  
+  @media (min-width: @tablet-portrait-up) {
+    .results-view & {
+      opacity: 0;
+    }
+    .layer-open & {
+      opacity: 1;
+    }
+  }
+}
+
 .nav {
   display: flex;
 }
@@ -46,9 +70,11 @@
   display: inline-block;
   text-align: right;
   padding-right: @l-inline;
+  
   .nav-link {
     display: inline-block;
     color: @s2-white;
+    
     &:hover {
       color: @s2-red;
     }

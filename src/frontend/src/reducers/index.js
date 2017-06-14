@@ -55,7 +55,8 @@ function fetchResultsBySearchTerms(state = [], action) {
 			return {
 				...state,
 				users: action.payload.results,
-				searched: action.payload.searched
+				searched: action.payload.searched.map(element => element['found']),
+				input: action.payload.searched.map(element => element['input'])
 			}
 		default:
 			return state

@@ -6,6 +6,7 @@ import Editor from '../editor/editor.jsx'
 import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
 import { connect } from 'react-redux'
+import { clearUserData } from '../../actions'
 
 class BasicProfile extends React.Component {
 	constructor(props) {
@@ -37,6 +38,10 @@ class BasicProfile extends React.Component {
 
 	componentDidMount() {
 		ReactDOM.findDOMNode(this).addEventListener('animationend', this.removeAnimationClass)
+	}
+
+	componentWillUnmount(){
+		this.props.clearUserData()
 	}
 
 	removeAnimationClass() {
@@ -236,4 +241,4 @@ function mapStateToProps(state) {
 		user: state.user
 	}
 }
-export default connect(mapStateToProps)(BasicProfile)
+export default connect(mapStateToProps, { clearUserData })(BasicProfile)

@@ -31,8 +31,8 @@ class BasicProfile extends React.Component {
 
 	componentWillMount() {
 		this.setState({
-			sortedSkills: this.sortSkills('skillLevel', 'desc'),
-			topWills: this.sortSkills('willLevel', 'desc')
+			topWills: this.sortSkills('willLevel', 'desc'),
+			sortedSkills: this.sortSkills('skillLevel', 'desc')
 		})
 	}
 

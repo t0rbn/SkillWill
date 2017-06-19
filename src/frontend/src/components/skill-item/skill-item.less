@@ -44,12 +44,15 @@
   margin-bottom: @xxs-stack;
   flex-basis: 58%;
   span {
+    display: inline-flex;
+    width: auto;
     padding-right: @s-inline;
+    word-wrap: break-word;
   }
   &:after {
     bottom: 0;
     display: flex;
-    width: 100%;
+    flex-grow: 1;
     margin-right: @m-stack;
     content: "";
     background-image: linear-gradient(to right, @s2-darkgrey3 12%, rgba(255, 255, 255, 0) 0%);

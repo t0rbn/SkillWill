@@ -76,7 +76,7 @@ class MyProfile extends React.Component {
 		})
 	}
 
-	editSkill(skill, skillLevel, willLevel, isMentor) {
+	editSkill(skill, skillLevel, willLevel, isMentor = false) {
 		const { userId, session } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
 			alert('not allowed')

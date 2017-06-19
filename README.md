@@ -28,7 +28,7 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
 
 ## Starting
 * building creates a runnable jar file in ```/target```
-* start it (e.g. ```java -jar target/skillwil.jar```)
+* start it (e.g. ```java -jar target/skillwill.jar```)
 
 ## Frontend Dev Server
 * Tired of waiting for maven? There's a dev server for that!

@@ -25,6 +25,7 @@ class Login extends React.Component {
 	}
 
 	componentWillMount(){
+		console.log(Cookies)
 		if(this.state.user){
 			browserHistory.push(`/my-profile/${this.state.user}`)
 		}
@@ -46,8 +47,8 @@ class Login extends React.Component {
 	}
 
 	saveCookies(session){
-		Cookies.save("session", session, { path: '/', maxAge: 86400 })
-		Cookies.save("user", this.state.user, { path: '/', maxAge: 86400 })
+		Cookies.save("session", session, { path: '/', maxAge: 50400 })
+		Cookies.save("user", this.state.user, { path: '/', maxAge: 50400 })
 	}
 
 	retrieveSession(session) {

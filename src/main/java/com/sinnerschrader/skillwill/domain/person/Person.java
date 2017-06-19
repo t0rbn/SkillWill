@@ -85,7 +85,7 @@ public class Person {
     this.ldapDetails = ldapDetails;
   }
 
-  public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden) {
+  public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
     // Remove old skill if existing...
     Optional<PersonalSkill> existing = skills.stream()
         .filter(s -> s.getName().equals(name))
@@ -93,8 +93,9 @@ public class Person {
     if (existing.isPresent()) {
       existing.get().setSkillLevel(skillLevel);
       existing.get().setWillLevel(willLevel);
+      existing.get().setMentor(mentor);
     } else {
-      this.skills.add(new PersonalSkill(name, skillLevel, willLevel, hidden));
+      this.skills.add(new PersonalSkill(name, skillLevel, willLevel, hidden, mentor));
     }
   }
 

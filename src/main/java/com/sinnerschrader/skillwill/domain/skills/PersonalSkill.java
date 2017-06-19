@@ -16,12 +16,14 @@ public class PersonalSkill {
   private int skillLevel;
   private int willLevel;
   private boolean hidden;
+  private boolean mentor;
 
-  public PersonalSkill(String name, int skillLevel, int willLevel, boolean hidden) {
+  public PersonalSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
     this.name = name;
     this.skillLevel = skillLevel;
     this.willLevel = willLevel;
     this.hidden = hidden;
+    this.mentor = mentor;
   }
 
   public String getName() {
@@ -52,11 +54,20 @@ public class PersonalSkill {
     return this.hidden;
   }
 
+  public void setMentor(boolean mentor) {
+    this.mentor = mentor;
+  }
+
+  public boolean isMentor() {
+    return this.mentor;
+  }
+
   public JSONObject toJSON() {
     JSONObject o = new JSONObject();
     o.put("name", this.name);
     o.put("skillLevel", this.skillLevel);
     o.put("willLevel", this.willLevel);
+    o.put("mentor", this.mentor);
     return o;
   }
 

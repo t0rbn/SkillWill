@@ -1,25 +1,5 @@
 package com.sinnerschrader.skillwill.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkillSuggestionComparator;
@@ -31,6 +11,23 @@ import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Services handling skills management (create, rename, suggest, delete, ...)
@@ -251,7 +248,14 @@ public class SkillService {
     logger.debug("Renaming Skill {} to {} in persons", name, newName);
     for (Person person : personRepository.findBySkill(name)) {
       PersonalSkill oldSkill = person.getSkill(name);
-      person.addUpdateSkill(newName, oldSkill.getSkillLevel(), oldSkill.getWillLevel(), oldSkill.isHidden());
+      //@formatter:off
+      person.addUpdateSkill(
+        newName,
+        oldSkill.getSkillLevel(),
+        oldSkill.getWillLevel(),
+        oldSkill.isHidden(),
+        oldSkill.isMentor()
+      );
       person.deleteSkill(name);
       personRepository.save(person);
     }

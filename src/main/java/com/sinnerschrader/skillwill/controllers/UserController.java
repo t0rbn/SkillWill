@@ -154,7 +154,7 @@ public class UserController {
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkills(@PathVariable String user,
     @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
-    @RequestParam("will_level") String will_level, @RequestParam("session") String sessionKey) {
+    @RequestParam("will_level") String will_level, @RequestParam ("mentor") boolean mentor, @RequestParam("session") String sessionKey) {
 
     if (!sessionService.isValidSession(user, sessionKey)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
@@ -162,7 +162,7 @@ public class UserController {
     }
 
     try {
-      userService.updateSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level));
+      userService.updateSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level), mentor);
       return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
     } catch (UserNotFoundException e) {
       return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

@@ -108,7 +108,7 @@ public class UserService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void updateSkills(String username, String skillName, int skillLevel, int willLevel)
+  public void updateSkills(String username, String skillName, int skillLevel, int willLevel, boolean mentor)
       throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 
     if (StringUtils.isEmpty(username) || StringUtils.isEmpty(skillName)) {
@@ -135,7 +135,7 @@ public class UserService {
       throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
     }
 
-    person.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName));
+    person.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName), mentor);
     personRepository.save(person);
 
     logger.info("Successfully updated {}'s skill {}", username, skillName);

@@ -92,7 +92,7 @@ class MyProfile extends React.Component {
 		})
 	}
 
-	editSkill(skill, skillLevel, willLevel) {
+	editSkill(skill, skillLevel, willLevel, isMentor) {
 		const { userId, session } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
 			alert('not allowed')
@@ -103,6 +103,7 @@ class MyProfile extends React.Component {
 		postData.append("skill_level", skillLevel)
 		postData.append("will_level", willLevel)
 		postData.append("session", session)
+		postData.append("mentor", isMentor)
 		const options = { method: "POST", body: postData, credentials: 'same-origin' }
 		this.props.updateUserSkills(options, skill, userId)
 	}

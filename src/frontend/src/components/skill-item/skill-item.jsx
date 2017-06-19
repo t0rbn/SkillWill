@@ -12,10 +12,25 @@ class SkillItemEditor extends React.Component {
 			skillLevel,
 			willLevel,
 			editSkill,
-			deleteSkill
+			deleteSkill,
+			isMentor
 		} = this.props
 		return (
 			<div className="skill-item-editor">
+				<label className="tutorCheckbox-label">
+					<input
+						className="tutorCheckbox"
+						type="checkbox"
+						name="tutorFlag"
+						value="true"
+						checked={isMentor}
+						onChange={
+							() => editSkill(name, skillLevel, willLevel, !isMentor)}
+					/>
+					<span className="tutorCheckbox-labelText">
+						Tutor
+						</span>
+				</label>
 				<input
 					className="skill-item-editor__skill-editor"
 					name={`skillLevel_${name}`}
@@ -40,6 +55,7 @@ class SkillItem extends React.Component {
 		this.state = {
 			skillLevel: this.props.skill.skillLevel,
 			willLevel: this.props.skill.willLevel,
+			isMentor: this.props.skill.mentor,
 			renderSkill: true,
 			hasEdited: false
 		}
@@ -47,19 +63,21 @@ class SkillItem extends React.Component {
 		this.deleteSkill = this.deleteSkill.bind(this)
 	}
 
-	editSkill(name, skillLevel, willLevel) {
+	editSkill(name, skillLevel, willLevel, isMentor) {
+		console.log(isMentor)
 		this.setState({
 			skillLevel,
-			willLevel
+			willLevel,
+			isMentor: !this.state.isMentor
 		})
-		this.props.editSkill(name, skillLevel, willLevel)
+		this.props.editSkill(name, skillLevel, willLevel, isMentor)
 
 		//trigger CSS animation
-		if(!this.state.hasEdited) {
+		if (!this.state.hasEdited) {
 			this.setState({
 				hasEdited: true
 			})
-			setTimeout(function() {
+			setTimeout(function () {
 				this.setState({
 					hasEdited: false
 				})
@@ -83,27 +101,35 @@ class SkillItem extends React.Component {
 		} = this.props
 		const {
 			skillLevel,
-			willLevel
+			willLevel,
+			isMentor
 		} = this.state
 		return (
 			this.state.renderSkill ?
-			<li key={key} className="skill-item" data-edited={this.state.hasEdited}>
-				<p className="skill-name"><span>{name}</span></p>
-				<div className="skill-level">
-					<div className="level">
-						<div className={`skillBar levelBar levelBar--${skillLevel}`}></div>
-					</div>
-					<div className="level">
-						<div className={`willBar levelBar levelBar--${willLevel}`}></div>
-					</div>
+				<li key={key} className="skill-item" data-edited={this.state.hasEdited}>
+					<p className="skill-name"><span>{name}</span></p>
 					{
-						this.props.isSkillEditActive
-							? <SkillItemEditor editSkill={this.editSkill} deleteSkill={this.deleteSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} />
+						isMentor ?
+							<span className="tutorCheckbox-labelText tutorlabel">
+								Tutor
+						</span>
 							: null
 					}
-				</div>
-			</li>
-			: null
+					<div className="skill-level">
+						<div className="level">
+							<div className={`skillBar levelBar levelBar--${skillLevel}`}></div>
+						</div>
+						<div className="level">
+							<div className={`willBar levelBar levelBar--${willLevel}`}></div>
+						</div>
+						{
+							this.props.isSkillEditActive
+								? <SkillItemEditor editSkill={this.editSkill} deleteSkill={this.deleteSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} isMentor={isMentor} />
+								: null
+						}
+					</div>
+				</li>
+				: null
 		)
 	}
 }

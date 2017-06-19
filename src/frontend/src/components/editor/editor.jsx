@@ -27,9 +27,9 @@ export default class Editor extends React.Component {
 	}
 
 	handleAccept() {
-		const { skillName } = this.props
+		const { skillName, isMentor } = this.props
 		const { skillLevel, willLevel } = this.state
-		this.props.handleAccept(skillName, skillLevel, willLevel, 'POST')
+		this.props.handleAccept(skillName, skillLevel, willLevel, isMentor)
 		this.props.handleClose()
 	}
 

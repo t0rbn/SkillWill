@@ -27,14 +27,13 @@ class MyProfile extends React.Component {
 		this.toggleSkillsEdit = this.toggleSkillsEdit.bind(this)
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
-		this.getProfileData = this.getProfileData.bind(this)
 	}
 
 	componentWillMount() {
+		this.props.getUserProfileData(this.state.userId)
 		if (!this.checkAndOpenLogin()) {
 			browserHistory.push("/my-profile/login")
 		}
-		this.props.getUserProfileData(this.state.userId)
 		if (!this.checkUser()) {
 			browserHistory.push("/my-profile/login")
 		}
@@ -43,21 +42,6 @@ class MyProfile extends React.Component {
 
 	componentWillUnmount() {
 		document.body.classList.remove('my-profile-open')
-	}
-
-	getProfileData() {
-		const { userId } = this.state
-		fetch(`${config.backendServer}/users/${userId}`, { credentials: 'same-origin' })
-			.then(r => r.json())
-			.then(data => {
-				this.setState({
-					data: data,
-					dataLoaded: true
-				})
-			})
-			.catch(function (error) {
-				console.error(error)
-			})
 	}
 
 	checkAndOpenLogin() {
@@ -105,6 +89,7 @@ class MyProfile extends React.Component {
 		postData.append("session", session)
 		postData.append("mentor", isMentor)
 		const options = { method: "POST", body: postData, credentials: 'same-origin' }
+
 		this.props.updateUserSkills(options, skill, userId)
 	}
 
@@ -137,17 +122,18 @@ class MyProfile extends React.Component {
 
 	render() {
 		const {
-			dataLoaded,
 			skillSearchOpen,
-			data,
 			openLayerAt,
-			shouldShowAllSkills
+			shouldShowAllSkills,
+			skillEditOpen,
+			userId
 		} = this.state
+		const {userLoaded} = this.props
 		return (
-			this.props.userLoaded ?
+			userLoaded ?
 				skillSearchOpen ?
 					<div className="profile">
-						<SkillSearch handleEdit={this.editSkill}/>
+						<SkillSearch handleEdit={this.editSkill} userId={userId}/>
 						<div className="back-btn" onClick={this.toggleSkillsSearch}></div>
 					</div>
 					:
@@ -160,11 +146,11 @@ class MyProfile extends React.Component {
 							deleteSkill={this.deleteSkill}
 							setLastSortedBy={this.props.setLastSortedBy}
 							lastSortedBy={this.props.lastSortedBy} />
-						<div className="profile-actions" data-skilledit={this.state.skillEditOpen}>
+						<div className="profile-actions" data-skilledit={skillEditOpen}>
 							<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
-								{this.state.skillEditOpen ? 'Fertig' : 'Skills anpassen'}
+								{skillEditOpen ? 'Fertig' : 'Skills anpassen'}
 							</button>
-							<button className="add-skill-btn" onClick={this.toggleSkillsSearch} disabled={this.state.skillEditOpen}>
+							<button className="add-skill-btn" onClick={this.toggleSkillsSearch} disabled={skillEditOpen}>
 								Skill hinzufügen
 							</button>
 						</div>

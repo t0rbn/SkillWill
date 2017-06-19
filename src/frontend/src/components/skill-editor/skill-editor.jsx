@@ -36,7 +36,8 @@ export default class Skill extends React.Component {
 			if (skill.name === this.props.skill) {
 				this.setState({
 					skillLvl: skill.skillLevel,
-					willLvl: skill.willLevel
+					willLvl: skill.willLevel,
+					isMentor: skill.mentor
 				})
 			}
 		})
@@ -44,7 +45,7 @@ export default class Skill extends React.Component {
 
 	render() {
 		const { skill, handleEdit } = this.props
-		const { editorIsOpen, skillLvl, willLvl } = this.state
+		const { editorIsOpen, skillLvl, willLvl, isMentor } = this.state
 		return (
 			<ul className={`skill ${editorIsOpen ? "toggled" : ""}`}>
 				<li className="name" onClick={this.toggleEditor}>
@@ -57,6 +58,7 @@ export default class Skill extends React.Component {
 							skillName={skill}
 							skillLvl={skillLvl}
 							willLvl={willLvl}
+							isMentor={isMentor}
 							handleAccept={handleEdit}
 							handleClose={this.toggleEditor}
 							handleEdit={handleEdit} />

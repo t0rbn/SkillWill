@@ -3,7 +3,7 @@ import SearchBar from './search-bar.jsx'
 import Results from '../results/results.jsx'
 import SkillEditor from '../skill-editor/skill-editor.jsx'
 import config from '../../config.json'
-import { getSkillsBySearchTerm } from '../../actions'
+import { getSkillsBySearchTerm, getUserProfileData } from '../../actions'
 import { connect } from 'react-redux'
 
 class SkillSearch extends React.Component {
@@ -20,6 +20,10 @@ class SkillSearch extends React.Component {
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
 		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
+	}
+
+	componentWillMount(){
+		this.props.getUserProfileData(this.props.userId)
 	}
 
 	handleSearchBarInput(newSearchTerms) {
@@ -67,4 +71,4 @@ function mapStateToProps(state) {
 	}
 }
 
-export default connect(mapStateToProps, { getSkillsBySearchTerm })(SkillSearch)
+export default connect(mapStateToProps, { getSkillsBySearchTerm, getUserProfileData })(SkillSearch)

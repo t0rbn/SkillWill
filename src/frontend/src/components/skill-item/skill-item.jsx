@@ -64,7 +64,6 @@ class SkillItem extends React.Component {
 	}
 
 	editSkill(name, skillLevel, willLevel, isMentor) {
-		console.log(isMentor)
 		this.setState({
 			skillLevel,
 			willLevel,

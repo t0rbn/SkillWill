@@ -22,7 +22,7 @@ public class ForwardController {
   }
 
   @ApiOperation(value = "forward frontend to index", notes = "forward routes handled by react-router to index")
-  @RequestMapping(path = {"/my-profile/{user}", "/search"})
+  @RequestMapping(path = {"/my-profile/{user}", "/profile/{user}"})
   public String redirectFrontendIndex() {
     return "forward:/";
   }

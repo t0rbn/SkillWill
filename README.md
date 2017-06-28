@@ -65,7 +65,8 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
   * please use more expressive names for functions and variables than 'e', 'el', 'data'...
   * no deeply nested ternaries
   * every function should have a single purpose
-  * To quote Robert Martin >"Functions should have a small number of arguments. No argument is best, followed by one, two, and three. More than three is very questionable and should be avoided with prejudice."
+  * To quote Robert Martin
+  >"Functions should have a small number of arguments. No argument is best, followed by one, two, and three. More than three is very questionable and should be avoided with prejudice."
   * most of all, have some common sense
 
 

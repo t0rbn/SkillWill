@@ -56,7 +56,17 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
   * Add one unit of vertical whitespace (aka one empty line) after _multi-line_ method signatures.
 
 ## Frontend
-* ?
+* There are no hard and fast rules right now, but style guidlines were established over the last month:
+  * We dont use *semi colons* at the end of a line unless needed
+  * we favor *destructuring* of objects over repeating this and props
+  * there are two spaces inside curly braces e.g. ~~{foo}~~ should be **{ foo }**
+  * no spaces at the end of a line and no trailing commas
+  * it's ok to use the implicit return of the arrow function
+  * please use more expressive names for functions and variables than 'e', 'el', 'data'...
+  * no deeply nested ternaries
+  * every function should have a single purpose
+  * To quote Robert Martin >"Functions should have a small number of arguments. No argument is best, followed by one, two, and three. More than three is very questionable and should be avoided with prejudice."
+  * most of all, have some common sense
 
 
 

@@ -203,6 +203,10 @@ class BasicProfile extends React.Component {
 			sortedSkills,
 			topWills
 		} = this.state
+
+		const regex = /.*(?=@)/i // matches everything from the email address before the @
+		const slackName = mail.match(regex)
+
 		return (
 			<ul className={`basic-profile ${this.props.shouldSkillsAnimate ? "animateable" : ""}`}>
 				<li className="info">
@@ -212,7 +216,7 @@ class BasicProfile extends React.Component {
 					<p className="department">{title}</p>
 					<p className="location phone">{location} / TEL. {phone}</p>
 					<Link className="mail" href={`mailto:${mail}`} target="_blank"></Link>
-					<Link className="slack" href={`https://sinnerschrader.slack.com/messages/@${firstName.toLowerCase()}.${lastName.toLowerCase()}`} target="_blank"></Link>
+					<Link className="slack" href={`https://sinnerschrader.slack.com/messages/@${slackName}`} target="_blank"></Link>
 					<Link className="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank" />
 				</li>
 

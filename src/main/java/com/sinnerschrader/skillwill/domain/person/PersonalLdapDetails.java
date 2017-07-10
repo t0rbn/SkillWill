@@ -1,5 +1,7 @@
 package com.sinnerschrader.skillwill.domain.person;
 
+import com.unboundid.ldap.sdk.SearchResultEntry;
+
 /**
  * Data Structure for Details from LDAP.
  *
@@ -26,6 +28,17 @@ public class PersonalLdapDetails {
 
   public PersonalLdapDetails() {
     this(null, null, null, null, null, null);
+  }
+
+  public PersonalLdapDetails(SearchResultEntry entry) {
+    this(
+      entry.getAttributeValue("givenName"),
+      entry.getAttributeValue("sn"),
+      entry.getAttributeValue("mail"),
+      entry.getAttributeValue("telephoneNumber"),
+      entry.getAttributeValue("l"),
+      entry.getAttributeValue("title")
+    );
   }
 
   public String getFirstName() {

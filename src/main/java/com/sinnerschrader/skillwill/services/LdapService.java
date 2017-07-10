@@ -34,6 +34,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Service handling LDAP auth and data retrieval
@@ -75,17 +77,23 @@ public class LdapService {
   private PersonRepository personRepo;
 
   @Autowired
-  private EmbeddedLdap ldap;
+  private EmbeddedLdap embeddedLdap;
+
+  private void tryStartEmbeddedLdap() {
+    if (!ldapEmbeded) {
+      return;
+    }
+
+    try {
+      embeddedLdap.startup();
+    } catch (LDAPException | IOException e) {
+      logger.error("Failed to start embedded LDAP");
+    }
+  }
 
   @PostConstruct
-  private void setup() {
-    if (ldapEmbeded) {
-      try {
-        ldap.startup();
-      } catch (LDAPException | IOException e) {
-        logger.error("Failed to start embedded LDAP");
-      }
-    }
+  private void openConnection() {
+    tryStartEmbeddedLdap();
 
     try {
       if (ldapSsl) {
@@ -96,10 +104,10 @@ public class LdapService {
         ldapConnection = new LDAPConnection();
       }
       ldapConnection.connect(ldapUrl, ldapPort);
+      logger.info("Successfully connected to LDAP");
     } catch (LDAPException | GeneralSecurityException e) {
       logger.error("Failed to connect to LDAP", e);
     }
-
   }
 
   @PreDestroy
@@ -107,6 +115,16 @@ public class LdapService {
     if (ldapConnection != null) {
       ldapConnection.close();
     }
+  }
+
+  private void ensureConnection() {
+    if (!ldapConnection.isConnected()) {
+      openConnection();
+    }
+  }
+
+  private void bindAsTechnicalUser() throws LDAPException {
+    ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -117,66 +135,67 @@ public class LdapService {
   }
 
   public List<Person> syncUsers(List<Person> persons, boolean forceUpdate) {
+    logger.info("Starting LDAP sync for users: {}",
+      persons.stream().map(Person::getId).collect(Collectors.joining(", ")));
+
+    ensureConnection();
+
     try {
-      ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
+      bindAsTechnicalUser();
     } catch (LDAPException e) {
-      logger.error("Failed to sync users: bind exception", e);
+      logger.error("Failed to sync users: cannot bind as technical user", e);
     }
 
-    List<Person> updatablePersons;
+    List<Person> updatablePersons = forceUpdate
+      ? persons
+      : persons.stream().filter(p -> p.getLdapDetails() == null).collect(Collectors.toList());
     List<Person> returnPersons = new ArrayList<>(persons);
 
-    if (forceUpdate) {
-      updatablePersons = persons;
-    } else {
-      updatablePersons = persons.stream()
-          .filter(p -> p.getLdapDetails() == null)
-          .collect(Collectors.toList());
-    }
-
-    if (updatablePersons.isEmpty()) {
+    if (CollectionUtils.isEmpty(updatablePersons)) {
       return persons;
     }
 
-    logger.info("Starting LDAP sync for users: {}",
-        persons.stream().map(Person::getId).collect(Collectors.joining(", ")));
+    // searchString is an LDAP expression, e.g. "(|(uid=foobar)(uid=bazfoo))"
+    String searchString = "(|" + persons.stream()
+      .map(p -> "(uid=" + p.getId() + ")")
+      .collect(Collectors.joining("")) + ")";
 
+    SearchResult searchResult;
     try {
-      // searchString is an LDAP expression, e.g. "(|(uid=foobar)(uid=bazfoo))"
-      String searchString = "(|" + persons.stream()
-          .map(p -> "(uid=" + p.getId() + ")")
-          .collect(Collectors.joining("")) + ")";
-      SearchResult res = ldapConnection
-          .search(new SearchRequest(ldapAuthBaseDN, SearchScope.SUB, searchString));
-      for (Person person : updatablePersons) {
-        SearchResultEntry entry = res.getSearchEntry("uid=" + person.getId() + "," + ldapAuthBaseDN);
-        try {
-          PersonalLdapDetails newDetails = new PersonalLdapDetails(
-              entry.getAttributeValue("givenName"),
-              entry.getAttributeValue("sn"),
-              entry.getAttributeValue("mail"),
-              entry.getAttributeValue("telephoneNumber"),
-              entry.getAttributeValue("l"),
-              entry.getAttributeValue("title")
-          );
-          if (!newDetails.equals(person.getLdapDetails())) {
-            person.setLdapDetails(newDetails);
-            personRepo.save(person);
-          }
-        } catch (NullPointerException e) {
-          logger.info("Failed to sync user {}: will remove from DB", person.getId());
-          personRepo.delete(person);
-          returnPersons.remove(person);
-        }
-      }
+      searchResult = ldapConnection.search(new SearchRequest(ldapAuthBaseDN, SearchScope.SUB, searchString));
     } catch (LDAPException e) {
-      logger.error("Failed to sync with LDAP: LDAP error", e);
+      logger.error("Failed to sync users: LDAP error");
+      return persons;
+    }
+
+    for (Person person : updatablePersons) {
+      SearchResultEntry resultEntry;
+      try {
+        resultEntry = searchResult.getSearchEntry("uid=" + person.getId() + "," + ldapAuthBaseDN);
+      } catch (LDAPException e) {
+        logger.error("Failed to sync user {}: LDAP error", person.getId());
+        continue;
+      }
+
+      if (resultEntry == null && checkAndRemoveFromDB(person.getId())) {
+        returnPersons.remove(person);
+        continue;
+      }
+
+      PersonalLdapDetails newDetails = new PersonalLdapDetails(resultEntry);
+
+      if (!newDetails.equals(person.getLdapDetails())) {
+        person.setLdapDetails(newDetails);
+        personRepo.save(person);
+      }
     }
 
     return returnPersons;
   }
 
   public boolean canAuthenticate(String username, String password) {
+    ensureConnection();
+
     try {
       BindRequest bindRequest = new SimpleBindRequest("uid=" + username + "," + ldapAuthBaseDN, password);
       BindResult bindResult = ldapConnection.bind(bindRequest);
@@ -187,6 +206,37 @@ public class LdapService {
       logger.error("Failed to authenticate: LDAP error", e);
     }
     return false;
+  }
+
+  // Check if a user is not in the LDAP, then remove from the DB
+  private boolean checkAndRemoveFromDB(String uid) {
+    if (StringUtils.isEmpty(uid)) {
+      return false;
+    }
+
+    ensureConnection();
+
+    try {
+      bindAsTechnicalUser();
+      SearchResult searchResult = ldapConnection.search(new SearchRequest(ldapAuthBaseDN, SearchScope.SUB, "(uid=" + uid + ")"));
+      if (searchResult.getEntryCount() > 0) {
+        logger.info("Found user {} in LDAP, will not remove", uid);
+        return false;
+      }
+    } catch (LDAPException e) {
+      logger.error("Failed to search for user {} in LDAP: LDAP error", uid);
+      return false;
+    }
+
+    Person person = personRepo.findByIdIgnoreCase(uid);
+    if (person == null) {
+      logger.debug("Failed to remove person {}: not in DB", uid);
+      return false;
+    }
+
+    personRepo.delete(person);
+    logger.warn("Successfully deleted person {} (not found in LDAP)", uid);
+    return true;
   }
 
 }

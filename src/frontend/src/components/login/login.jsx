@@ -74,7 +74,6 @@ class Login extends React.Component {
 			return true
 		} else if (response.status == 401) {
 			this.setState({
-				user: undefined,
 				password: undefined,
 				errormessage: "User/Passwort falsch"
 			})
@@ -117,7 +116,7 @@ class Login extends React.Component {
 						placeholder="LDAP User"
 						type="text"
 						spellCheck="false"
-						value={this.state.user}
+						value={this.state.user || ""}
 						onChange={this.handleUserchange}>
 					</input>
 					<input
@@ -125,7 +124,7 @@ class Login extends React.Component {
 						placeholder="password"
 						type="password"
 						spellCheck="false"
-						value={this.state.password}
+						value={this.state.password || ""}
 						onChange={this.handlePasswordChange}>
 					</input>
 					<button

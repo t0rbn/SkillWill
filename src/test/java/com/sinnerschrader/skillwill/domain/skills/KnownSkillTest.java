@@ -26,7 +26,7 @@ public class KnownSkillTest {
 
   @Before
   public void setUp() {
-    skill = new KnownSkill("Java", "icon descriptor");
+    skill = new KnownSkill("Java");
     skill.incrementSuggestion("COBOL");
   }
 
@@ -57,9 +57,8 @@ public class KnownSkillTest {
   @Test
   public void testToJSON() throws JSONException {
     JSONObject obj = skill.toJSON();
-    assertEquals(4, obj.length());
+    assertEquals(3, obj.length());
     assertEquals("Java", obj.getString("name"));
-    assertEquals("icon descriptor", obj.getString("iconDescriptor"));
     assertFalse(obj.getBoolean("hidden"));
     assertEquals(new JSONArray(), obj.getJSONArray("subskills"));
   }

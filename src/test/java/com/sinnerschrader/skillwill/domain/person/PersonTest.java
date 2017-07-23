@@ -44,7 +44,7 @@ public class PersonTest {
 
   @Test
   public void testToJson() throws JSONException {
-    person.setComment("comment");
+    person.setRole(Role.ADMIN);
     person.setLdapDetails(
         new PersonalLdapDetails(
             "Fooberius",
@@ -58,7 +58,7 @@ public class PersonTest {
     JSONObject obj = person.toJSON();
 
     assertEquals("foobar", obj.getString("id"));
-    assertEquals("comment", obj.getString("comment"));
+    assertEquals("ADMIN", obj.getString("role"));
     assertEquals("Fooberius", obj.getString("firstName"));
     assertEquals("Barblub", obj.getString("lastName"));
     assertEquals("+49 666 666", obj.getString("phone"));
@@ -68,13 +68,6 @@ public class PersonTest {
     assertEquals("skillname", obj.getJSONArray("skills").getJSONObject(0).getString("name"));
     assertEquals(2, obj.getJSONArray("skills").getJSONObject(0).getInt("skillLevel"));
     assertEquals(3, obj.getJSONArray("skills").getJSONObject(0).getInt("willLevel"));
-  }
-
-  @Test
-  public void testToJsonCommentEmpty() {
-    // If set to empty string or null, the comment will not be included in the JSON
-    person.setComment("");
-    assertFalse(person.toJSON().has("comment"));
   }
 
 }

@@ -26,7 +26,7 @@ public class Person {
   @Id
   private String id;
   private List<PersonalSkill> skills;
-  private String comment;
+  private Role role;
 
   @Transient
   private FitnessScore fitnessScore;
@@ -42,6 +42,7 @@ public class Person {
     this.skills = new ArrayList<>();
     this.ldapDetails = null;
     this.fitnessScore = null;
+    this.role = Role.USER;
   }
 
   public String getId() {
@@ -107,14 +108,6 @@ public class Person {
     skills.remove(skill);
   }
 
-  public String getComment() {
-    return this.comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = StringUtils.isEmpty(comment) ? null : comment;
-  }
-
   public void setFitnessScore(Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
     this.fitnessScore = new FitnessScore(this, searchedSkills, props);
   }
@@ -130,7 +123,7 @@ public class Person {
   public JSONObject toJSON() {
     JSONObject obj = new JSONObject();
     obj.put("id", this.id);
-    obj.put("comment", this.comment);
+    obj.put("role", this.role.toString());
 
     if (this.ldapDetails != null) {
       obj.put("firstName", ldapDetails.getFirstName());
@@ -156,4 +149,11 @@ public class Person {
     return obj;
   }
 
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
+  }
 }

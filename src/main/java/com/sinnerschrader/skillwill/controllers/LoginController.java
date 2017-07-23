@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author torree
  */
-@Api(tags = "Login", description = "Handles user createSession and logout")
+@Api(tags = "Login", description = "Handles user create and remove")
 @Controller
 @CrossOrigin
 @Scope("prototype")
@@ -52,7 +52,7 @@ public class LoginController {
   })
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 403, message = "Forbidden"),
       @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/login", method = RequestMethod.POST)
@@ -61,30 +61,30 @@ public class LoginController {
 
     try {
       JSONObject obj = new JSONObject();
-      obj.put("session", loginService.login(username, password));
+      obj.put("sessionKey", loginService.login(username, password));
       return new ResponseEntity<>(obj.toString(), HttpStatus.OK);
     } catch (CredentialsException e) {
-      return new ResponseEntity<>(new StatusJSON("invalid credentials").toString(), HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>(new StatusJSON("invalid credentials").toString(), HttpStatus.FORBIDDEN);
     }
   }
 
   /**
    * User Logout
    */
-  @ApiOperation(value = "logout", nickname = "logout")
+  @ApiOperation(value = "remove", nickname = "remove")
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "session", value = "User's session key", required = true, paramType = "form")
+      @ApiImplicitParam(name = "sessionKey", value = "User's session key", required = true, paramType = "form")
   })
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "Success"),
       @ApiResponse(code = 400, message = "Bad Request"),
       @ApiResponse(code = 500, message = "Failure")})
   @RequestMapping(path = "/logout", method = RequestMethod.POST)
-  public ResponseEntity<String> logout(@RequestParam("session") String session) {
+  public ResponseEntity<String> logout(@RequestParam String sessionKey) {
     try {
-      loginService.logout(session);
-      logger.info("Successfully logged out {}", session);
-      return new ResponseEntity<>(new StatusJSON("logout successful").toString(), HttpStatus.OK);
+      loginService.logout(sessionKey);
+      logger.info("Successfully logged out {}", sessionKey);
+      return new ResponseEntity<>(new StatusJSON("remove successful").toString(), HttpStatus.OK);
     } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(new StatusJSON("session key not found").toString(), HttpStatus.BAD_REQUEST);
     }
@@ -96,18 +96,18 @@ public class LoginController {
   @ApiOperation(value = "session checker", nickname = "session checker")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "username", value = "Username", required = true, paramType = "query"),
-    @ApiImplicitParam(name = "session", value = "User's session key", required = true, paramType = "query")
+    @ApiImplicitParam(name = "sessionKey", value = "User's session key", required = true, paramType = "query")
   })
   @ApiResponses(value = {
     @ApiResponse(code = 200, message = "Success"),
     @ApiResponse(code = 400, message = "Bad Request"),
     @ApiResponse(code = 500, message = "Failure")})
   @RequestMapping(path = "/sessioncheck", method = RequestMethod.GET)
-  public ResponseEntity<String> checkSession(@RequestParam(value = "session") String session, @RequestParam(value = "username") String username) {
+  public ResponseEntity<String> checkSession(@RequestParam String sessionKey, @RequestParam(value = "username") String username) {
     JSONObject json = new JSONObject();
-    json.put("session", session);
+    json.put("sessionKey", sessionKey);
     json.put("username", username);
-    json.put("valid", sessionService.isValidSession(username, session));
+    json.put("valid", sessionService.check(sessionKey, username));
     return new ResponseEntity<>(json.toString(), HttpStatus.OK);
   }
 

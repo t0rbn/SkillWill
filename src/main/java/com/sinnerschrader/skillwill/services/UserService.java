@@ -3,6 +3,7 @@ package com.sinnerschrader.skillwill.services;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.person.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
@@ -166,31 +167,6 @@ public class UserService {
     personRepository.save(person);
   }
 
-  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void updateDetails(String username, String comment)
-      throws EmptyArgumentException, UserNotFoundException {
-
-    if (StringUtils.isEmpty(username)) {
-      logger.debug("Failed to update comment: username or empty");
-      throw new EmptyArgumentException("username must not be empty");
-    }
-
-    Person person = personRepository.findByIdIgnoreCase(username);
-
-    if (person == null) {
-      logger.debug("Failed to modify {}'s comment: user not found", username);
-      throw new UserNotFoundException("user not found");
-    }
-
-    // if parameter is empty string, comment will default to null
-    person.setComment(comment);
-
-    // Add more details to update here
-
-    personRepository.save(person);
-    logger.info("Successfully updated {}'s comment", username);
-  }
-
   private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
     // Both levels must be between 0 and maxLevel
     // at least one level must be 1 or above (see [SKILLWILL-30])
@@ -215,6 +191,35 @@ public class UserService {
 
     toSearch.remove(person.get());
     return ldapService.syncUsers(new JaccardFilter(person.get()).getFrom(toSearch, count), false);
+  }
+
+  public Role getRole(String userId) {
+    Person person = personRepository.findByIdIgnoreCase(userId);
+    if (person == null) {
+      throw new UserNotFoundException("user not found");
+    }
+
+    return person.getRole();
+  }
+
+  public void updateRole(String userId, Role role) {
+    Person person = personRepository.findByIdIgnoreCase(userId);
+    if (person == null) {
+      throw new UserNotFoundException("user not found");
+    }
+
+    if (person.getRole() == role) {
+      return;
+    }
+
+    person.setRole(role);
+    personRepository.save(person);
+  }
+
+  public void updateRole(String userId, String roleName) throws IllegalArgumentException {
+    roleName = roleName.toUpperCase();
+    Role role = Role.valueOf(roleName);
+    this.updateRole(userId, role);
   }
 
 }

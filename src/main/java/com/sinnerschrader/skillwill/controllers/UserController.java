@@ -2,9 +2,9 @@ package com.sinnerschrader.skillwill.controllers;
 
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.person.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.SkillStemUtils;
-import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.services.SessionService;
@@ -141,24 +141,25 @@ public class UserController {
   @ApiResponses({
     @ApiResponse(code = 200, message = "Success"),
     @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 401, message = "Unauthorized"),
+    @ApiResponse(code = 403, message = "Forbidden"),
     @ApiResponse(code = 404, message = "Not Found"),
     @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "form", required = true),
+    @ApiImplicitParam(name = "sessionKey", value = "users's active session key", paramType = "form", required = true),
     @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "form", required = true),
     @ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType = "form", required = true),
-    @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true)
+    @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true),
+    @ApiImplicitParam(name = "mentor", value = "Mentor flag", paramType = "form", required = true, dataType = "Boolean")
   })
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkills(@PathVariable String user,
     @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
-    @RequestParam("will_level") String will_level, @RequestParam ("mentor") boolean mentor, @RequestParam("session") String sessionKey) {
+    @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, @RequestParam("sessionKey") String sessionKey) {
 
-    if (!sessionService.isValidSession(user, sessionKey)) {
+    if (!sessionService.check(sessionKey, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
-      return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -178,22 +179,22 @@ public class UserController {
   @ApiResponses({
     @ApiResponse(code = 200, message = "Success"),
     @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 401, message = "Unauthorized"),
+    @ApiResponse(code = 403, message = "Forbidden"),
     @ApiResponse(code = 404, message = "Not Found"),
     @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
+    @ApiImplicitParam(name = "sessionKey", value = "users's active session key", paramType = "query", required = true),
     @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
   })
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
   public ResponseEntity<String> removeSkill(@PathVariable String user,
-    @RequestParam("skill") String skill, @RequestParam("session") String sessionKey) {
+    @RequestParam("skill") String skill, @RequestParam String sessionKey) {
 
-    if (!sessionService.isValidSession(user, sessionKey)) {
+    if (!sessionService.check(sessionKey, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in").toString(),
-        HttpStatus.UNAUTHORIZED);
+        HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -208,37 +209,36 @@ public class UserController {
   }
 
   /**
-   * Add or update user's details
+   * Add or update user's role
    */
-  @ApiOperation(value = "update details", nickname = "edit user's details", notes = "edit only the non-LDAP details of a user")
+  @ApiOperation(value = "update role", nickname = "edit user's role", notes = "edit the role of a user")
   @ApiResponses({
     @ApiResponse(code = 200, message = "Success"),
     @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 401, message = "Unauthorized"),
+    @ApiResponse(code = 403, message = "Forbidden"),
     @ApiResponse(code = 404, message = "Not Found"),
     @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
-    @ApiImplicitParam(name = "comment", value = "new comment", paramType = "query"),
+    @ApiImplicitParam(name = "sessionKey", value = "current users's active session key", paramType = "query", required = true),
+    @ApiImplicitParam(name = "role", value = "new role (USER or ADMIN)", paramType = "query", required = true)
   })
-  @RequestMapping(path = "/users/{user}/details", method = RequestMethod.PUT)
-  public ResponseEntity<String> updateDetails(@PathVariable String user,
-    @RequestParam("session") String sessionKey,
-    @RequestParam(value = "comment", required = false) String comment) {
+  @RequestMapping(path = "/users/{user}/role", method = RequestMethod.POST)
+  public ResponseEntity<String> updateRole(@PathVariable String user,
+    @RequestParam String sessionKey,
+    @RequestParam(value = "role") String role) {
 
-    if (!sessionService.isValidSession(user, sessionKey)) {
-      logger.debug("Failed to modify {}'s details: not logged in", user);
-      return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.UNAUTHORIZED);
+    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+      logger.debug("Failed to edit {}'s role: forbidden operation for current user", user);
+      return new ResponseEntity<>(new StatusJSON("user not logged in or not allowed").toString(), HttpStatus.FORBIDDEN);
     }
 
-    // Comment may be empty string (set to empty) -> no check if empty
     try {
-      userService.updateDetails(user, comment);
-      logger.info("Successfully updated {}'s comment", user);
+      userService.updateRole(user, role);
+      logger.info("Successfully set {}'s role to {}", user, role);
     } catch (UserNotFoundException e) {
       return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    } catch (EmptyArgumentException e) {
+    } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

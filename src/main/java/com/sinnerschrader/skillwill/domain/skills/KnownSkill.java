@@ -20,7 +20,6 @@ public class KnownSkill {
   private String name;
   @Id
   private String nameStem;
-  private String iconDescriptor;
   private List<SuggestionSkill> suggestions;
   private Set<String> subSkillNames;
   private boolean hidden;
@@ -28,21 +27,20 @@ public class KnownSkill {
   @Version
   private Long version;
 
-  public KnownSkill(String name, String iconDescriptor, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
+  public KnownSkill(String name, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
     this.name = name;
     this.nameStem = SkillStemUtils.nameToStem(name);
-    this.iconDescriptor = iconDescriptor;
     this.suggestions = suggestions;
     this.subSkillNames = subSkillNames;
     this.hidden = hidden;
   }
 
-  public KnownSkill(String name, String iconDescriptor) {
-    this(name, iconDescriptor, new ArrayList<>(), false, new HashSet<>());
+  public KnownSkill(String name) {
+    this(name, new ArrayList<>(), false, new HashSet<>());
   }
 
   public KnownSkill() {
-    this("", "", new ArrayList<>(), false, new HashSet<>());
+    this("", new ArrayList<>(), false, new HashSet<>());
   }
 
   public String getName() {
@@ -56,14 +54,6 @@ public class KnownSkill {
 
   public String getNameStem() {
     return this.nameStem;
-  }
-
-  public String getIconDescriptor() {
-    return this.iconDescriptor;
-  }
-
-  public void setIconDescriptor(String iconDescriptor) {
-    this.iconDescriptor = iconDescriptor;
   }
 
   public List<SuggestionSkill> getSuggestions() {
@@ -145,7 +135,6 @@ public class KnownSkill {
   public JSONObject toJSON() {
     JSONObject obj = new JSONObject();
     obj.put("name", this.name);
-    obj.put("iconDescriptor", this.iconDescriptor);
     obj.put("hidden", this.hidden);
     obj.put("subskills", new JSONArray(this.subSkillNames));
     return obj;
@@ -171,9 +160,6 @@ public class KnownSkill {
     if (!nameStem.equals(that.nameStem)) {
       return false;
     }
-    if (iconDescriptor != null ? !iconDescriptor.equals(that.iconDescriptor) : that.iconDescriptor != null) {
-      return false;
-    }
     if (suggestions != null ? !suggestions.equals(that.suggestions) : that.suggestions != null) {
       return false;
     }
@@ -184,7 +170,6 @@ public class KnownSkill {
   public int hashCode() {
     int result = name.hashCode();
     result = 31 * result + nameStem.hashCode();
-    result = 31 * result + (iconDescriptor != null ? iconDescriptor.hashCode() : 0);
     result = 31 * result + (suggestions != null ? suggestions.hashCode() : 0);
     result = 31 * result + (subSkillNames != null ? subSkillNames.hashCode() : 0);
     result = 31 * result + (hidden ? 1 : 0);

@@ -95,7 +95,7 @@ public class MockData {
 
     for (int i = 0; i < skills.length(); i++) {
       JSONObject skillJson = skills.getJSONObject(i);
-      KnownSkill skill = new KnownSkill(skillJson.getString("name"), "foo");
+      KnownSkill skill = new KnownSkill(skillJson.getString("name"));
       skill.setHidden(skillJson.getBoolean("hidden"));
 
       JSONArray subskillJson = skillJson.getJSONArray("subskills");

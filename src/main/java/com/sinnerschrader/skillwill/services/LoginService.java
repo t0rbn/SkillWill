@@ -55,12 +55,11 @@ public class LoginService {
     }
 
     logger.info("Successfully logged in {}", username);
-    return sessionService.createSession(username);
-
+    return sessionService.create(username);
   }
 
   public void logout(String session) throws IllegalArgumentException {
-    sessionService.logout(session);
+    sessionService.remove(session);
     logger.info("Logged out session {}", session);
   }
 

@@ -20,8 +20,8 @@ public class KnownSkillSuggestionComparatorTest {
 
   @Test
   public void testNoneStarts() {
-    KnownSkill a = new KnownSkill("Wurstwasser", "icon descriptor");
-    KnownSkill b = new KnownSkill("foo", "icon descriptor");
+    KnownSkill a = new KnownSkill("Wurstwasser");
+    KnownSkill b = new KnownSkill("foo");
 
     List<KnownSkill> toSort = new ArrayList<>();
     toSort.add(a);
@@ -34,8 +34,8 @@ public class KnownSkillSuggestionComparatorTest {
 
   @Test
   public void bothStart() {
-    KnownSkill a = new KnownSkill("foobar", "icon descriptor");
-    KnownSkill b = new KnownSkill("foowurst", "icon descriptor");
+    KnownSkill a = new KnownSkill("foobar");
+    KnownSkill b = new KnownSkill("foowurst");
 
     List<KnownSkill> toSort = new ArrayList<>();
     toSort.add(a);
@@ -48,8 +48,8 @@ public class KnownSkillSuggestionComparatorTest {
 
   @Test
   public void oneStarts() {
-    KnownSkill a = new KnownSkill("foobar", "icon descriptor");
-    KnownSkill b = new KnownSkill("wurstwasser", "icon descriptor");
+    KnownSkill a = new KnownSkill("foobar");
+    KnownSkill b = new KnownSkill("wurstwasser");
 
     List<KnownSkill> toSort = new ArrayList<>();
     toSort.add(a);
@@ -62,9 +62,9 @@ public class KnownSkillSuggestionComparatorTest {
 
   @Test
   public void threeElements() {
-    KnownSkill a = new KnownSkill("foobar", "icon descriptor");
-    KnownSkill b = new KnownSkill("wurstwasser", "icon descriptor");
-    KnownSkill c = new KnownSkill("bumsdings", "icon descriptor");
+    KnownSkill a = new KnownSkill("foobar");
+    KnownSkill b = new KnownSkill("wurstwasser");
+    KnownSkill c = new KnownSkill("bumsdings");
 
     List<KnownSkill> toSort = new ArrayList<>();
     toSort.add(a);

@@ -43,23 +43,23 @@ public class LoginControllerTest {
     ResponseEntity<String> res = loginController.login("foobar", "fleischcreme");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
-    assertTrue(resJSON.getString("session").matches("^[a-zA-Z0-9]{32}$"));
+    assertTrue(resJSON.getString("sessionKey").matches("^[a-zA-Z0-9]{32}$"));
   }
 
   @Test
   public void testLoginUserInvalid() throws JSONException {
     ResponseEntity<String> res = loginController.login("IAmUnknown", "fleischcreme");
-    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
+    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
-    assertFalse(resJSON.has("session"));
+    assertFalse(resJSON.has("sessionKey"));
   }
 
   @Test
   public void testLoginPasswordInvalid() throws JSONException {
     ResponseEntity<String> res = loginController.login("foobar", "cremefleisch");
-    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
+    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
-    assertFalse(resJSON.has("session"));
+    assertFalse(resJSON.has("sessionKey"));
   }
 
   @Test
@@ -67,7 +67,7 @@ public class LoginControllerTest {
     ResponseEntity<String> res = loginController.login("foobar", "fleischcreme");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONObject resJSON = new JSONObject(res.getBody());
-    assertEquals(HttpStatus.OK, loginController.logout(resJSON.getString("session")).getStatusCode());
+    assertEquals(HttpStatus.OK, loginController.logout(resJSON.getString("sessionKey")).getStatusCode());
   }
 
   @Test
@@ -79,10 +79,10 @@ public class LoginControllerTest {
 
   @Test
   public void testCheckSessionValid() throws JSONException {
-    String session = new JSONObject(loginController.login("foobar", "fleischcreme").getBody()).getString("session");
+    String session = new JSONObject(loginController.login("foobar", "fleischcreme").getBody()).getString("sessionKey");
     ResponseEntity<String> res = loginController.checkSession(session, "foobar");
     assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(session, new JSONObject(res.getBody()).getString("session"));
+    assertEquals(session, new JSONObject(res.getBody()).getString("sessionKey"));
     assertTrue(new JSONObject(res.getBody()).getBoolean("valid"));
   }
 
@@ -91,7 +91,7 @@ public class LoginControllerTest {
     String session = "bananenmousse";
     ResponseEntity<String> res = loginController.checkSession(session, "foobar");
     assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(session, new JSONObject(res.getBody()).getString("session"));
+    assertEquals(session, new JSONObject(res.getBody()).getString("sessionKey"));
     assertFalse(new JSONObject(res.getBody()).getBoolean("valid"));
   }
 

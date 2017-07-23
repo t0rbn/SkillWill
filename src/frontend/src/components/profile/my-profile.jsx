@@ -3,7 +3,6 @@ import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
 import SkillSearch from "../search/skill-search.jsx"
 import config from '../../config.json'
-import Editor from '../editor/editor.jsx'
 import Cookies from 'react-cookie'
 import { getUserProfileData, toggleSkillsEditMode, exitSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills } from '../../actions'
 import { connect } from 'react-redux'
@@ -12,7 +11,7 @@ class MyProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			session: undefined,
+			sessionKey: undefined,
 			userId: this.props.params.id,
 			data: null,
 			dataLoaded: false,
@@ -46,11 +45,11 @@ class MyProfile extends React.Component {
 	}
 
 	checkAndOpenLogin() {
-		const session = this.state.session || Cookies.load("session")
-		if (session != this.state.session || !session) {
-			this.setState({ session: session })
+		const sessionKey = this.state.sessionKey || Cookies.load("sessionKey")
+		if (sessionKey != this.state.sessionKey || !sessionKey) {
+			this.setState({ sessionKey: sessionKey })
 		}
-		return !!session
+		return !!sessionKey
 	}
 
 	checkUser() {
@@ -78,7 +77,7 @@ class MyProfile extends React.Component {
 	}
 
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
-		const { userId, session } = this.state
+		const { userId, sessionKey } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
 			alert('not allowed')
 			return
@@ -87,24 +86,24 @@ class MyProfile extends React.Component {
 		postData.append("skill", skill)
 		postData.append("skill_level", skillLevel)
 		postData.append("will_level", willLevel)
-		postData.append("session", session)
+		postData.append("sessionKey", sessionKey)
 		postData.append("mentor", isMentor)
 		const options = { method: "POST", body: postData, credentials: 'same-origin' }
 
-		this.props.updateUserSkills(options, skill, userId)
+		this.props.updateUserSkills(options, userId)
 	}
 
 	deleteSkill(skill) {
-		const { userId, session } = this.state
+		const { userId, sessionKey } = this.state
 		const options = { method: "DELETE", credentials: 'same-origin' }
-		const requestURL = `${config.backendServer}/users/${userId}/skills?session=${session}&skill=${skill}`
+		const requestURL = `${config.backendServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${skill}`
 		fetch(requestURL, options)
 			.then(res => {
-				if (res.status == 401) {
-					alert('Session abgelaufen')
-					Cookies.remove("session")
+				if (res.status == 403) {
+					alert('sessionKey abgelaufen')
+					Cookies.remove("sessionKey")
 					this.setState({
-						session: undefined,
+						sessionKey: undefined,
 						editLayerOpen: false
 					})
 					this.getProfileData(this)

@@ -40,6 +40,38 @@ title: Senior Web Unicorm
 l: Hamburg
 telephoneNumber: +49 666 666 666
 
+dn: uid=user,ou=users,dc=sinnerschrader,dc=com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Ulrich
+uid: user
+sn: Serpenbrecher
+mail: fooberius.barblub@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
+dn: uid=admin,ou=users,dc=sinnerschrader,dc=com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Achim
+uid: admin
+sn: dminskowsky
+mail: fooberius.barblub@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
 dn: uid=abc,ou=users,dc=sinnerschrader,dc=com
 objectClass: person
 objectClass: organizationalPerson
@@ -47,9 +79,9 @@ objectClass: inetOrgPerson
 objectClass: szzUser
 objectClass: posixAccount
 objectClass: sambaSamAccount
-givenName: Fooberius
-uid: foobar
-sn: Barblub
+givenName: abc
+uid: abc
+sn: abc
 mail: fooberius.barblub@sinnerschrader.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
@@ -63,9 +95,9 @@ objectClass: inetOrgPerson
 objectClass: szzUser
 objectClass: posixAccount
 objectClass: sambaSamAccount
-givenName: Fooberius
-uid: foobar
-sn: Barblub
+givenName: def
+uid: def
+sn: def
 mail: fooberius.barblub@sinnerschrader.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
@@ -79,13 +111,17 @@ objectClass: inetOrgPerson
 objectClass: szzUser
 objectClass: posixAccount
 objectClass: sambaSamAccount
-givenName: Fooberius
-uid: foobar
-sn: Barblub
+givenName: ghi
+uid: ghi
+sn: ghi
 mail: fooberius.barblub@sinnerschrader.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
 telephoneNumber: +49 666 666 666
+
+
+
+
 
 

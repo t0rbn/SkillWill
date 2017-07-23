@@ -1,10 +1,13 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.person.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,7 +30,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +52,9 @@ public class SkillController {
 
   @Autowired
   private SkillService skillService;
+
+  @Autowired
+  private SessionService sessionService;
 
   /**
    * get/suggest skills based on search query
@@ -152,19 +157,23 @@ public class SkillController {
   })
   @ApiImplicitParams({
       @ApiImplicitParam(name = "name", value = "new skill's name", paramType = "form", required = true),
-      @ApiImplicitParam(name = "icon_descriptor", value = "new skill's icon description", paramType = "form", required = true),
       @ApiImplicitParam(name = "hidden", value = "hide skill in search/suggestions", paramType = "form", defaultValue = "false"),
-      @ApiImplicitParam(name = "subskills", value = "list of subskills (separated with comma)", paramType = "form")
+      @ApiImplicitParam(name = "subskills", value = "list of subskills (separated with comma)", paramType = "form"),
+      @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form")
   })
   @RequestMapping(path = "/skills", method = RequestMethod.POST)
   public ResponseEntity<String> addSkill(
       @RequestParam String name,
-      @RequestParam String icon_descriptor,
       @RequestParam(required = false, defaultValue = "false") boolean hidden,
-      @RequestParam(required = false, defaultValue = "") String subSkills) {
+      @RequestParam(required = false, defaultValue = "") String subSkills,
+      @RequestParam String sessionKey) {
+
+    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+      return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
+    }
 
     try {
-      skillService.createSkill(name, icon_descriptor, hidden, createSubSkillSet(subSkills));
+      skillService.createSkill(name, hidden, createSubSkillSet(subSkills));
       logger.info("Successfully created new skill {}", name);
       return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
     } catch (EmptyArgumentException | DuplicateSkillException e) {
@@ -182,6 +191,9 @@ public class SkillController {
    * delete skill
    */
   @ApiOperation(value = "delete skill", nickname = "delete skill", notes = "parameter must be a valid skill Id")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form")
+  })
   @ApiResponses({
       @ApiResponse(code = 200, message = "Success"),
       @ApiResponse(code = 400, message = "Bad Request"),
@@ -189,7 +201,11 @@ public class SkillController {
       @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deleteSkill(@PathVariable String skill) {
+  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey) {
+    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+      return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
+    }
+
     try {
       skillService.deleteSkill(skill);
       logger.info("Successfully deleted skill {}", skill);
@@ -215,19 +231,23 @@ public class SkillController {
   })
   @ApiImplicitParams({
       @ApiImplicitParam(name = "name", value = "skill's new name", paramType = "form", required = false),
-      @ApiImplicitParam(name = "icon_descriptor", value = "skill's new icon description", paramType = "form", required = false),
       @ApiImplicitParam(name = "hidden", value = "hide skill", paramType = "form", required = false),
       @ApiImplicitParam(name = "subskills", value = "skill's new subskills", paramType = "form", required = false),
+      @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form")
   })
-  @RequestMapping(path = "/skills/{skill}", method = RequestMethod.PUT)
+  @RequestMapping(path = "/skills/{skill}", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkill(@PathVariable String skill,
       @RequestParam(required = false) String name,
-      @RequestParam(required = false) String icon_descriptor,
       @RequestParam(required = false) Boolean hidden,
-      @RequestParam(required = false) String subskills) {
+      @RequestParam(required = false) String subskills,
+      @RequestParam String sessionKey) {
+
+    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+      return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
+    }
 
     try {
-      skillService.updateSkill(skill, name, icon_descriptor, hidden, createSubSkillSet(subskills));
+      skillService.updateSkill(skill, name, hidden, createSubSkillSet(subskills));
       return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to update skill {}: not found", skill);

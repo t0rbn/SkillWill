@@ -18,7 +18,7 @@ class Login extends React.Component {
 		this.handleUserchange = this.handleUserchange.bind(this)
 		this.handlePasswordChange = this.handlePasswordChange.bind(this)
 		this.handleLogin = this.handleLogin.bind(this)
-		this.retrieveSession = this.retrieveSession.bind(this)
+		this.retrievesessionKey = this.retrievesessionKey.bind(this)
 		this.saveCookies = this.saveCookies.bind(this)
 		this.generatePostData = this.generatePostData.bind(this)
 		this.handleResponseStatus = this.handleResponseStatus.bind(this)
@@ -46,19 +46,19 @@ class Login extends React.Component {
 		return postData
 	}
 
-	saveCookies(session){
-		Cookies.save("session", session, { path: '/', maxAge: 50400 })
+	saveCookies(sessionKey){
+		Cookies.save("sessionKey", sessionKey, { path: '/', maxAge: 50400 })
 		Cookies.save("user", this.state.user, { path: '/', maxAge: 50400 })
 	}
 
-	retrieveSession(session) {
-		if (!session) {
-			throw Error("session is unknown")
+	retrievesessionKey(sessionKey) {
+		if (!sessionKey) {
+			throw Error("sessionKey is unknown")
 		}
-		this.saveCookies(session)
+		this.saveCookies(sessionKey)
 		this.setState({
 			loginLayerOpen: false,
-			session: session,
+			sessionKey: sessionKey,
 			isUserLogedIn: true
 		})
 		this.props.getUserProfileData(this.state.user)
@@ -72,7 +72,7 @@ class Login extends React.Component {
 				errormessage: undefined
 			})
 			return true
-		} else if (response.status == 401) {
+		} else if (response.status == 403) {
 			this.setState({
 				password: undefined,
 				errormessage: "User/Passwort falsch"
@@ -102,7 +102,7 @@ class Login extends React.Component {
 					return response.json()
 				}
 			})
-			.then(data => this.retrieveSession(data.session))
+			.then(data => this.retrievesessionKey(data.sessionKey))
 		.catch(err => console.log(err))
 	}
 

@@ -140,7 +140,7 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void createSkill(String name, String iconDescriptor, boolean isHidden, Set<String> subSkills)
+  public void createSkill(String name, boolean isHidden, Set<String> subSkills)
     throws EmptyArgumentException, DuplicateSkillException {
 
     if (StringUtils.isEmpty(name)) {
@@ -160,7 +160,7 @@ public class SkillService {
     }
 
     try {
-      skillRepository.insert(new KnownSkill(name, iconDescriptor, new ArrayList<>(), isHidden, subSkills));
+      skillRepository.insert(new KnownSkill(name, new ArrayList<>(), isHidden, subSkills));
       logger.info("Successfully created skill {}", name);
     } catch (DuplicateKeyException e) {
       logger.debug("Failed to create skill {}: already exists");
@@ -170,7 +170,7 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void updateSkill(String name, String newName, String iconDescriptor, Boolean hidden, Set<String> subSkills)
+  public void updateSkill(String name, String newName, Boolean hidden, Set<String> subSkills)
     throws IllegalArgumentException, DuplicateSkillException {
 
     if (skillRepository.findByName(name) == null) {
@@ -194,7 +194,6 @@ public class SkillService {
       KnownSkill skill = skillRepository.findByName(name);
       KnownSkill newSkill = new KnownSkill(
         newName == null ? skill.getName() : newName,
-        iconDescriptor == null ? skill.getIconDescriptor() : iconDescriptor,
         skill.getSuggestions(),
         hidden == null ? skill.isHidden() : hidden,
         subSkills == null ? skill.getSubSkillNames() : subSkills
@@ -227,7 +226,6 @@ public class SkillService {
     logger.info("Successfully altered skill {}. set values: {}{}{}{}",
       name,
       StringUtils.isEmpty(newName) ? "" : "name: " + newName + "; ",
-      StringUtils.isEmpty(iconDescriptor) ? "" : "iconDescriptor: " + iconDescriptor + "; ",
       hidden == null ? "" : "hidden " + hidden.toString() + "; ",
       CollectionUtils.isEmpty(subSkills) ? "" : "subskills:" + subSkills.toString() + "; "
     );

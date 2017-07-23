@@ -1,5 +1,8 @@
 package com.sinnerschrader.skillwill.services;
 
+import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import java.util.Date;
@@ -35,8 +38,11 @@ public class SessionService {
   @Autowired
   private SessionRepository sessionRepo;
 
+  @Autowired
+  private PersonRepository personRepository;
+
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public String createSession(String username) {
+  public String create(String username) {
     String key = null;
     do {
       key = UUID.randomUUID().toString().replaceAll("-", "");
@@ -46,39 +52,14 @@ public class SessionService {
     // renew to set initial expiration date
     Session session = new Session(key, username, new Date());
     sessionRepo.insert(session);
-    renewSession(session);
+    renew(session);
 
     logger.debug("Created new session for {}", username);
 
     return session.getKey();
   }
 
-  public boolean isValidSession(String username, String sessionKey) {
-    Session session = sessionRepo.findByKey(sessionKey);
-
-    if (session == null) {
-      logger.debug("Failed checking session {}: not in DB (already removed)", sessionKey);
-      return false;
-    }
-
-    if (!session.getUsername().equals(username)) {
-      logger.debug("Failed checking session {}: username does not match key", sessionKey);
-      return false;
-    }
-
-    if (session.isExpired()) {
-      logger.debug("Failed checking session {}: expired; will remove from DB", sessionKey);
-      sessionRepo.delete(session);
-      return false;
-    }
-
-    renewSession(session);
-    logger.debug("Successfully checked session {}", sessionKey);
-
-    return true;
-  }
-
-  public void logout(String sessionKey) {
+  public void remove(String sessionKey) {
     Session session = sessionRepo.findByKey(sessionKey);
 
     if (session == null) {
@@ -89,8 +70,42 @@ public class SessionService {
     sessionRepo.delete(session);
   }
 
+  public boolean check(Session session) {
+    if (session == null) {
+      return false;
+    }
+
+    if (session.isExpired() || getPerson(session) == null) {
+      logger.debug("Failed checking session {}: expired; will remove from DB", session.getKey());
+      sessionRepo.delete(session);
+      return false;
+    }
+
+    renew(session);
+    logger.debug("Successfully checked session {}", session.getKey());
+    return true;
+  }
+
+  public boolean check(String sessionKey) {
+    return check(sessionRepo.findByKey(sessionKey));
+  }
+
+  public boolean check(String sessionKey, String username) {
+    Session session = sessionRepo.findByKey(sessionKey);
+    return check(session) && session.getUsername().equals(username);
+  }
+
+  public boolean check(String sessionKey, Role role) {
+    Session session = sessionRepo.findByKey(sessionKey);
+    return check(session) && getPerson(session).getRole() == role;
+  }
+
+  private Person getPerson(Session session) {
+    return personRepository.findByIdIgnoreCase(session.getUsername());
+  }
+
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  private void renewSession(Session session) {
+  private void renew(Session session) {
     logger.debug("Renewed session {}", session.getKey());
     session.renewSession(expireDuration);
     sessionRepo.save(session);

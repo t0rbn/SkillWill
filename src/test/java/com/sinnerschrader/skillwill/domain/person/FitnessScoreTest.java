@@ -34,8 +34,8 @@ public class FitnessScoreTest {
     person.addUpdateSkill("AEM", 3, 3, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
-    searchItems.add(new KnownSkill("Java", "javaicon"));
-    searchItems.add(new KnownSkill("AEM", "aemicon"));
+    searchItems.add(new KnownSkill("Java"));
+    searchItems.add(new KnownSkill("AEM"));
     assertEquals(1.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
@@ -46,7 +46,7 @@ public class FitnessScoreTest {
     person.addUpdateSkill("AEM", 3, 3, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
-    searchItems.add(new KnownSkill("Ruby", "rubyicon"));
+    searchItems.add(new KnownSkill("Ruby"));
     assertEquals(0.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
@@ -59,8 +59,8 @@ public class FitnessScoreTest {
     person.addUpdateSkill("Bar", 0, 0, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
-    searchItems.add(new KnownSkill("Java", "javaicon"));
-    searchItems.add(new KnownSkill("AEM", "aemicon"));
+    searchItems.add(new KnownSkill("Java"));
+    searchItems.add(new KnownSkill("AEM"));
     assertEquals(1.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
@@ -73,8 +73,8 @@ public class FitnessScoreTest {
     person.addUpdateSkill("Bar", 3, 3, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
-    searchItems.add(new KnownSkill("Java", "javaicon"));
-    searchItems.add(new KnownSkill("AEM", "aemicon"));
+    searchItems.add(new KnownSkill("Java"));
+    searchItems.add(new KnownSkill("AEM"));
     assertEquals(0.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
@@ -87,9 +87,9 @@ public class FitnessScoreTest {
     person.addUpdateSkill("Bar", 1, 0, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
-    searchItems.add(new KnownSkill("Java", "javaicon"));
-    searchItems.add(new KnownSkill("AEM", "aemicon"));
-    searchItems.add(new KnownSkill("Bar", "baricon"));
+    searchItems.add(new KnownSkill("Java"));
+    searchItems.add(new KnownSkill("AEM"));
+    searchItems.add(new KnownSkill("Bar"));
     assertEquals(0.5278, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 

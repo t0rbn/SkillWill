@@ -15,14 +15,14 @@ class Logout extends React.Component {
 	}
 
 	generatePostData() {
-		const session = Cookies.load("session")
+		const sessionKey = Cookies.load("sessionKey")
 		const postData = new FormData()
-		postData.append("session", session)
+		postData.append("sessionKey", sessionKey)
 		return postData
 	}
 
 	removeCookies() {
-		Cookies.remove('session', { path: '/' })
+		Cookies.remove('sessionKey', { path: '/' })
 		Cookies.remove('user', { path: '/' })
 	}
 

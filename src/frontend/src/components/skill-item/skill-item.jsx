@@ -36,13 +36,13 @@ class SkillItemEditor extends React.Component {
 					name={`skillLevel_${name}`}
 					type="range" value={skillLevel}
 					max="3"
-					onChange={(e) => editSkill(name, e.target.value, willLevel)} />
+					onChange={(e) => editSkill(name, e.target.value, willLevel, isMentor)} />
 				<input
 					className="skill-item-editor__will-editor"
 					name={`willLevel_${name}`}
 					type="range" value={willLevel}
 					max="3"
-					onChange={(e) => editSkill(name, skillLevel, e.target.value)} />
+					onChange={(e) => editSkill(name, skillLevel, e.target.value, isMentor)} />
 				<div className="skill-item-editor__delete delete" onClick={() => deleteSkill(name)}></div>
 			</div>
 		)
@@ -67,7 +67,7 @@ class SkillItem extends React.Component {
 		this.setState({
 			skillLevel,
 			willLevel,
-			isMentor: !this.state.isMentor
+			isMentor
 		})
 		this.props.editSkill(name, skillLevel, willLevel, isMentor)
 

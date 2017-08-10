@@ -5,7 +5,7 @@ import SkillSearch from "../search/skill-search.jsx"
 import config from '../../config.json'
 import Editor from '../editor/editor.jsx'
 import Cookies from 'react-cookie'
-import { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills } from '../../actions'
+import { getUserProfileData, toggleSkillsEditMode, exitSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills } from '../../actions'
 import { connect } from 'react-redux'
 
 class MyProfile extends React.Component {
@@ -41,6 +41,7 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillUnmount() {
+		this.props.exitSkillsEditMode()
 		document.body.classList.remove('my-profile-open')
 	}
 
@@ -128,12 +129,12 @@ class MyProfile extends React.Component {
 			skillEditOpen,
 			userId
 		} = this.state
-		const {userLoaded} = this.props
+		const { userLoaded } = this.props
 		return (
 			userLoaded ?
 				skillSearchOpen ?
 					<div className="profile">
-						<SkillSearch handleEdit={this.editSkill} userId={userId}/>
+						<SkillSearch handleEdit={this.editSkill} userId={userId} />
 						<div className="back-btn" onClick={this.toggleSkillsSearch}></div>
 					</div>
 					:
@@ -165,4 +166,4 @@ function mapStateToProps(state) {
 		lastSortedBy: state.lastSortedBy,
 	}
 }
-export default connect(mapStateToProps, { getUserProfileData, toggleSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills })(MyProfile)
+export default connect(mapStateToProps, { getUserProfileData, toggleSkillsEditMode, exitSkillsEditMode, editSkill, setLastSortedBy, updateUserSkills })(MyProfile)

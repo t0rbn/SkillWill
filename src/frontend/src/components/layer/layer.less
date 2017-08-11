@@ -33,7 +33,7 @@
     width: 22px;
     content:data-uri("@{image-path}/close.svg");
     position: absolute;
-    top: calc(@navigation-height + @l-stack);
+    top: @navigation-height;
     transform: translateX(((@layer-width / 2) - @xl-stack));
     right: 50%;
     z-index: 1000;
@@ -81,7 +81,7 @@
 
 .layer {
   box-sizing: border-box;
-  margin: @navigation-height auto @xxl-stack auto;
+  margin: (@navigation-height/2) auto;
   max-width: 100vw;
   padding: @l-stack @s-stack;
   background-color: @s2-white;
@@ -96,6 +96,7 @@
 
     .my-profile-open & {
       max-width: 100%;
+      height: 100vh;
     }
   }
 }

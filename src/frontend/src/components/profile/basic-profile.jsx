@@ -217,7 +217,7 @@ class BasicProfile extends React.Component {
 					<p className="location phone">{location} / TEL. {phone}</p>
 					<Link className="mail" href={`mailto:${mail}`} target="_blank"></Link>
 					<Link className="slack" href={`https://sinnerschrader.slack.com/messages/@${slackName}`} target="_blank"></Link>
-					<Link className="move" href={`http://move.sinnerschrader.com/?id=${id}`} target="_blank" />
+					<Link className="move" href={`https://move.sinnerschrader.com/?id=${id}`} target="_blank" />
 				</li>
 
 				{this.renderSearchedSkills()}

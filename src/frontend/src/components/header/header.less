@@ -43,14 +43,14 @@
   color: @s2-red;
   font-size: @s-title-font-size;
   opacity: 0;
-  
+
   &:hover {
     color: @s2-white;
   }
-  
+
   @media (min-width: @tablet-portrait-up) {
     .results-view & {
-      opacity: 0;
+      opacity: 1;
     }
     .layer-open & {
       opacity: 1;
@@ -70,11 +70,11 @@
   display: inline-block;
   text-align: right;
   padding-right: @l-inline;
-  
+
   .nav-link {
     display: inline-block;
     color: @s2-white;
-    
+
     &:hover {
       color: @s2-red;
     }

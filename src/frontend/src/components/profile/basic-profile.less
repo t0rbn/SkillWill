@@ -94,7 +94,7 @@
       }
     }
   }
-  
+
   .my-profile-open & {
     padding-bottom: @xxl-stack;
   }
@@ -166,7 +166,7 @@
       height: 0;
       bottom: -30px;
       left: 50%;
-      border: 1em solid black;
+      border: 1em solid @s2-body;
       border-color: transparent transparent @s2-white @s2-white;
       transform-origin: 0 0;
       transform: rotate(-45deg);
@@ -278,7 +278,7 @@
   text-align: center;
   border-top: 1px solid @s2-grey2;
   background-color: @s2-white;
-  
+
   @media (min-width: 1170px) {
     display: inline-block;
     width: auto;
@@ -297,11 +297,11 @@
   position: relative;
   border: 0;
   background-color: transparent;
-  
+
   &:hover {
     filter: grayscale(1);
   }
-  
+
   &:focus {
     outline: none;
   }
@@ -323,12 +323,12 @@
     left: -5px;
     top: 4px;
   }
-  
+
   .profile-actions[data-skilledit="true"] & {
     filter: grayscale(1);
     opacity: 0.5;
     cursor: default;
-  } 
+  }
 }
 .edit-skill-btn {
   &::before {
@@ -340,7 +340,7 @@
     position: absolute;
     left: -5px;
     top: 3px;
-    
+
     .profile-actions[data-skilledit="true"] & {
       background: data-uri("@{image-path}/check-red.svg");
       height: 18px;

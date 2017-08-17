@@ -7,6 +7,12 @@
   }
 }
 
+.my-profile-open {
+    .layer {
+      padding-top: @4xl-stack;
+  }
+}
+
 .basic-profile {
   flex-basis: 45%;
   .info {
@@ -38,7 +44,7 @@
       font-size: @s-title-font-size;
       line-height: @s-title-font-size;
       font-weight: bold;
-      padding-bottom: @s-stack;
+      padding-bottom: @xs-stack;
     }
     .id {
       display: block;
@@ -47,9 +53,9 @@
       line-height: @m-base-font-size;
       font-weight: 300;
     }
-    .department {
+    .department, .location {
       display: block;
-      padding: @xs-stack 0;
+      padding: @xxs-stack 0;
       font-size: @m-base-font-size;
       line-height: @m-base-font-size;
       font-weight: 500;
@@ -57,11 +63,14 @@
     .location {
       flex-basis: 10%;
     }
+    .social {
+      margin-bottom: @m-stack;
+    }
     .mail,
     .move,
     .slack {
       display: inline-block;
-      margin: @m-inline @s-inline;
+      margin: @l-inline @s-inline 0;
       vertical-align: middle;
       &:hover {
         filter: grayscale(1);

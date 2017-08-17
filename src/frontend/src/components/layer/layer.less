@@ -34,7 +34,7 @@
     content:data-uri("@{image-path}/close.svg");
     position: absolute;
     top: @navigation-height;
-    transform: translateX(((@layer-width / 2) - @xl-stack));
+    transform: translateX(((@layer-width / 2) - @l-stack));
     right: 50%;
     z-index: 1000;
     cursor: pointer;
@@ -58,7 +58,7 @@
         transform: rotate(45deg) translateX(-@m-inline) scale(0.5);
       }
     }
-    
+
     .my-profile-open & {
       display: none;
     }
@@ -92,7 +92,7 @@
 
   @media (min-width: @tablet-portrait-up) {
     max-width: @layer-width;
-    padding: @xxl-stack @3xl-stack;
+    padding: @layer-padding;
 
     .my-profile-open & {
       max-width: 100%;

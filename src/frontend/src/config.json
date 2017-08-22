@@ -1,32 +1,32 @@
 {
   "backendServer": "http://localhost:1337",
-  "skillLegend": ["n/a", "Grundkenntnisse", "Fortgeschritten", "Experte"],
-  "willLegend": ["nope", "Ist OK", "gerne", "unbedingt!"],
+  "skillLegend": ["n/a", "Basic", "Intermediate", "Expert"],
+  "willLegend": ["None whatsoever", "ok", "High", "Super high"],
   "directionFilterOptions": [{
       "value": "ascending",
-      "display": "aufsteigend"
+      "display": "ascending"
     },
     {
       "value": "descending",
-      "display": "absteigend"
+      "display": "descending"
     }
   ],
   "sortFilterOptions": [{
       "value": "fitness",
-      "display": "Match"
+      "display": "match"
     },
     {
       "value": "lastName",
-      "display": "Name"
+      "display": "name"
     },
     {
       "value": "location",
-      "display": "Standort"
+      "display": "location"
     }
   ],
   "locationFilterOptions": [{
       "value": "all",
-      "display": "Alle Standorte"
+      "display": "All locations"
     },
     {
       "value": "Hamburg",

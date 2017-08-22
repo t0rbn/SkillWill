@@ -78,7 +78,7 @@ export default class SearchBar extends React.Component {
 								name="SearchInput"
 								autoComplete="off"
 								spellCheck="false"
-								placeholder="Suche nach gewünschtem Skill"
+								placeholder="Search for skills"
 								type="search"
 								value={this.state.currentValue}
 								autoFocus="true"

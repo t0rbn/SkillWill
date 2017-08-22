@@ -15,7 +15,7 @@ class App extends React.Component {
 				<div className="search">
 					<div className="heading">
 						<h1 className="title">skill/will</h1>
-						<h3 className="subtitle">Wir haben Talent.</h3>
+						<h3 className="subtitle">We have talent!</h3>
 					</div>
 					<div className="container">
 						<UserSearch location={this.props.location} />

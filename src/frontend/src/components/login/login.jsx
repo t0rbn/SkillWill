@@ -109,7 +109,7 @@ class Login extends React.Component {
 	render() {
 		return(
 			<div className="login">
-				<h1 className="subtitle">Haaalt stop! Erstmal einloggen!</h1>
+				<h1 className="subtitle">Hang on, you haven't logged in yet!</h1>
 				<form onSubmit={this.handleLogin}>
 					<input
 						name="username"
@@ -121,7 +121,7 @@ class Login extends React.Component {
 					</input>
 					<input
 						name="password"
-						placeholder="password"
+						placeholder="Password"
 						type="password"
 						spellCheck="false"
 						value={this.state.password || ""}

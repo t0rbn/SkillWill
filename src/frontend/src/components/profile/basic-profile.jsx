@@ -13,7 +13,7 @@ class BasicProfile extends React.Component {
 		super(props)
 		this.state = {
 			shouldShowAllSkills: this.props.shouldShowAllSkills,
-			showMoreLabel: "Mehr",
+			showMoreLabel: "More",
 			editLayerAt: null,
 			numberOfSkillsToShow: 6,
 			isSkillEditActive: false
@@ -107,7 +107,7 @@ class BasicProfile extends React.Component {
 	renderTopWills(skills) {
 		return (
 			<li className="top-wills skill-listing">
-				<div className="listing-header">Top Wills</div>
+				<div className="listing-header">Top wills</div>
 				<ul className="skills-list">
 					{skills.map((skill, i) => {
 						if (i < 5 && skill['willLevel'] > 1) {
@@ -167,7 +167,7 @@ class BasicProfile extends React.Component {
 		}
 		return (
 			<li className="searched-skills skill-listing">
-				<div className="listing-header">Gesuchte Skills</div>
+				<div className="listing-header">Skills you searched for</div>
 				<ul className="skills-list">
 					{skills
 						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
@@ -227,7 +227,7 @@ class BasicProfile extends React.Component {
 				{this.renderTopWills(topWills)}
 
 				<li className="all-skills skill-listing">
-					<div className="listing-header">Alle Skills
+					<div className="listing-header">All skills
 						{this.renderSortButtons()}
 					</div>
 

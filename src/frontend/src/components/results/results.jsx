@@ -52,12 +52,12 @@ class Results extends React.Component {
 			return (
 				<div className="results-container animateable">
 					<div className="counter">
-						{sortedUserList.length} Ergebnisse, sortiert
+						{sortedUserList.length} results, sorted
 							<Dropdown
 							onDropdownSelect={setDirectionFilter}
 							dropdownLabel={directionFilter}
 							options={directionFilterOptions} />
-						nach
+						by
 							<Dropdown
 							onDropdownSelect={setSortFilter}
 							dropdownLabel={sortFilter}
@@ -66,7 +66,7 @@ class Results extends React.Component {
 					<div className="results-legend-wrapper">
 						<div className="results-legend container">
 							<div className="results-legend-item name">Name</div>
-							<div className="results-legend-item location">Standort</div>
+							<div className="results-legend-item location">Location</div>
 							<div className="results-legend-item skills">
 								<div className="skill-label">Skill</div>
 								<div className="skill-level">Skill level</div>

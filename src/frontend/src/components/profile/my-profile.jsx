@@ -148,10 +148,10 @@ class MyProfile extends React.Component {
 							lastSortedBy={this.props.lastSortedBy} />
 						<div className="profile-actions" data-skilledit={skillEditOpen}>
 							<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
-								{skillEditOpen ? 'Fertig' : 'Skills anpassen'}
+								{skillEditOpen ? 'Done' : 'Customise skills'}
 							</button>
 							<button className="add-skill-btn" onClick={this.toggleSkillsSearch} disabled={skillEditOpen}>
-								Skill hinzufügen
+								Add new skill
 							</button>
 						</div>
 					</div>

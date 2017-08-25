@@ -57,7 +57,7 @@ export default class Header extends React.Component {
 					<nav className="nav">
 						<ul className="nav-list">
 							<li className="nav-item">
-								<Link className="nav-link" to={`/my-profile/${this.returnMyProfileLink()}`}>Your profile</Link>
+								<Link className="nav-link nav-link--profile" to={`/my-profile/${this.returnMyProfileLink()}`}>Your profile</Link>
 							</li>
 							{this.renderLogOut()}
 						</ul>

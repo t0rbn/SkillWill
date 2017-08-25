@@ -7,6 +7,7 @@ export default class Header extends React.Component {
 		super(props)
 		this.state = {}
 		this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
+		this.handleClick = this.handleClick.bind(this)
 	}
 	componentDidMount() {
 		this.checkUserIdCookie()

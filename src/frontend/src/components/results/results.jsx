@@ -76,8 +76,10 @@ class Results extends React.Component {
 					</div>
 					<div className="results">
 						<ul className="results-list container">
+
 							{sortedUserList.map((user, i) => {
 								return (
+
 									<li className="result-item" key={user.id}>
 										<User user={user} searchTerms={searched} />
 									</li>
@@ -87,10 +89,19 @@ class Results extends React.Component {
 					</div>
 				</div>
 			)
-		}
-		else {
+		} else if (!users) {
 			return (
-				<div className="no-results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
+				<div className="no-results-container-border" data-isEmptyLabel={this.props.noResultsLabel}>
+				</div>
+			)
+		} else {
+			return (
+				<div className="no-results-container" data-isEmptyLabel={this.props.noResultsLabel}>
+					<div className="container">
+						<h2 className="no-results-title">Sorry, isn't there any skill for your belongings?</h2>
+						<a href="https://jira.sinnerschrader.com/secure/CreateIssueDetails!init.jspa?pid=15352&issuetype=3&priority=4" className="no-results-subtitle">Create a ticket!</a>
+					</div>
+				</div>
 			)
 		}
 	}

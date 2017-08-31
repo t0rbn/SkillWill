@@ -1,0 +1,60 @@
+.header {
+    background-image: url('/auth-resources/images/s2-logo.svg');
+    background-repeat: no-repeat;
+    position: fixed;
+    background-size: contain;
+    height: 30px;
+    top: 0;
+    left: 0;
+    margin-top: @m-stack;
+    margin-left: @l-stack;
+    width: 130px;
+  }
+
+  .title {
+    color: @s2-red;
+    font-size: @xl-title-font-size;
+    font-weight: @xl-title-font-weight;
+    line-height: 1;
+    letter-spacing: 1.5px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .subtitle {
+    margin-top: @s-stack;
+    margin-bottom: @3xl-stack;
+  }
+
+  .login {
+    .google {
+      font-size: @s-title-font-size;
+      line-height: 1.75;
+      letter-spacing: 1.3px;
+    }
+
+    .description {
+      font-size: @xl-base-font-size;
+      font-weight: 300;
+      line-height: 1.65;
+      letter-spacing: 0.8px;
+    }
+
+    &-btn {
+      margin-top: 40px;
+      padding: 10px 45px 15px;
+      background-color: @s2-verydarkblue;
+      cursor: pointer;
+      border: 2px solid @s2-white;
+      color: @s2-white;
+      font-size: @s-title-font-size;
+      font-weight: @xl-title-font-weight;
+      line-height: 1.25;
+      transition: color 200ms ease-out, background-color 200ms ease-out;
+
+      &:hover {
+        background-color: @s2-white;
+        color: @s2-verydarkblue;
+      }
+    }
+  }

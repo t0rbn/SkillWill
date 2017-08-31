@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+@font-face {
+  font-family: 's2';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/auth-resources/fonts/MaisonWEB-Light.woff2') format('woff2'), url('/auth-resources/fonts/MaisonWEB-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 's2';
+  font-style: normal;
+  font-weight: normal;
+  src: url('/auth-resources/fonts/MaisonWEB-Regular.woff2') format('woff2'), url('/auth-resources/fonts/MaisonWEB-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 's2';
+  font-style: normal;
+  font-weight: bold;
+  src: url('/auth-resources/fonts/MaisonWEB-Bold.woff2') format('woff2'), url('/auth-resources/fonts/MaisonWEB-Bold.woff') format('woff');
+}
+
+html, body {
+  box-sizing: border-box;
+  color: @s2-white;
+  background-color: @s2-verydarkblue;
+  font-family: @base-font;
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  border-bottom: 5px solid @s2-red;
+}

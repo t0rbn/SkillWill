@@ -119,7 +119,6 @@ public class SkillService {
       .collect(Collectors.toList());
   }
 
-  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public void registerSkillSearch(Collection<KnownSkill> searchedSkills) throws IllegalArgumentException {
 
     if (searchedSkills.size() < 2) {
@@ -134,9 +133,15 @@ public class SkillService {
       }
     }
 
-    skillRepository.save(searchedSkills);
+    try {
+      skillRepository.save(searchedSkills);
+    } catch (OptimisticLockingFailureException e)  {
+      logger.error("Failed to register search for {} - optimistic locking error; will ignore search",
+        searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.joining(", ")));
+    }
+
     logger.info("Successfully registered search for {}",
-      searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.toList()));
+      searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.joining(", ")));
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

@@ -1,69 +1,65 @@
+const webpack = require('webpack')
+const path = require('path')
+const loaders = require('./webpack.loaders')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-var webpack = require('webpack');
-var path = require('path');
-var loaders = require('./webpack.loaders');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
-
-// local css modules
 loaders.push({
-	test: /[\/\\]src[\/\\].*\.css/,
-	exclude: /(node_modules|bower_components|public)/,
-	loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
-});
-
-// local lesss modules
-loaders.push({
-	test: /[\/\\]src[\/\\].*\.less/,
-	exclude: /(node_modules|bower_components|public)/,
-	rootpath: path.join(__dirname, 'src'),
-	paths: path.join(__dirname, 'src'),
-	loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!less')
-});
-// global css files
-loaders.push({
-	test: /[\/\\](node_modules|global)[\/\\].*\.css$/,
-	loader: ExtractTextPlugin.extract('style', 'css')
-});
+	test: /\.less$/,
+	loader: ExtractTextPlugin.extract({
+		use: [
+			{
+				loader: 'css-loader',
+			},
+			{
+				loader: 'less-loader',
+			},
+		],
+		fallback: 'style-loader',
+	}),
+	exclude: [/(node_modules|public\/)/],
+})
 
 module.exports = {
-	entry: [
-		'./src/index.jsx'
-	],
+	entry: ['./src/index.jsx', './src/styles.less'],
 	output: {
+		publicPath: './',
 		path: path.join(__dirname, 'public'),
-		filename: '[chunkhash].js'
+		filename: '[chunkhash].js',
 	},
 	resolve: {
-		extensions: ['', '.js', '.jsx']
+		extensions: ['.js', '.jsx'],
 	},
 	module: {
-		loaders
+		loaders,
 	},
 	plugins: [
 		new WebpackCleanupPlugin(),
 		new webpack.DefinePlugin({
 			'process.env': {
-				NODE_ENV: '"production"'
-			}
+				NODE_ENV: JSON.stringify('production'),
+			},
 		}),
 		new webpack.optimize.UglifyJsPlugin({
 			compress: {
 				warnings: false,
 				screw_ie8: true,
 				drop_console: true,
-				drop_debugger: true
-			}
+				drop_debugger: true,
+			},
 		}),
-		new webpack.optimize.OccurenceOrderPlugin(),
-		new ExtractTextPlugin('[contenthash].css', {
-			allChunks: true
+		new webpack.optimize.OccurrenceOrderPlugin(),
+		new ExtractTextPlugin({
+			filename: 'style.css',
+			allChunks: true,
 		}),
 		new HtmlWebpackPlugin({
 			template: './src/template.html',
-			title: 'Webpack App'
+			files: {
+				css: ['style.css'],
+				js: ['bundle.js'],
+			},
 		}),
-		new webpack.optimize.DedupePlugin()
-	]
-};
+	],
+}

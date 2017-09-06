@@ -1,5 +1,5 @@
 import React from 'react'
-import config from '../../../config.json'
+import { apiServer } from '../../../env.js'
 import SuggestionItem from './suggestion-item.jsx'
 
 export default class SearchSuggestions extends React.Component {
@@ -24,8 +24,10 @@ export default class SearchSuggestions extends React.Component {
 		} else {
 			searchTerms = this.props.searchTerms
 		}
-		let suggestionUrl = config.backendServer + '/skills/next?count=5&search=' + searchTerms.join(',')
-		let autoCompleteUrl = config.backendServer + '/skills?count=5&search=' + this.props.currentValue
+		let suggestionUrl =
+			apiServer + '/skills/next?count=5&search=' + searchTerms.join(',')
+		let autoCompleteUrl =
+			apiServer + '/skills?count=5&search=' + this.props.currentValue
 		fetch(this.state.doAutoComplete ? autoCompleteUrl : suggestionUrl)
 			.then(res => res.status == 200 ? res.json() : [])
 			.then(data => this.setState({ results: data }))

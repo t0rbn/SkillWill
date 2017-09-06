@@ -1,7 +1,6 @@
 import React from 'react'
 import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
-import config from '../../config.json'
 import SkillItem from '../skill-item/skill-item.jsx'
 import { getUserProfileData } from '../../actions'
 

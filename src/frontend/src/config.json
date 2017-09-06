@@ -1,5 +1,4 @@
 {
-  "backendServer": "http://localhost:1337",
   "skillLegend": ["n/a", "Basic", "Intermediate", "Expert"],
   "willLegend": ["None whatsoever", "ok", "High", "Super high"],
   "directionFilterOptions": [{

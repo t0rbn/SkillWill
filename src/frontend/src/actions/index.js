@@ -1,4 +1,4 @@
-import config from '../config.json'
+import { apiServer } from '../env.js'
 
 export const ADD_SEARCH_TERMS = 'ADD_SEARCH_TERMS'
 export function addSearchTerms(searchTerms) {
@@ -53,7 +53,7 @@ export function setSortFilter(criterion) {
 
 export const FETCH_RESULTS = 'FETCH_RESULTS'
 export function fetchResults(searchTerms) {
-	const requestURL = `${config.backendServer}/users?skills=${searchTerms}`
+	const requestURL = `${apiServer}/users?skills=${searchTerms}`
 	const options = {
 		credentials: 'same-origin'
 	}
@@ -101,7 +101,7 @@ export function deleteSkillSearch(searchTerm) {
 
 export const FETCH_SKILLS = 'FETCH_SKILLS'
 export function fetchSkills(searchTerm) {
-	const requestURL = `${config.backendServer}/skills?search=${searchTerm}`
+	const requestURL = `${apiServer}/skills?search=${searchTerm}`
 	const options = {
 		credentials: 'same-origin'
 	}
@@ -128,7 +128,7 @@ export function getSkillsBySearchTerm(term, method) {
 
 export const GET_PROFILE_DATA = 'GET_PROFILE_DATA'
 export function getUserProfileData(profile) {
-	const requestURL = `${config.backendServer}/users/${profile}`
+	const requestURL = `${apiServer}/users/${profile}`
 	const options = {
 		credentials: 'same-origin'
 	}
@@ -170,9 +170,11 @@ export function editSkill(requestURL, options) {
 }
 
 export function updateUserSkills(options, user) {
-	const requestURL = `${config.backendServer}/users/${user}/skills`
-	return function(dispatch, getState) {
-		dispatch(editSkill(requestURL, options)).then(() => dispatch(getUserProfileData(user)))
+	const requestURL = `${apiServer}/users/${user}/skills`
+	return function(dispatch) {
+		dispatch(editSkill(requestURL, options)).then(() =>
+			dispatch(getUserProfileData(user))
+		)
 	}
 }
 

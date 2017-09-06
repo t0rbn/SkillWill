@@ -41,6 +41,11 @@ module.exports = {
 		new webpack.NoEmitOnErrorsPlugin(),
 		new webpack.NamedModulesPlugin(),
 		new webpack.HotModuleReplacementPlugin(),
+		new webpack.DefinePlugin({
+			'process.env': {
+				API_SERVER: JSON.stringify('http://localhost:1337'),
+			},
+		}),
 		new ExtractTextPlugin({
 			filename: 'style.css',
 			allChunks: true,

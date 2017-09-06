@@ -1,5 +1,5 @@
 import React from 'react'
-import config from '../../config.json'
+import { apiServer } from '../../env.js'
 import Cookies from 'react-cookie'
 import { Router, Link, browserHistory } from 'react-router'
 import { getUserProfileData } from '../../actions'
@@ -95,7 +95,7 @@ class Login extends React.Component {
 			body: postData,
 			credentials: 'same-origin'
 		}
-		fetch(`${config.backendServer}/login`, options)
+		fetch(`${apiServer}/login`, options)
 			.then(response => {
 				if(this.handleResponseStatus(response)){
 					return response.json()

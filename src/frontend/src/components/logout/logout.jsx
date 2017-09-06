@@ -1,5 +1,5 @@
 import React from 'react'
-import config from '../../config.json'
+import { apiServer } from '../../env.js'
 import Cookies from 'react-cookie'
 import { Router, Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
@@ -32,17 +32,15 @@ class Logout extends React.Component {
 			body: postData,
 			credentials: 'same-origin'
 		}
-		fetch(`${config.backendServer}/logout`, options)
-			.then(response => {
-				this.removeCookies()
-				this.setState({
-					userId: undefined,
-					user: undefined
-				})
-				this.props.clearUserData()
-				browserHistory.push('/')
+		fetch(`${apiServer}/logout`, options).then(response => {
+			this.removeCookies()
+			this.setState({
+				userId: undefined,
+				user: undefined,
 			})
-
+			this.props.clearUserData()
+			browserHistory.push('/')
+		})
 	}
 
 	componentWillMount() {

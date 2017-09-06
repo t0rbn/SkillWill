@@ -189,7 +189,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>run build-dev</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>

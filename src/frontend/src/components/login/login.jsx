@@ -25,7 +25,6 @@ class Login extends React.Component {
 	}
 
 	componentWillMount(){
-		console.log(Cookies)
 		if(this.state.user){
 			browserHistory.push(`/my-profile/${this.state.user}`)
 		}

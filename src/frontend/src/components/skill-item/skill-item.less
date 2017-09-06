@@ -21,6 +21,11 @@
     background: data-uri("@{image-path}/check-black.svg");
     background-size: 100% 100%;
   }
+  &[data-empty="true"] {
+    .skill-name {
+      color: @s2-darkgrey4;
+    }
+  }
 }
 
 @keyframes skillEdited {
@@ -76,7 +81,11 @@
   width: 50%;
   height: 16px;
   padding-right: @m-inline;
-  background-color: hsl(0, 0%, 90%);
+  background-color: @levelColorLeftDefault;
+
+  + .level {
+    background-color: @levelColorRightDefault;
+  }
 }
 
 .levelBar {

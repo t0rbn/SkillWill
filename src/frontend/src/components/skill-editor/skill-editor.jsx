@@ -1,71 +1,75 @@
 import React from 'react'
-import { Router, Route, Link } from 'react-router'
-import Editor from '../editor/editor.jsx'
-import config from '../../config.json'
-import Cookies from 'react-cookie'
+import SkillItem from '../skill-item/skill-item'
 import { connect } from 'react-redux'
 
-export default class Skill extends React.Component {
+class SkillEditor extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			editorIsOpen: false,
-			userId: undefined,
-			skillLvl: 0,
-			willLvl: 0
+			noUserSkills: [],
 		}
-		this.toggleEditor = this.toggleEditor.bind(this)
-		this.checkSkillLvls = this.checkSkillLvls.bind(this)
 	}
 
-	componentWillMount() {
-		this.checkSkillLvls()
+	componentWillReceiveProps(nextProps) {
+		if (this.props.user.skills === nextProps.user.skills) {
+			this.filterNoUserSkills(nextProps.skills, this.props.user.skills)
+		}
 	}
 
-	toggleEditor() {
-		this.checkSkillLvls()
-		this.setState({
-			editorIsOpen: !this.state.editorIsOpen
+	filterNoUserSkills(searchedSkills, userSkills) {
+		let userSkillNames = []
+		let tempNoUserSkills = []
+
+		userSkills.forEach(userSkill => {
+			userSkillNames.push(userSkill.name)
 		})
-	}
 
-	// check if Skill is allready in Profile
-	// if so, set current levels to Editor
-	checkSkillLvls() {
-		this.props.user.skills.map((skill) => {
-			if (skill.name === this.props.skill) {
-				this.setState({
-					skillLvl: skill.skillLevel,
-					willLvl: skill.willLevel,
-					isMentor: skill.mentor
+		searchedSkills
+			.filter(searchedSkill => userSkillNames.indexOf(searchedSkill) === -1)
+			.map(searchedSkill => {
+				tempNoUserSkills.push({
+					name: searchedSkill,
+					skillLevel: 0,
+					willLevel: 0,
+					mentor: false,
 				})
-			}
+			})
+
+		this.setState({
+			noUserSkills: tempNoUserSkills,
 		})
 	}
 
 	render() {
-		const { skill, handleEdit } = this.props
-		const { editorIsOpen, skillLvl, willLvl, isMentor } = this.state
+		const { handleEdit, handleDelete } = this.props
+		const { noUserSkills } = this.state
+
 		return (
-			<ul className={`skill ${editorIsOpen ? "toggled" : ""}`}>
-				<li className="name" onClick={this.toggleEditor}>
-					{skill}
-				</li>
-				<li className="add" onClick={this.toggleEditor}></li>
-				{editorIsOpen ?
-					<li className="editor-container">
-						<Editor
-							skillName={skill}
-							skillLvl={skillLvl}
-							willLvl={willLvl}
-							isMentor={isMentor}
-							handleAccept={handleEdit}
-							handleClose={this.toggleEditor}
-							handleEdit={handleEdit} />
-					</li>
-					: ""
-				}
-			</ul>
+			<div className="skill-editor">
+				<div className="skill-listing">
+					<ul className="skills-list">
+						{noUserSkills.map((skill, i) => {
+							return (
+								<SkillItem
+									skill={skill}
+									editSkill={handleEdit}
+									deleteSkill={handleDelete}
+									key={i}
+								/>
+							)
+						})}
+					</ul>
+				</div>
+			</div>
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	return {
+		skills: state.skills,
+		user: state.user,
+	}
+}
+
+export default connect(mapStateToProps)(SkillEditor)

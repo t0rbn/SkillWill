@@ -9,7 +9,7 @@
     "build-dev": "webpack --config webpack.config.js --progress --profile --colors",
     "dev": "webpack-dev-server --progress --profile --colors",
     "start": "webpack-dashboard -- webpack-dev-server",
-    "lint": "eslint --ext .js,.jsx src || exit 0"
+    "lint": "eslint --ext .js,.jsx src --fix || exit 0"
   },
   "repository": {
     "type": "git",

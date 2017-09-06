@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import styles from './styles.less'
 import React from 'react'
 import Header from './components/header/header.jsx'

@@ -96,13 +96,17 @@ class SkillItem extends React.Component {
 			key,
 			skill: {
 				name
-			}
+			},
+			isSkillEditActive
 		} = this.props
 		const {
 			skillLevel,
 			willLevel,
 			isMentor
 		} = this.state
+
+		const isLayerActive = document.body.classList.contains('layer-open') ? ' skill-level--layerWidth' : ''
+
 		return (
 			this.state.renderSkill ?
 				<li key={key} className="skill-item" data-edited={this.state.hasEdited}>
@@ -114,7 +118,7 @@ class SkillItem extends React.Component {
 						</span>
 							: null
 					}
-					<div className="skill-level">
+					<div className={`skill-level${isLayerActive}`}>
 						<div className="level">
 							<div className={`skillBar levelBar levelBar--${skillLevel}`}></div>
 						</div>
@@ -122,8 +126,16 @@ class SkillItem extends React.Component {
 							<div className={`willBar levelBar levelBar--${willLevel}`}></div>
 						</div>
 						{
-							this.props.isSkillEditActive
-								? <SkillItemEditor editSkill={this.editSkill} deleteSkill={this.deleteSkill} name={name} skillLevel={skillLevel} willLevel={willLevel} isMentor={isMentor} />
+							isSkillEditActive
+								? (
+									<SkillItemEditor
+										editSkill={this.editSkill}
+										deleteSkill={this.deleteSkill}
+										name={name}
+										skillLevel={skillLevel}
+										willLevel={willLevel}
+										isMentor={isMentor} />
+								)
 								: null
 						}
 					</div>

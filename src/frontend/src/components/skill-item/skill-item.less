@@ -45,6 +45,7 @@
     width: auto;
     padding-right: @s-inline;
     word-wrap: break-word;
+    hyphens: auto;
   }
   &:after {
     bottom: 0;
@@ -63,7 +64,10 @@
   position: relative;
   display: flex;
   flex-basis: 40%;
-  min-width: 260px;
+  min-width: 40%;
+  &--layerWidth {
+    min-width: 260px;
+  }
 }
 
 .level {

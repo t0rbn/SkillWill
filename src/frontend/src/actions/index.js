@@ -175,3 +175,17 @@ export function updateUserSkills(options, user) {
 		dispatch(editSkill(requestURL, options)).then(() => dispatch(getUserProfileData(user)))
 	}
 }
+
+export const START_ANIMATING = 'START_ANIMATING'
+export function startAnimating() {
+	return {
+		type: START_ANIMATING
+	}
+}
+
+export const STOP_ANIMATING = 'STOP_ANIMATING'
+export function stopAnimating() {
+	return {
+		type: STOP_ANIMATING
+	}
+}

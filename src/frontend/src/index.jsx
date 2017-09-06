@@ -6,7 +6,6 @@ import { Provider } from 'react-redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import ReduxPromise from 'redux-promise'
 import thunk from 'redux-thunk'
-
 import reducers from './reducers'
 
 import { AppContainer } from 'react-hot-loader'

@@ -5,7 +5,7 @@ import User from '../user/user'
 import Dropdown from '../dropdown/dropdown.jsx'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { setLocationFilter, setSortFilter, setDirectionFilter } from '../../actions'
+import { setLocationFilter, setSortFilter, setDirectionFilter, stopAnimating } from '../../actions'
 import sortAndFilter from '../../utils/sortAndFilter.js'
 
 class Results extends React.Component {
@@ -15,17 +15,14 @@ class Results extends React.Component {
 			lastSortedBy: 'fitness'
 		}
 		this.filterUserByLocation = this.filterUserByLocation.bind(this)
-		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 	}
 
 	componentDidMount() {
-		ReactDOM.findDOMNode(this).addEventListener('animationend', this.removeAnimationClass)
-		document.body.classList.add('results-view')
-	}
-
-	removeAnimationClass() {
-		ReactDOM.findDOMNode(this).classList.remove('animateable')
-		ReactDOM.findDOMNode(this).removeEventListener('animationend', this.removeAnimationClass)
+		ReactDOM.findDOMNode(this).addEventListener('animationend', () => {
+			if (this.props.isSkillAnimated) {
+				this.props.stopAnimating();
+			}
+		});
 	}
 
 	filterUserByLocation(user) {
@@ -44,13 +41,14 @@ class Results extends React.Component {
 			lastSortedBy: { sortFilter, lastSortedBy },
 			results: { searched, users },
 			setSortFilter,
-			setDirectionFilter
+			setDirectionFilter,
+			animated
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
 		if (users && users.length > 0) {
 			const sortedUserList = sortAndFilter(users, sortFilter, directionFilter, locationFilter)
 			return (
-				<div className="results-container animateable">
+				<div className={`results-container ${animated ? 'animateable' : ''}`}>
 					<div className="counter">
 						{sortedUserList.length} results, sorted
 							<Dropdown
@@ -113,7 +111,11 @@ function mapStateToProps(state) {
 		searchTerms: state.searchTerms,
 		locationFilter: state.locationFilter,
 		lastSortedBy: state.lastSortedBy,
-		directionFilter: state.directionFilter
+		directionFilter: state.directionFilter,
+		isSkillAnimated: state.isSkillAnimated
 	}
 }
-export default connect(mapStateToProps, { setLocationFilter, setSortFilter, setDirectionFilter })(Results)
+export default connect(
+	mapStateToProps,
+	{ setLocationFilter, setSortFilter, setDirectionFilter, stopAnimating }
+)(Results)

@@ -15,7 +15,9 @@ import {
 	EDIT_SKILL,
 	EXIT_SKILLS_EDIT_MODE,
 	CLEAR_USER_DATA,
-	SET_DIRECTION_FILTER
+	SET_DIRECTION_FILTER,
+	START_ANIMATING,
+	STOP_ANIMATING
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -152,6 +154,17 @@ function shouldSkillsAnimate(state = true, action) {
 	}
 }
 
+function isSkillAnimated(state = true, action) {
+	switch (action.type) {
+		case 'START_ANIMATING':
+			return true
+		case 'STOP_ANIMATING':
+			return false
+		default:
+			return state
+	}
+}
+
 export default {
 	searchTerms: setSearchTerms,
 	results: fetchResultsBySearchTerms,
@@ -164,5 +177,6 @@ export default {
 	lastSortedBy,
 	locationFilter,
 	directionFilter,
-	isResultsLoaded
+	isResultsLoaded,
+	isSkillAnimated
 };

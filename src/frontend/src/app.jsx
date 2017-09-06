@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 class App extends React.Component {
 	render() {
-		const { isResultsLoaded } = this.props
+		const { isResultsLoaded, isSkillAnimated } = this.props
 		return (
 			<div className={isResultsLoaded ? "results-loaded" : ""}>
 				<Header />
@@ -22,7 +22,7 @@ class App extends React.Component {
 					</div>
 				</div>
 				<div className="content">
-					<Results />
+					<Results animated={isSkillAnimated}/>
 					{this.props.children}
 				</div>
 				<Footer />
@@ -33,7 +33,8 @@ class App extends React.Component {
 }
 function mapStateToProps(state) {
 	return {
-		isResultsLoaded: state.isResultsLoaded
+		isResultsLoaded: state.isResultsLoaded,
+		isSkillAnimated: state.isSkillAnimated
 	}
 }
 export default connect(mapStateToProps)(App)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Link, browserHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { exitSkillsEditMode } from '../../actions'
 import { connect } from 'react-redux'
 
@@ -20,7 +20,7 @@ class Layer extends React.Component {
 	handleClose() {
 		//return to home if current page is login
 		if (this.props.location.pathname.startsWith('/my-profile')) {
-			browserHistory.push("/")
+			browserHistory.push('/')
 		} else {
 			browserHistory.goBack()
 		}
@@ -31,11 +31,9 @@ class Layer extends React.Component {
 	render() {
 		return (
 			<div className="layer-container">
-				<Link onClick={this.handleClose} className="close-layer"></Link>
-				<Link onClick={this.handleClose} className="close-btn"></Link>
-				<div className="layer">
-					{this.props.children}
-				</div>
+				<Link onClick={this.handleClose} className="close-layer" />
+				<Link onClick={this.handleClose} className="close-btn" />
+				<div className="layer">{this.props.children}</div>
 			</div>
 		)
 	}

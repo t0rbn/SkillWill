@@ -1,7 +1,5 @@
 import React from 'react'
-import { Router, Link, browserHistory } from 'react-router'
-import BasicProfile from "./basic-profile.jsx"
-import SkillItem from '../skill-item/skill-item.jsx'
+import BasicProfile from './basic-profile.jsx'
 import { getUserProfileData } from '../../actions'
 
 import { connect } from 'react-redux'
@@ -10,32 +8,28 @@ class OthersProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			userId: this.props.params.id || "id",
+			userId: this.props.params.id || 'id',
 			dataLoaded: true,
-			infoLayerAt: 0
+			infoLayerAt: 0,
 		}
 		this.props.getUserProfileData(this.state.userId)
 	}
 
-	infoLayer(data) {
+	infoLayer() {
 		//nothing to return
 	}
 
 	render() {
-		return (
-			this.props.userLoaded ?
-				<div className="profile">
-					<BasicProfile
-						infoLayer={this.infoLayer}
-						renderSearchedSkills={true} />
+		return this.props.userLoaded ? (
+			<div className="profile">
+				<BasicProfile infoLayer={this.infoLayer} renderSearchedSkills={true} />
 			</div>
-		: null
-		)
+		) : null
 	}
 }
 function mapStateToProps(state) {
 	return {
-		userLoaded: state.user.userLoaded
+		userLoaded: state.user.userLoaded,
 	}
 }
 

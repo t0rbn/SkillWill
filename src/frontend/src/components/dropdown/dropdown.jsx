@@ -23,31 +23,25 @@ export default class Dropdown extends React.Component {
 	}
 
 	renderOptions() {
-		const { options, dropdownLabel } = this.props
+		const { options } = this.props
 		return options.map(option => {
 			return (
-				<option
-					key={`${option["value"]}`}
-					value={`${option["value"]}`}>
-					{`${option["display"]}`}
+				<option key={`${option['value']}`} value={`${option['value']}`}>
+					{`${option['display']}`}
 				</option>
 			)
 		})
 	}
 
 	render() {
-		const { options, dropdownLabel } = this.props
+		const { dropdownLabel } = this.props
 		return (
 			<div className="dropdown">
 				<span className="dropdown-label">{this.setDropdownLabel()}</span>
-				<select
-					onChange={this.handleDropdownChange}
-					value={dropdownLabel}>
+				<select onChange={this.handleDropdownChange} value={dropdownLabel}>
 					{this.renderOptions()}
 				</select>
 			</div>
 		)
 	}
 }
-
-

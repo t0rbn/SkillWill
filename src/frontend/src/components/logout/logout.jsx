@@ -1,7 +1,7 @@
 import React from 'react'
 import { apiServer } from '../../env.js'
 import Cookies from 'react-cookie'
-import { Router, Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { clearUserData } from '../../actions'
 
@@ -15,9 +15,9 @@ class Logout extends React.Component {
 	}
 
 	generatePostData() {
-		const sessionKey = Cookies.load("sessionKey")
+		const sessionKey = Cookies.load('sessionKey')
 		const postData = new FormData()
-		postData.append("sessionKey", sessionKey)
+		postData.append('sessionKey', sessionKey)
 		return postData
 	}
 
@@ -28,15 +28,15 @@ class Logout extends React.Component {
 
 	requestLogout(postData) {
 		const options = {
-			method: "POST",
+			method: 'POST',
 			body: postData,
-			credentials: 'same-origin'
+			credentials: 'same-origin',
 		}
-		fetch(`${apiServer}/logout`, options).then(response => {
+		fetch(`${apiServer}/logout`, options).then(() => {
 			this.removeCookies()
 			this.setState({
-				userId: undefined,
-				user: undefined,
+				userId: null,
+				user: null,
 			})
 			this.props.clearUserData()
 			browserHistory.push('/')

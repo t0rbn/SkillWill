@@ -11,7 +11,7 @@ class App extends React.Component {
 	render() {
 		const { isResultsLoaded, isSkillAnimated } = this.props
 		return (
-			<div className={isResultsLoaded ? "results-loaded" : ""}>
+			<div className={isResultsLoaded ? 'results-loaded' : ''}>
 				<Header />
 				<div className="search">
 					<div className="heading">
@@ -23,11 +23,11 @@ class App extends React.Component {
 					</div>
 				</div>
 				<div className="content">
-					<Results animated={isSkillAnimated}/>
+					<Results animated={isSkillAnimated} />
 					{this.props.children}
 				</div>
 				<Footer />
-				<div className="layer-overlay"></div>
+				<div className="layer-overlay" />
 			</div>
 		)
 	}
@@ -35,7 +35,7 @@ class App extends React.Component {
 function mapStateToProps(state) {
 	return {
 		isResultsLoaded: state.isResultsLoaded,
-		isSkillAnimated: state.isSkillAnimated
+		isSkillAnimated: state.isSkillAnimated,
 	}
 }
 export default connect(mapStateToProps)(App)

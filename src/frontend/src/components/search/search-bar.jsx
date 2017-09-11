@@ -1,6 +1,4 @@
 import React from 'react'
-import { Router, Route, Link } from 'react-router'
-import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 
 export default class SearchBar extends React.Component {
 	constructor(props) {
@@ -20,7 +18,7 @@ export default class SearchBar extends React.Component {
 
 	getInputValue(event) {
 		this.setState({
-			currentValue: event.target.value
+			currentValue: event.target.value,
 		})
 	}
 
@@ -28,8 +26,10 @@ export default class SearchBar extends React.Component {
 		const { searchTerms } = this.props
 		const { currentValue } = this.state
 		const { key, type, target } = event
-		const isBackspaceKey = currentValue === "" && key === 'Backspace' && searchTerms !== ""
-		const isMouseClick = type === 'click' && target.dataset.filter === deleteItem
+		const isBackspaceKey =
+			currentValue === '' && key === 'Backspace' && searchTerms !== ''
+		const isMouseClick =
+			type === 'click' && target.dataset.filter === deleteItem
 
 		if (isBackspaceKey || isMouseClick) {
 			this.props.onInputDelete(deleteItem)
@@ -39,19 +39,22 @@ export default class SearchBar extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault()
 		const regex = new RegExp(/\s*,+\s*/, 'g')
-		const currentValue = this.state.currentValue.trim().split(regex).filter(element => element)
+		const currentValue = this.state.currentValue
+			.trim()
+			.split(regex)
+			.filter(element => element)
 		if (currentValue) {
 			this.props.onInputChange(currentValue)
 		}
-			this.setState({
-			currentValue: ''
+		this.setState({
+			currentValue: '',
 		})
 	}
 
 	handleSuggestionSelected(name) {
 		this.setState({
 			searchTerms: this.state.searchTerms.concat(name),
-			currentValue: ''
+			currentValue: '',
 		})
 	}
 
@@ -59,18 +62,21 @@ export default class SearchBar extends React.Component {
 		const { searchTerms } = this.props
 		return (
 			<div>
-				<form
-					onSubmit={this.handleSubmit}
-					name="SearchBar"
-					autoComplete="off">
+				<form onSubmit={this.handleSubmit} name="SearchBar" autoComplete="off">
 					<div className="search-container">
 						<div className="input-container">
 							{/*display entered searchTerms in front of the input field*/}
-							{searchTerms.map((searchTerm, i) => {
+							{searchTerms.map(searchTerm => {
 								return (
 									<div className="search-term" key={searchTerm}>
 										{searchTerm}
-										<a className="close" data-filter={searchTerm} key={`delete_${searchTerm}`} onClick={event => this.deleteFilter(event, searchTerm)}>&#9747;</a>
+										<a
+											className="close"
+											data-filter={searchTerm}
+											key={`delete_${searchTerm}`}
+											onClick={event => this.deleteFilter(event, searchTerm)}>
+											&#9747;
+										</a>
 									</div>
 								)
 							})}
@@ -83,9 +89,12 @@ export default class SearchBar extends React.Component {
 								value={this.state.currentValue}
 								autoFocus="true"
 								onChange={this.getInputValue}
-								onKeyDown={event => this.deleteFilter(event, searchTerms.slice(-1)[0])}
-								ref={input => { this.input = input }}>
-							</input>
+								onKeyDown={event =>
+									this.deleteFilter(event, searchTerms.slice(-1)[0])}
+								ref={input => {
+									this.input = input
+								}}
+							/>
 						</div>
 						<button type="submit" className="submit-search-button" />
 					</div>

@@ -160,8 +160,7 @@ class BasicProfile extends React.Component {
 				<li
 					className="sort-button sort-button-name"
 					onClick={() =>
-						this.setState({ sortedSkills: this.sortSkills('name', 'asc') })}
-				>
+						this.setState({ sortedSkills: this.sortSkills('name', 'asc') })}>
 					<span className="sort-button-label">Name</span>
 				</li>
 				<li
@@ -169,8 +168,7 @@ class BasicProfile extends React.Component {
 					onClick={() =>
 						this.setState({
 							sortedSkills: this.sortSkills('skillLevel', 'desc'),
-						})}
-				>
+						})}>
 					<span className="sort-button-label">Skill</span>
 				</li>
 				<li
@@ -178,8 +176,7 @@ class BasicProfile extends React.Component {
 					onClick={() =>
 						this.setState({
 							sortedSkills: this.sortSkills('willLevel', 'desc'),
-						})}
-				>
+						})}>
 					<span className="sort-button-label">Will</span>
 				</li>
 			</ul>
@@ -227,8 +224,7 @@ class BasicProfile extends React.Component {
 			<ul
 				className={`basic-profile ${this.props.shouldSkillsAnimate
 					? 'animateable'
-					: ''}`}
-			>
+					: ''}`}>
 				<li className="info">
 					<div className={`avatar avatar-${this.getAvatarColor()}`}>
 						<span className="fallback-letter">

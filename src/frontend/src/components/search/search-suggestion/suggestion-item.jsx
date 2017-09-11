@@ -1,14 +1,17 @@
 import React from 'react'
 
 export default class SuggestionItem extends React.Component {
+	constructor(props) {
+		super(props)
+	}
 
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return(
-      <a className="search-suggestions-item" onclick={() => this.props.handleSuggestionSelected(this.props.name)}>{this.props.name}</a>
-    )
-  }
+	render() {
+		return (
+			<a
+				className="search-suggestions-item"
+				onClick={() => this.props.handleSuggestionSelected(this.props.name)}>
+				{this.props.name}
+			</a>
+		)
+	}
 }

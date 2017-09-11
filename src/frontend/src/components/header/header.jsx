@@ -1,6 +1,6 @@
 import React from 'react'
 import Cookies from 'react-cookie'
-import { Router, Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 
 export default class Header extends React.Component {
 	constructor(props) {
@@ -13,20 +13,20 @@ export default class Header extends React.Component {
 		this.checkUserIdCookie()
 	}
 	checkUserIdCookie() {
-		const user = Cookies.load("user")
-		if (user != this.state.userId) {
+		const user = Cookies.load('user')
+		if (user !== this.state.userId) {
 			this.setState({ userId: user })
 		}
 		return !!user
 	}
 
-	handleClick(e) {
+	handleClick() {
 		this.checkUserIdCookie()
 	}
 
 	renderLogOut() {
-		const user = Cookies.load("user")
-		if (!!user) {
+		const user = Cookies.load('user')
+		if (user) {
 			return (
 				<li className="nav-item">
 					<Link
@@ -41,8 +41,7 @@ export default class Header extends React.Component {
 	}
 
 	returnMyProfileLink() {
-
-		if (typeof this.state.userId != 'undefined') {
+		if (typeof this.state.userId !== 'undefined') {
 			return this.state.userId
 		} else {
 			return 'login'
@@ -50,15 +49,21 @@ export default class Header extends React.Component {
 	}
 
 	render() {
-		return(
+		return (
 			<header className="mod-navigation-container">
 				<div className="mod-navigation">
-					<Link className="s2-logo" to="/"></Link>
-					<Link className="sw-title" to="/">skill/will</Link>
+					<Link className="s2-logo" to="/" />
+					<Link className="sw-title" to="/">
+						skill/will
+					</Link>
 					<nav className="nav">
 						<ul className="nav-list">
 							<li className="nav-item">
-								<Link className="nav-link nav-link--profile" to={`/my-profile/${this.returnMyProfileLink()}`}>Your profile</Link>
+								<Link
+									className="nav-link nav-link--profile"
+									to={`/my-profile/${this.returnMyProfileLink()}`}>
+									Your profile
+								</Link>
 							</li>
 							{this.renderLogOut()}
 						</ul>

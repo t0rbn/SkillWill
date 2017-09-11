@@ -1,12 +1,12 @@
 import React from 'react'
-import { Router, Route, Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
 
 export default class User extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			skillsToShow: this.getSkillsToShow(this.props.searchTerms)
+			skillsToShow: this.getSkillsToShow(this.props.searchTerms),
 		}
 		this.handleClick = this.handleClick.bind(this)
 		this.getSkillsToShow = this.getSkillsToShow.bind(this)
@@ -22,21 +22,18 @@ export default class User extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.searchTerms && nextProps.searchTerms !== this.props.searchTerms) {
+		if (
+			nextProps.searchTerms &&
+			nextProps.searchTerms !== this.props.searchTerms
+		) {
 			this.setState({
-				skillsToShow: this.getSkillsToShow(nextProps.searchTerms)
+				skillsToShow: this.getSkillsToShow(nextProps.searchTerms),
 			})
 		}
 	}
 
 	render() {
-		const {
-			id,
-			firstName,
-			lastName,
-			title,
-			location
-		} = this.props.user
+		const { id, firstName, lastName, title, location } = this.props.user
 
 		return (
 			<Link
@@ -53,10 +50,8 @@ export default class User extends React.Component {
 					<li className="location">{location}</li>
 					<li className="skills">
 						<ul className="skills-list">
-							{this.state.skillsToShow.map((skill, i) => {
-								return (
-									<SkillItem key={skill.name} skill={skill} />
-								)
+							{this.state.skillsToShow.map(skill => {
+								return <SkillItem key={skill.name} skill={skill} />
 							})}
 						</ul>
 					</li>

@@ -1,7 +1,4 @@
 import {
-	combineReducers
-} from 'redux'
-import {
 	FETCH_RESULTS,
 	FETCH_SKILLS,
 	ADD_SEARCH_TERMS,
@@ -17,7 +14,7 @@ import {
 	CLEAR_USER_DATA,
 	SET_DIRECTION_FILTER,
 	START_ANIMATING,
-	STOP_ANIMATING
+	STOP_ANIMATING,
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -58,7 +55,7 @@ function fetchResultsBySearchTerms(state = [], action) {
 				...state,
 				users: action.payload.results,
 				searched: action.payload.searched.map(element => element['found']),
-				input: action.payload.searched.map(element => element['input'])
+				input: action.payload.searched.map(element => element['input']),
 			}
 		default:
 			return state
@@ -78,12 +75,15 @@ function getUserProfileData(state = {}, action) {
 	switch (action.type) {
 		case GET_PROFILE_DATA:
 			return Object.assign({}, state, action.payload, {
-				userLoaded: true
+				userLoaded: true,
 			})
 		case CLEAR_USER_DATA:
-			return Object.assign({}, {
-				userLoaded: false
-			})
+			return Object.assign(
+				{},
+				{
+					userLoaded: false,
+				}
+			)
 		default:
 			return state
 	}
@@ -103,7 +103,7 @@ function lastSortedBy(state = {}, action) {
 		case SET_LAST_SORTED_BY:
 			return {
 				sortFilter: action.sortFilter,
-				lastSortedBy: action.lastSortedBy
+				lastSortedBy: action.lastSortedBy,
 			}
 		default:
 			return state
@@ -156,9 +156,9 @@ function shouldSkillsAnimate(state = true, action) {
 
 function isSkillAnimated(state = true, action) {
 	switch (action.type) {
-		case 'START_ANIMATING':
+		case START_ANIMATING:
 			return true
-		case 'STOP_ANIMATING':
+		case STOP_ANIMATING:
 			return false
 		default:
 			return state
@@ -178,5 +178,5 @@ export default {
 	locationFilter,
 	directionFilter,
 	isResultsLoaded,
-	isSkillAnimated
-};
+	isSkillAnimated,
+}

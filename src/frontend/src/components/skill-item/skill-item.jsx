@@ -153,8 +153,7 @@ class SkillItem extends React.Component {
 					key={key}
 					className="skill-item"
 					data-edited={hasEdited}
-					data-empty={hasZeroLevel}
-				>
+					data-empty={hasZeroLevel}>
 					<p className="skill-name">
 						<span>{name}</span>
 					</p>

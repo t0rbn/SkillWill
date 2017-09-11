@@ -18,7 +18,7 @@ class MyProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			sessionKey: undefined,
+			sessionKey: null,
 			userId: this.props.params.id,
 			data: null,
 			dataLoaded: false,
@@ -53,7 +53,7 @@ class MyProfile extends React.Component {
 
 	checkAndOpenLogin() {
 		const sessionKey = this.state.sessionKey || Cookies.load('sessionKey')
-		if (sessionKey != this.state.sessionKey || !sessionKey) {
+		if (sessionKey !== this.state.sessionKey || !sessionKey) {
 			this.setState({ sessionKey: sessionKey })
 		}
 		return !!sessionKey
@@ -63,7 +63,7 @@ class MyProfile extends React.Component {
 		const { userId } = this.state
 		// check if the profiles userID matches with the logged in user
 		const user = Cookies.load('user')
-		if (user != userId) {
+		if (user !== userId) {
 			return false
 		}
 		return true
@@ -87,7 +87,7 @@ class MyProfile extends React.Component {
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
 		const { userId, sessionKey } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
-			alert('not allowed')
+      alert('not allowed') // eslint-disable-line
 			return
 		}
 		let postData = new FormData()
@@ -111,17 +111,17 @@ class MyProfile extends React.Component {
 		const requestURL = `${config.backendServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${skill}`
 		fetch(requestURL, options)
 			.then(res => {
-				if (res.status == 403) {
-					alert('sessionKey abgelaufen')
+				if (res.status === 403) {
+          alert('sessionKey abgelaufen') // eslint-disable-line
 					Cookies.remove('sessionKey')
 					this.setState({
-						sessionKey: undefined,
+						sessionKey: null,
 						editLayerOpen: false,
 					})
 					this.props.getUserProfileData(userId)
 				}
 
-				if (res.status != 200) {
+				if (res.status !== 200) {
 					throw Error('error while deleting skills')
 				} else {
 					this.props.getUserProfileData(userId)
@@ -151,8 +151,7 @@ class MyProfile extends React.Component {
 					<button
 						className="edit-skill-btn"
 						onClick={this.toggleSkillsEdit}
-						disabled={skillSearchOpen}
-					>
+						disabled={skillSearchOpen}>
 						Customise skills
 					</button>
 					<button className="add-skill-btn" onClick={this.toggleSkillsSearch}>
@@ -178,8 +177,7 @@ class MyProfile extends React.Component {
 					<button
 						className="add-skill-btn"
 						onClick={this.toggleSkillsSearch}
-						disabled={skillEditOpen}
-					>
+						disabled={skillEditOpen}>
 						Add new skill
 					</button>
 				</div>

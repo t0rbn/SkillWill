@@ -1,7 +1,6 @@
 import React from 'react'
 import SearchBar from './search-bar.jsx'
 import Dropdown from '../dropdown/dropdown.jsx'
-import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import config from '../../config.json'
 import { getUserBySearchTerms, setLocationFilter } from '../../actions'
 import { connect } from 'react-redux'
@@ -29,13 +28,14 @@ class UserSearch extends React.Component {
 
 	render() {
 		const { locationFilterOptions } = config
-		const { searchTerms, locationFilter, setLocationFilter } = this.props
+		const { searchTerms, locationFilter } = this.props
 		return (
 			<div className="searchbar">
 				<Dropdown
 					onDropdownSelect={setLocationFilter}
 					dropdownLabel={locationFilter}
-					options={locationFilterOptions} />
+					options={locationFilterOptions}
+				/>
 				<SearchBar
 					onInputChange={this.handleSearchBarInput}
 					onInputDelete={this.handleSearchBarDelete}
@@ -51,8 +51,11 @@ class UserSearch extends React.Component {
 function mapStateToProps(state) {
 	return {
 		searchTerms: state.searchTerms,
-		locationFilter: state.locationFilter
+		locationFilter: state.locationFilter,
 	}
 }
 
-export default connect(mapStateToProps, { getUserBySearchTerms, setLocationFilter })(UserSearch)
+export default connect(mapStateToProps, {
+	getUserBySearchTerms,
+	setLocationFilter,
+})(UserSearch)

@@ -1,4 +1,5 @@
 import React from 'react'
+import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
 import SkillItem from '../skill-item/skill-item'
 import { connect } from 'react-redux'
 
@@ -47,6 +48,15 @@ class SkillEditor extends React.Component {
 		return (
 			<div className="skill-editor">
 				<div className="skill-listing">
+					{noUserSkills.length > 0 && (
+						<div className="listing-header">
+							<SkillLegend>
+								<SkillLegendItem title="Name" wide />
+								<SkillLegendItem title="Skill level" />
+								<SkillLegendItem title="Will level" />
+							</SkillLegend>
+						</div>
+					)}
 					<ul className="skills-list">
 						{noUserSkills.map((skill, i) => {
 							return (

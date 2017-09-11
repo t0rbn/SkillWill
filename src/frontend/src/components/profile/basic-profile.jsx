@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
+import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
 import { connect } from 'react-redux'
 import { clearUserData } from '../../actions'
 
@@ -20,7 +21,6 @@ class BasicProfile extends React.Component {
 		this.sortSkills = this.sortSkills.bind(this)
 		this.renderTopWills = this.renderTopWills.bind(this)
 		this.renderSkills = this.renderSkills.bind(this)
-		this.renderSortButtons = this.renderSortButtons.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.toggleSkillEdit = this.toggleSkillEdit.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
@@ -154,35 +154,6 @@ class BasicProfile extends React.Component {
 		)
 	}
 
-	renderSortButtons() {
-		return (
-			<ul className="sort-buttons">
-				<li
-					className="sort-button sort-button-name"
-					onClick={() =>
-						this.setState({ sortedSkills: this.sortSkills('name', 'asc') })}>
-					<span className="sort-button-label">Name</span>
-				</li>
-				<li
-					className="sort-button sort-button-skill"
-					onClick={() =>
-						this.setState({
-							sortedSkills: this.sortSkills('skillLevel', 'desc'),
-						})}>
-					<span className="sort-button-label">Skill</span>
-				</li>
-				<li
-					className="sort-button sort-button-will"
-					onClick={() =>
-						this.setState({
-							sortedSkills: this.sortSkills('willLevel', 'desc'),
-						})}>
-					<span className="sort-button-label">Will</span>
-				</li>
-			</ul>
-		)
-	}
-
 	renderSearchedSkills() {
 		const { skills } = this.props.user
 		const { searchedSkills } = this.props
@@ -261,7 +232,30 @@ class BasicProfile extends React.Component {
 				<li className="all-skills skill-listing">
 					<div className="listing-header">
 						All skills
-						{this.renderSortButtons()}
+						<SkillLegend>
+							<SkillLegendItem
+								title="Name"
+								wide
+								handleClickEvent={() =>
+									this.setState({
+										sortedSkills: this.sortSkills('name', 'asc'),
+									})}
+							/>
+							<SkillLegendItem
+								title="Skill level"
+								handleClickEvent={() =>
+									this.setState({
+										sortedSkills: this.sortSkills('skillLevel', 'desc'),
+									})}
+							/>
+							<SkillLegendItem
+								title="Will level"
+								handleClickEvent={() =>
+									this.setState({
+										sortedSkills: this.sortSkills('willLevel', 'desc'),
+									})}
+							/>
+						</SkillLegend>
 					</div>
 
 					{this.renderSkills(sortedSkills, numberOfSkillsToShow)}

@@ -1,0 +1,40 @@
+.skill-legend {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row wrap;
+  font-size: @l-base-font-size;
+  text-transform: uppercase;
+  padding-top: @m-stack;
+
+  &__item {
+    flex-basis: 20%;
+
+    &--wide {
+      flex-basis: 60%;
+    }
+  }
+
+  &__button {
+    cursor: pointer;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      bottom: 0;
+      left: 0;
+      background-color: @s2-darkgrey;
+      visibility: hidden;
+      transform: scaleX(0);
+      transition: all 0.2s ease-in-out;
+    }
+
+    &:hover::before {
+      visibility: visible;
+      transform: scaleX(1);
+    }
+  }
+}

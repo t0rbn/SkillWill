@@ -242,42 +242,6 @@
   }
 }
 
-.sort-buttons {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: @l-base-font-size;
-  text-transform: uppercase;
-  padding-top: @m-stack;
-  .sort-button {
-    flex-basis: 20%;
-    min-width: 100px;
-    &-label {
-      cursor: pointer;
-      position: relative;
-      &::before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 1px;
-        bottom: 0;
-        left: 0;
-        background-color: #b3b3b3;
-        visibility: hidden;
-        transform: scaleX(0);
-        transition: all 0.2s ease-in-out 0s;
-      }
-      &:hover::before {
-        visibility: visible;
-        transform: scaleX(1);
-      }
-    }
-  }
-  .sort-button-name {
-    flex-basis: 60%;
-  }
-}
-
 .profile-actions {
   position: fixed;
   bottom: 0;

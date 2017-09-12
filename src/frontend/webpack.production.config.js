@@ -24,7 +24,7 @@ loaders.push({
 module.exports = {
 	entry: ['./src/index.jsx', './src/styles.less'],
 	output: {
-		publicPath: './',
+		publicPath: '/',
 		path: path.join(__dirname, 'public'),
 		filename: '[chunkhash].js',
 	},

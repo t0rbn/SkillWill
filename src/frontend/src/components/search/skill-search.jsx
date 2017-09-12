@@ -43,7 +43,11 @@ class SkillSearch extends React.Component {
 						searchTerms={skillSearchTerms}
 					/>
 				</div>
-				<SkillEditor handleEdit={handleEdit} handleDelete={handleDelete} />
+				<SkillEditor
+					handleEdit={handleEdit}
+					handleDelete={handleDelete}
+					searchTerms={skillSearchTerms}
+				/>
 			</div>
 		)
 	}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
 import SkillItem from '../skill-item/skill-item'
+import TicketNotice from '../search/ticket-notice/ticket-notice'
 import { connect } from 'react-redux'
 
 class SkillEditor extends React.Component {
@@ -42,7 +43,7 @@ class SkillEditor extends React.Component {
 	}
 
 	render() {
-		const { handleEdit, handleDelete } = this.props
+		const { handleEdit, handleDelete, searchTerms } = this.props
 		const { noUserSkills } = this.state
 
 		return (
@@ -70,6 +71,13 @@ class SkillEditor extends React.Component {
 						})}
 					</ul>
 				</div>
+				{searchTerms.length > 0 &&
+				noUserSkills.length === 0 && (
+					<TicketNotice
+						title={`Sorry, there isn't any "${searchTerms}" skill you can add...`}
+						subtitle="Submit your suggestion!"
+					/>
+				)}
 			</div>
 		)
 	}

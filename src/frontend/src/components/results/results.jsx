@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import config from '../../config.json'
 import User from '../user/user'
 import Dropdown from '../dropdown/dropdown.jsx'
+import TicketNotice from '../search/ticket-notice/ticket-notice'
 import { connect } from 'react-redux'
 import {
 	setLocationFilter,
@@ -107,14 +108,10 @@ class Results extends React.Component {
 					className="no-results-container"
 					data-isEmptyLabel={this.props.noResultsLabel}>
 					<div className="container">
-						<h2 className="no-results-title">
-							{"Sorry, isn't there any skill for your belongings?"}
-						</h2>
-						<a
-							href="https://jira.sinnerschrader.com/secure/CreateIssueDetails!init.jspa?pid=15352&issuetype=3&priority=4"
-							className="no-results-subtitle">
-							Create a ticket!
-						</a>
+						<TicketNotice
+							title={`Sorry, we haven't found a matching colleague.`}
+							subtitle="Submit a suggestion!"
+						/>
 					</div>
 				</div>
 			)

@@ -2,7 +2,7 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 import BasicProfile from './basic-profile.jsx'
 import SkillSearch from '../search/skill-search.jsx'
-import config from '../../config.json'
+import { apiServer } from '../../env.js'
 import Cookies from 'react-cookie'
 import {
 	getUserProfileData,
@@ -108,7 +108,7 @@ class MyProfile extends React.Component {
 	deleteSkill(skill) {
 		const { userId, sessionKey } = this.state
 		const options = { method: 'DELETE', credentials: 'same-origin' }
-		const requestURL = `${config.backendServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${skill}`
+		const requestURL = `${apiServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${skill}`
 		fetch(requestURL, options)
 			.then(res => {
 				if (res.status === 403) {

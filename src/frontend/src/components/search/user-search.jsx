@@ -28,7 +28,7 @@ class UserSearch extends React.Component {
 
 	render() {
 		const { locationFilterOptions } = config
-		const { searchTerms, locationFilter } = this.props
+		const { searchTerms, locationFilter, setLocationFilter } = this.props
 		return (
 			<div className="searchbar">
 				<Dropdown

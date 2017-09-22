@@ -46,6 +46,8 @@ class Results extends React.Component {
 			lastSortedBy: { sortFilter },
 			results: { searched, users },
 			animated,
+			setSortFilter,
+			setDirectionFilter,
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
 		if (users && users.length > 0) {

@@ -1,0 +1,36 @@
+@import '../vars.less';
+
+.navigation {
+  display: flex;
+
+  &__brand {
+    display: flex;
+    position: relative;
+    margin-right: inherit;
+    background-image: data-uri('@{image-path}/s2-logo.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-left: @l-stack;
+    width: 131px;
+    height: 30px;
+  }
+
+  &__list {
+    display: inline-block;
+  }
+
+  &__item {
+    display: inline-block;
+    text-align: right;
+    padding-right: @l-inline;
+
+    > a {
+      display: inline-block;
+      color: @s2-white;
+
+      &:hover {
+        color: @s2-red;
+      }
+    }
+  }
+}

@@ -14,6 +14,7 @@ export default class SearchBar extends React.Component {
 
 	componentDidMount() {
 		this.input.focus()
+		this.props.mountWithResults && this.handleSubmit()
 	}
 
 	getInputValue(event) {
@@ -37,7 +38,7 @@ export default class SearchBar extends React.Component {
 	}
 
 	handleSubmit(event) {
-		event.preventDefault()
+		event && event.preventDefault()
 		const regex = new RegExp(/\s*,+\s*/, 'g')
 		const currentValue = this.state.currentValue
 			.trim()

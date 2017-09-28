@@ -20,15 +20,15 @@
   "license": "MIT",
   "homepage": "https://git.sinnerschrader.com/SkillWill/skillwill",
   "dependencies": {
-    "react": "^15.4.1",
-    "react-cookie": "1.0.4",
-    "react-dom": "^15.4.1",
+    "react": "^15.6.2",
+    "react-cookie": "^1.0.5",
+    "react-dom": "^15.6.2",
     "react-redux": "^5.0.6",
     "react-router-redux": "^4.0.8",
-    "redux": "^3.6.0",
+    "redux": "^3.7.2",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
-    "whatwg-fetch": "^2.0.2"
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",

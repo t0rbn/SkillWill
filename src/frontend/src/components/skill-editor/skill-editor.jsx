@@ -53,8 +53,10 @@ class SkillEditor extends React.Component {
 						<div className="listing-header">
 							<SkillLegend>
 								<SkillLegendItem title="Name" wide />
-								<SkillLegendItem title="Skill level" />
-								<SkillLegendItem title="Will level" />
+								<div className="skill-legend__item--skills">
+									<SkillLegendItem title="Skill level" withTooltip="skill" />
+									<SkillLegendItem title="Will level" withTooltip="will" />
+								</div>
 							</SkillLegend>
 						</div>
 					)}

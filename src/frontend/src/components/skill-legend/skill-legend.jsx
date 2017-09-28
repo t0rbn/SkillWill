@@ -1,4 +1,5 @@
 import React from 'react'
+import Tooltip from '../tooltip/tooltip'
 
 export class SkillLegendItem extends React.Component {
 	constructor(props) {
@@ -6,10 +7,10 @@ export class SkillLegendItem extends React.Component {
 	}
 
 	render() {
-		const { title, wide, handleClickEvent } = this.props
+		const { title, wide, handleClickEvent, withTooltip } = this.props
 
 		return (
-			<li
+			<span
 				className={`skill-legend__item
 				${wide ? 'skill-legend__item--wide' : ''}`}>
 				{handleClickEvent ? (
@@ -19,7 +20,8 @@ export class SkillLegendItem extends React.Component {
 				) : (
 					title
 				)}
-			</li>
+				{withTooltip && <Tooltip variant={withTooltip} />}
+			</span>
 		)
 	}
 }
@@ -32,6 +34,6 @@ export class SkillLegend extends React.Component {
 	render() {
 		const { children } = this.props
 
-		return <ul className="skill-legend">{children}</ul>
+		return <div className="skill-legend">{children}</div>
 	}
 }

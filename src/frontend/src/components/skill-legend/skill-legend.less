@@ -1,17 +1,19 @@
 .skill-legend {
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  flex-flow: row wrap;
   font-size: @l-base-font-size;
   text-transform: uppercase;
   padding-top: @m-stack;
 
   &__item {
-    flex-basis: 20%;
+    width: 50%;
 
     &--wide {
-      flex-basis: 60%;
+      width: 60%;
+    }
+    &--skills {
+      display: flex;
+      min-width: 300px;
     }
   }
 

@@ -241,20 +241,24 @@ class BasicProfile extends React.Component {
 										sortedSkills: this.sortSkills('name', 'asc'),
 									})}
 							/>
-							<SkillLegendItem
-								title="Skill level"
-								handleClickEvent={() =>
-									this.setState({
-										sortedSkills: this.sortSkills('skillLevel', 'desc'),
-									})}
-							/>
-							<SkillLegendItem
-								title="Will level"
-								handleClickEvent={() =>
-									this.setState({
-										sortedSkills: this.sortSkills('willLevel', 'desc'),
-									})}
-							/>
+							<div className="skill-legend__item--skills">
+								<SkillLegendItem
+									title="Skill level"
+									withTooltip="skill"
+									handleClickEvent={() =>
+										this.setState({
+											sortedSkills: this.sortSkills('skillLevel', 'desc'),
+										})}
+								/>
+								<SkillLegendItem
+									title="Will level"
+									withTooltip="will"
+									handleClickEvent={() =>
+										this.setState({
+											sortedSkills: this.sortSkills('willLevel', 'desc'),
+										})}
+								/>
+							</div>
 						</SkillLegend>
 					</div>
 

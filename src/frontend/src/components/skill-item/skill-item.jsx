@@ -168,15 +168,15 @@ class SkillItem extends React.Component {
 							<div className={`willBar levelBar levelBar--${willLevel}`} />
 						</div>
 						{(isSkillEditActive || singleSkillEditActive) && (
-							<SkillItemEditor
-								editSkill={this.editSkill}
-								deleteSkill={this.deleteSkill}
-								name={name}
-								skillLevel={skillLevel}
-								willLevel={willLevel}
-								isMentor={isMentor}
-							/>
-						)}
+								<SkillItemEditor
+									editSkill={this.editSkill}
+									deleteSkill={this.deleteSkill}
+									name={name}
+									skillLevel={skillLevel}
+									willLevel={willLevel}
+									isMentor={isMentor}
+								/>
+							)}
 						{hasZeroLevel && (
 							<div
 								className="skill-item-editor__add add"

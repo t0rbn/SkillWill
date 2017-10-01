@@ -2,6 +2,7 @@ package com.sinnerschrader.skillwill.domain.person;
 
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
+import com.sinnerschrader.skillwill.domain.skills.SkillUtils;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,12 +90,13 @@ public class Person {
   public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
     // Remove old skill if existing...
     Optional<PersonalSkill> existing = skills.stream()
-        .filter(s -> s.getName().equals(name))
+        .filter(s -> s.getName().equals(SkillUtils.sanitizeName(name)))
         .findFirst();
     if (existing.isPresent()) {
       existing.get().setSkillLevel(skillLevel);
       existing.get().setWillLevel(willLevel);
       existing.get().setMentor(mentor);
+      existing.get().setHidden(hidden);
     } else {
       this.skills.add(new PersonalSkill(name, skillLevel, willLevel, hidden, mentor));
     }

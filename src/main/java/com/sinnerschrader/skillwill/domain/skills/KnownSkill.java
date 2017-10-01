@@ -29,7 +29,7 @@ public class KnownSkill {
 
   public KnownSkill(String name, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
     this.name = name;
-    this.nameStem = SkillStemUtils.nameToStem(name);
+    this.nameStem = SkillUtils.toStem(name);
     this.suggestions = suggestions;
     this.subSkillNames = subSkillNames;
     this.hidden = hidden;
@@ -49,7 +49,7 @@ public class KnownSkill {
 
   public void setName(String name) {
     this.name = name;
-    this.nameStem = SkillStemUtils.nameToStem(name);
+    this.nameStem = SkillUtils.toStem(name);
   }
 
   public String getNameStem() {

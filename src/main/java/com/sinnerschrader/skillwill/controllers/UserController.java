@@ -4,7 +4,7 @@ import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.person.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.domain.skills.SkillStemUtils;
+import com.sinnerschrader.skillwill.domain.skills.SkillUtils;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.misc.StatusJSON;
 import com.sinnerschrader.skillwill.services.SessionService;
@@ -100,10 +100,10 @@ public class UserController {
     sanitizedSkills.forEach(s -> sanitizedNameSkillMap.put(s.getNameStem(), s.getName()));
 
     List<JSONObject> searchedSkills = skillList.stream().map(s -> {
-      if (sanitizedNameSkillMap.containsKey(SkillStemUtils.nameToStem(s))) {
+      if (sanitizedNameSkillMap.containsKey(SkillUtils.toStem(s))) {
         JSONObject json = new JSONObject();
         json.put("input", s);
-        json.put("found", sanitizedNameSkillMap.get(SkillStemUtils.nameToStem(s)));
+        json.put("found", sanitizedNameSkillMap.get(SkillUtils.toStem(s)));
         return json;
       }
       return null;

@@ -2,7 +2,8 @@ image: java:8-jdk
 
 stages:
   - build
-  - deploy
+  - deploy-smaland
+  - deploy-live
 
 before_script:
 
@@ -15,8 +16,27 @@ build:
     - ./mvnw clean package -e -U
     - cat target/site/jacoco/index.html
 
-deploy:
-  stage: deploy
+deploy-smaland:
+  stage: deploy-smaland
+  environment:
+    name: Smaland
+    url: http://smaland.skillwill.sinnerschrader.com
+  script:
+    - echo 'Setting up SSH client'
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - echo 'Copying jar to server'
+    - scp target/skillwill.jar ubuntu@35.157.217.249:/srv/http/skillwill.jar
+    - echo 'Restarting live application'
+    - ssh ubuntu@52.57.133.142 sudo systemctl restart skillwill.service
+  only:
+    - master
+
+deploy-live:
+  stage: deploy-live
   environment:
     name: Live
     url: https://skillwill.sinnerschrader.com

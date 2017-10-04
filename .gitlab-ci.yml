@@ -21,6 +21,8 @@ deploy-smaland:
   environment:
     name: Smaland
     url: http://smaland.skillwill.sinnerschrader.com
+  dependencies:
+      - build
   script:
     - echo 'Setting up SSH client'
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -40,8 +42,9 @@ deploy-live:
   environment:
     name: Live
     url: https://skillwill.sinnerschrader.com
+  dependencies:
+      - build
   script:
-    - ./mvnw clean package -e -U
     - echo 'Setting up SSH client'
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)

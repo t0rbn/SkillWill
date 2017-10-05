@@ -15,6 +15,10 @@ build:
   script:
     - ./mvnw clean package -e -U
     - cat target/site/jacoco/index.html
+  artifacts:
+    paths:
+      - target/skillwill.jar
+    expire_in: 1 week
 
 deploy-smaland:
   stage: deploy-smaland

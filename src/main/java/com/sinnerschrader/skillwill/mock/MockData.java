@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.mock;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.person.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.jobs.LdapSyncJob;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
@@ -70,6 +71,7 @@ public class MockData {
     for (int i = 0; i < persons.length(); i++) {
       JSONObject personJson = persons.getJSONObject(i);
       Person person = new Person(personJson.getString("id"));
+      person.setRole(Role.valueOf(personJson.getString("role")));
 
       JSONArray skills = personJson.getJSONArray("skills");
       for (int j = 0; j < skills.length(); j++) {

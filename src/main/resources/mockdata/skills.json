@@ -1,436 +1,1020 @@
-  [{
-      "name": "3D",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Adobe Illustrator",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "AEM",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Agiler Festpreis",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Analytics",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Atomic Design",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Automatische Tests",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Axure",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Backend",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Beratung",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Betrieb/SystemSetup",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Commerceframework",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "CoreMedia",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Data Science",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Datenbanken",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "DB2",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "demandware",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "E-Commerce und Conversion",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "FB-Api",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Frontend",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Funkspots",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "hibernate",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "hybris",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "IA",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Illustration",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Infodesign (Infografik)",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Internationale Projektleitung",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Java",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Jenkins",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "jquery",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "JS",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Kalkulation",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Kampagne",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Kampagnenmanagement digital",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Kampagnenmanagement Multichannel",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Klassisches Design",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Kommunikation",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Living Styleguide",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Long Copy",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Maintenance von Plattformen",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Marke",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Media",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Motion Design",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Mobile Design",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "MsSQL",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "MySQL",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": ".NET",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Omnigraffle",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Open Text",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Photoshop",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Planning",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Print Produktion",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Product Owner",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Prototyping",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Prozesse",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Rails",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Redaktion",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Redaktion Bild",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Research",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Responsive Design",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Risiko-Management",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Ruby",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Scrum",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Scrummaster",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Sketch",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Some",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Spring",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Strategie",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Struts",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Technische Konzeption",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Technisches Projektmanagement",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Text",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "TVC",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "UI Design",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Unix",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Usability",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "User Tests",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "UX",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Werbetext",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Windows",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Wireframing",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Zahlungsdienste",
-      "subskills": [],
-      "hidden": false
-    },
-    {
-      "name": "Programmiersprachen",
-      "subskills": [
-        "Java",
-        "JS",
-        ".NET",
-        "Ruby"
-      ],
-      "hidden": true
-    },
-    {
-      "name": "Design",
-      "subskills": ["3D", "Adobe Illustrato", "Atomic Design", "Illustration", "Infodesign (Infografik)", "Klassisches Design", "Motion Design", "Mobile Design", "Omnigraffle", "Photoshop", "Sketch", "UI Design"],
-      "hidden": true
-    },
-    {
-      "name": "Projektmanagement",
-      "subskills": ["Agiler Festpreis", "Kalkulation", "Planning", "Product Owner", "Scrum", "Scrummaster", "Technisches Projektmanagement"],
-      "hidden": true
-    },
-    {
-      "name": "CMS",
-      "subskills": ["AEM", "hybris"],
-      "hidden": true
-    }
-  ]
+[
+  {
+    "hidden": false,
+    "name": "Agile knowhow",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Requirements Engineering",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Benchmark analysis",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Change management",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Customer journey",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Design research",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Focus group moderation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Questionnaire creation",
+    "subskills": []
+  },
+  {
+    "hidden": true,
+    "name": "Product Design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "concepting for native apps",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Persona creation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Prototyping",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Service design",
+    "subskills": []
+  },
+  {
+    "hidden": true,
+    "name": "Product Strategy",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "User stories",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "UX strategy",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "UX research",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Target group analysis",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "User surveys",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Sketch",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "The User Experience way of thinking",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Usability testing",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Google Analytics",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Scribbling",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Storyboarding",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Wireframing",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "concepting for Mobile",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "IoT",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "German",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Linux/Unix-Betrieb",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Brand Design / Corporate Design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Quote preparation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Atomic design",
+    "subskills": [
+      "React",
+      "JavaScript",
+      "CSS"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Automated tests",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "System architecture",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "System setup",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Blue Ant project manager skills",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Content management",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Image concepts",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Interaction design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Interface design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "International project leadership",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "IT consulting",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Living styleguide",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Mobile screen- & webdesign",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Motion graphic design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Product owner skills",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Product field",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "customer guidance",
+    "subskills": [
+      "Product field"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Retouching",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Risk management",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Screen- & webdesign",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Software architecture",
+    "subskills": []
+  },
+  {
+    "hidden": true,
+    "name": "Others",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Styleguide creation",
+    "subskills": []
+  },
+  {
+    "hidden": true,
+    "name": "Product Engineering",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Technical concepting",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Technical project management",
+    "subskills": [
+      "HTML",
+      "JavaScript",
+      "Sling"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Typography - usage",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Typography - webfonts",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "User test preparation and moderation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Vector design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Windows operating system",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Guidance of juniors",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Axure",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Copywriting",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Heuristic evaluation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Data science",
+    "subskills": [
+      "JavaScript",
+      "Typescript"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Project management",
+    "subskills": [
+      "React",
+      "JavaScript"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Python",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Adobe Analytics",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "R",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "GitLab",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Vue.js",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "OpenText",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Machine Learning",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "AEM",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "React",
+    "subskills": [
+      "React",
+      "Angular",
+      "Git",
+      "HTML",
+      "JavaScript",
+      "CSS",
+      "Typescript",
+      "PHP",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "AWS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": ".NET",
+    "subskills": [
+      "JavaScript",
+      "PHP",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Scrum-master skills",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Responsive design",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "3D",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Accessibility",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Ant",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Cassandra",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Hadoop/HDFS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache HTTP Server",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache jMeter",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Kafka",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Karaf",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Solr",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Spark",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Apache Tomcat",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "AR",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Automotive industry",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Blockchain",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "C",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Camel",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Cinema 4D",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Coffeescript",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Compliance",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "CoreMedia",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Cyber Awareness",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Cyber Defense Security",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Czech",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Docker",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Drupal",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Dynatrace",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "E-Commerce",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Product Management",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Alexa",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Angular",
+    "subskills": [
+      "JavaScript"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "DB2",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Git",
+    "subskills": [
+      "HTML",
+      "JavaScript",
+      "CSS",
+      "jQuery",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "HTML",
+    "subskills": [
+      "JavaScript",
+      "CSS",
+      "jQuery",
+      "NodeJS",
+      "Sling",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "hybris",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "JavaScript",
+    "subskills": [
+      "CSS",
+      "Sling",
+      "Typescript",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "CSS",
+    "subskills": [
+      "jQuery",
+      "NodeJS",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Jenkins",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "jQuery",
+    "subskills": [
+      "PHP",
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "MongoDB",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "MS-SQL",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "MySQL",
+    "subskills": [
+      "PHP"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "NodeJS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Ruby on Rails",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Sling",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Typescript",
+    "subskills": [
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "PHP",
+    "subskills": [
+      "Java"
+    ]
+  },
+  {
+    "hidden": false,
+    "name": "Workshop moderation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "English",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Explorative DataAnalysis",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "eZ Systems",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Finance industry",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "French",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Google Design Sprint Facilitation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Google Search Appliance",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Hardware Security",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Healthcare industry",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Hibernate",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Hippo CMS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Italian",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "J2EE Applications",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "JBoss",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Jira",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "JPA",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "JSF",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "JUnit",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "LESS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Lucene",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Magento",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Maven",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "OSGi",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Password cracking",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Penetration Testing",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Phishing",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Publishing industry",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Realtime",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Recommender Algorithms",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Redaxo",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Retail industry",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Reverse Engineering",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "SAP Enterprise Portal",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Scala",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "SCSS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Security Assessment",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "SEO",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "shopify",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Shopware",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Sitecore",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Software Packaging",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Spanish",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Spring Framework",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "SPSS",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "SVN",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Telco industry",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Typo3",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Unity",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Unreal",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "VR",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "WebGL",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Webtrekk Analytics",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Wicket",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Wordpress",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Xtend",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "CloudFormation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Saltstack",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "C++",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Java",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "Workshop planning and moderation",
+    "subskills": []
+  },
+  {
+    "hidden": false,
+    "name": "UX-/Project Management",
+    "subskills": []
+  }
+]

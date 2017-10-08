@@ -1,4 +1,4 @@
-image: java:8-jdk
+image: openjdk:9-slim
 
 stages:
   - build
@@ -14,7 +14,6 @@ build:
   stage: build
   script:
     - ./mvnw clean package -e -U
-    - cat target/site/jacoco/index.html
   artifacts:
     paths:
       - target/skillwill.jar

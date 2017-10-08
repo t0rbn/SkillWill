@@ -134,7 +134,7 @@ public class SkillService {
     }
 
     try {
-      skillRepository.save(searchedSkills);
+      skillRepository.saveAll(searchedSkills);
     } catch (OptimisticLockingFailureException e)  {
       logger.error("Failed to register search for {} - optimistic locking error; will ignore search",
         searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.joining(", ")));
@@ -236,14 +236,14 @@ public class SkillService {
   private void updateInSuggestions(KnownSkill oldSkill, KnownSkill newSkill) {
     List<KnownSkill> containingSkills = skillRepository.findBySuggestion(oldSkill.getName());
     containingSkills.forEach(s -> s.renameSuggestion(oldSkill.getName(), newSkill.getName()));
-    skillRepository.save(containingSkills);
+    skillRepository.saveAll(containingSkills);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   private void updateInSubskills(KnownSkill oldSkill, KnownSkill newSkill) {
     List<KnownSkill> containingSkills = skillRepository.findBySubskillName(oldSkill.getName());
     containingSkills.forEach(s -> s.renameSubSkillName(oldSkill.getName(), newSkill.getName()));
-    skillRepository.save(containingSkills);
+    skillRepository.saveAll(containingSkills);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -255,7 +255,7 @@ public class SkillService {
       PersonalSkill oldPersonalSkill = p.getSkill(oldSkill.getName());
       p.addUpdateSkill(newSkill.getName(), oldPersonalSkill.getSkillLevel(), oldPersonalSkill.getWillLevel(), newSkill.isHidden(), oldPersonalSkill.isMentor());
     });
-    personRepository.save(persons);
+    personRepository.saveAll(persons);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

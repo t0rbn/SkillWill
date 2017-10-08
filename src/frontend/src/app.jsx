@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import styles from './styles.less'
 import React from 'react'
+import IconSymbols from './components/icon/icon-symbols.jsx'
 import Header from './components/header/header.jsx'
 import Footer from './components/footer/footer.jsx'
 import UserSearch from './components/search/user-search.jsx'
@@ -12,6 +13,7 @@ class App extends React.Component {
 		const { isResultsLoaded, isSkillAnimated } = this.props
 		return (
 			<div className={isResultsLoaded ? 'results-loaded' : ''}>
+				<IconSymbols />
 				<Header />
 				<div className="search">
 					<div className="heading">

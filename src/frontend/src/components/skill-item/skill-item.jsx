@@ -1,4 +1,5 @@
 import React from 'react'
+import Icon from '../icon/icon.jsx'
 import { connect } from 'react-redux'
 
 class SkillItemEditor extends React.Component {
@@ -47,8 +48,9 @@ class SkillItemEditor extends React.Component {
 				/>
 				<div
 					className="skill-item-editor__delete delete"
-					onClick={() => deleteSkill(name)}
-				/>
+					onClick={() => deleteSkill(name)}>
+					<Icon name="cross" size={17} />
+				</div>
 			</div>
 		)
 	}
@@ -168,20 +170,21 @@ class SkillItem extends React.Component {
 							<div className={`willBar levelBar levelBar--${willLevel}`} />
 						</div>
 						{(isSkillEditActive || singleSkillEditActive) && (
-								<SkillItemEditor
-									editSkill={this.editSkill}
-									deleteSkill={this.deleteSkill}
-									name={name}
-									skillLevel={skillLevel}
-									willLevel={willLevel}
-									isMentor={isMentor}
-								/>
-							)}
+							<SkillItemEditor
+								editSkill={this.editSkill}
+								deleteSkill={this.deleteSkill}
+								name={name}
+								skillLevel={skillLevel}
+								willLevel={willLevel}
+								isMentor={isMentor}
+							/>
+						)}
 						{hasZeroLevel && (
 							<div
 								className="skill-item-editor__add add"
-								onClick={() => this.addSkill(name)}
-							/>
+								onClick={() => this.addSkill(name)}>
+								<Icon name="plus" size={17} />
+							</div>
 						)}
 					</div>
 				</li>

@@ -3,26 +3,19 @@
 .tooltip {
   position: relative;
   display: none;
-  width: 18px;
-  height: 19px;
-  margin-left: 15px;
-  margin-bottom: -4px;
+  margin-left: 8px;
   cursor: help;
-  background-repeat: no-repeat;
-  background-size: contain;
 
   @media (min-width: @tablet-portrait-up) {
     display: inline-block;
   }
 
   &--skill {
-    background-image: data-uri('@{image-path}/tooltip-blue.svg');
-
     .tooltip-content {
-      transform: translateX(-45%);
+      transform: translateX(-43%);
       &::before,
       &::after {
-        left: 45%;
+        left: 43%;
       }
     }
 
@@ -33,13 +26,11 @@
   }
 
   &--will {
-    background-image: data-uri('@{image-path}/tooltip-green.svg');
-
     .tooltip-content {
-      transform: translateX(-76%);
+      transform: translateX(-74%);
       &::before,
       &::after {
-        left: 76%;
+        left: 74%;
       }
     }
 

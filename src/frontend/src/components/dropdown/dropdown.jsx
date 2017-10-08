@@ -1,4 +1,5 @@
 import React from 'react'
+import Icon from '../icon/icon.jsx'
 
 export default class Dropdown extends React.Component {
 	constructor(props) {
@@ -41,6 +42,7 @@ export default class Dropdown extends React.Component {
 				<select onChange={this.handleDropdownChange} value={dropdownLabel}>
 					{this.renderOptions()}
 				</select>
+				<Icon className="dropdown-icon" name="chevron" size={13} />
 			</div>
 		)
 	}

@@ -1,6 +1,7 @@
 import React from 'react'
 import Cookies from 'react-cookie'
 import { Link } from 'react-router'
+import Icon from '../icon/icon.jsx'
 
 export default class Header extends React.Component {
 	constructor(props) {
@@ -52,7 +53,9 @@ export default class Header extends React.Component {
 		return (
 			<header className="mod-navigation-container">
 				<div className="mod-navigation">
-					<Link className="s2-logo" to="/" />
+					<Link className="s2-logo" to="/">
+						<Icon name="s2-logo" width={131} height={30} />
+					</Link>
 					<Link className="sw-title" to="/">
 						skill/will
 					</Link>

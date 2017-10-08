@@ -1,5 +1,6 @@
 import './tooltip.less'
 import React from 'react'
+import Icon from '../icon/icon.jsx'
 
 const className = 'tooltip'
 
@@ -11,6 +12,7 @@ class Tooltip extends React.Component {
 		const { variant } = this.props
 		return (
 			<div className={`${className} ${className}--${variant}`}>
+				<Icon name={`${variant}-tooltip`} size={19} />
 				<div className={`${className}-content`}>
 					{variant === 'skill' && (
 						<div className={`${className}-legend-wrapper`}>

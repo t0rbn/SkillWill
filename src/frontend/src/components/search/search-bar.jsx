@@ -1,4 +1,5 @@
 import React from 'react'
+import Icon from '../icon/icon.jsx'
 
 export default class SearchBar extends React.Component {
 	constructor(props) {
@@ -26,11 +27,11 @@ export default class SearchBar extends React.Component {
 	deleteFilter(event, deleteItem) {
 		const { searchTerms } = this.props
 		const { currentValue } = this.state
-		const { key, type, target } = event
+		const { key, type, currentTarget } = event
 		const isBackspaceKey =
 			currentValue === '' && key === 'Backspace' && searchTerms !== ''
 		const isMouseClick =
-			type === 'click' && target.dataset.filter === deleteItem
+			type === 'click' && currentTarget.dataset.filter === deleteItem
 
 		if (isBackspaceKey || isMouseClick) {
 			this.props.onInputDelete(deleteItem)
@@ -76,7 +77,7 @@ export default class SearchBar extends React.Component {
 											data-filter={searchTerm}
 											key={`delete_${searchTerm}`}
 											onClick={event => this.deleteFilter(event, searchTerm)}>
-											&#9747;
+											<Icon name="cross" size={12} />
 										</a>
 									</div>
 								)
@@ -97,7 +98,9 @@ export default class SearchBar extends React.Component {
 								}}
 							/>
 						</div>
-						<button type="submit" className="submit-search-button" />
+						<button type="submit" className="submit-search-button">
+							<Icon name="search" size={24} />
+						</button>
 					</div>
 				</form>
 			</div>

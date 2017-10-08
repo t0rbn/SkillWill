@@ -29,14 +29,12 @@
 
   .close-btn {
     display: block;
-    height: 22px;
-    width: 22px;
-    content:data-uri("@{image-path}/close.svg");
     position: absolute;
     top: @navigation-height;
     transform: translateX(((@layer-width / 2) - @l-stack));
     right: 50%;
     z-index: 1000;
+    color: @s2-red;
     cursor: pointer;
 
     &:hover {

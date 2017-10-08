@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
+import Icon from '../icon/icon.jsx'
 import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
 import { connect } from 'react-redux'
 import { clearUserData } from '../../actions'
@@ -13,7 +14,7 @@ class BasicProfile extends React.Component {
 			shouldShowAllSkills: this.props.shouldShowAllSkills,
 			showMoreLabel: 'More',
 			editLayerAt: null,
-			numberOfSkillsToShow: 6,
+			numberOfSkillsToShow: 10,
 			isSkillEditActive: false,
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
@@ -27,6 +28,9 @@ class BasicProfile extends React.Component {
 	}
 
 	componentWillMount() {
+		this.state.shouldShowAllSkills &&
+			this.setState({ numberOfSkillsToShow: Infinity })
+
 		this.setState({
 			topWills: this.sortSkills('willLevel', 'desc'),
 			sortedSkills: this.sortSkills('skillLevel', 'desc'),
@@ -38,6 +42,12 @@ class BasicProfile extends React.Component {
 			'animationend',
 			this.removeAnimationClass
 		)
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.state.shouldShowAllSkills &&
+			this.setState({ numberOfSkillsToShow: Infinity })
+
 	}
 
 	componentWillUnmount() {
@@ -57,7 +67,7 @@ class BasicProfile extends React.Component {
 		const { shouldShowAllSkills, numberOfSkillsToShow } = this.state
 		this.setState({
 			shouldShowAllSkills: !shouldShowAllSkills,
-			numberOfSkillsToShow: numberOfSkillsToShow === 6 ? Infinity : 6,
+			numberOfSkillsToShow: numberOfSkillsToShow === 10 ? Infinity : 10,
 		})
 		e.target.classList.toggle('open')
 	}
@@ -167,14 +177,7 @@ class BasicProfile extends React.Component {
 					{skills
 						.filter(skill => searchedSkills.indexOf(skill.name) !== -1)
 						.map((skill, i) => {
-							return (
-								<SkillItem
-									key={i}
-									skill={skill}
-									editSkill={this.props.editSkill}
-									deleteSkill={this.props.deleteSkill}
-								/>
-							)
+							return <SkillItem key={i} skill={skill} />
 						})}
 				</ul>
 			</li>
@@ -186,7 +189,12 @@ class BasicProfile extends React.Component {
 			user: { id, firstName, lastName, title, location, mail, phone },
 		} = this.props
 
-		const { numberOfSkillsToShow, sortedSkills, topWills } = this.state
+		const {
+			numberOfSkillsToShow,
+			sortedSkills,
+			topWills,
+			shouldShowAllSkills,
+		} = this.state
 
 		const regex = /.*(?=@)/i // matches everything from the email address before the @
 		const slackName = mail.match(regex)
@@ -211,17 +219,21 @@ class BasicProfile extends React.Component {
 						{location} / TEL. {phone}
 					</p>
 					<div className="social">
-						<Link className="mail" href={`mailto:${mail}`} target="_blank" />
+						<Link className="mail" href={`mailto:${mail}`} target="_blank">
+							<Icon name="mail" size={30} />
+						</Link>
 						<Link
 							className="slack"
 							href={`https://sinnerschrader.slack.com/messages/@${slackName}`}
-							target="_blank"
-						/>
+							target="_blank">
+							<Icon name="slack" size={30} />
+						</Link>
 						<Link
 							className="move"
 							href={`https://move.sinnerschrader.com/?id=${id}`}
-							target="_blank"
-						/>
+							target="_blank">
+							<Icon name="location" size={30} />
+						</Link>
 					</div>
 				</li>
 
@@ -264,7 +276,12 @@ class BasicProfile extends React.Component {
 
 					{this.renderSkills(sortedSkills, numberOfSkillsToShow)}
 
-					<a className="show-more-link" onClick={this.showAllSkills} href="" />
+					{!shouldShowAllSkills && (
+						<a className="show-more-link" onClick={this.showAllSkills}>
+							More
+							<Icon className="show-more-link-icon" name="chevron" size={20} />
+						</a>
+					)}
 				</li>
 			</ul>
 		)

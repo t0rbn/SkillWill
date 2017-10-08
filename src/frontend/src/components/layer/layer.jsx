@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
 import { exitSkillsEditMode } from '../../actions'
+import Icon from '../icon/icon.jsx'
 import { connect } from 'react-redux'
 
 class Layer extends React.Component {
@@ -32,7 +33,9 @@ class Layer extends React.Component {
 		return (
 			<div className="layer-container">
 				<Link onClick={this.handleClose} className="close-layer" />
-				<Link onClick={this.handleClose} className="close-btn" />
+				<Link onClick={this.handleClose} className="close-btn">
+					<Icon name="cross" size={22} />
+				</Link>
 				<div className="layer">{this.props.children}</div>
 			</div>
 		)

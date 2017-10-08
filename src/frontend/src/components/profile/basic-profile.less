@@ -53,7 +53,8 @@
       line-height: @m-base-font-size;
       font-weight: 300;
     }
-    .department, .location {
+    .department,
+    .location {
       display: block;
       padding: @xxs-stack 0;
       font-size: @m-base-font-size;
@@ -71,35 +72,9 @@
     .slack {
       display: inline-block;
       margin: @l-inline @s-inline 0;
-      vertical-align: middle;
+      color: @s2-red;
       &:hover {
-        filter: grayscale(1);
-      }
-    }
-    .mail {
-      &::before {
-        content: data-uri("@{image-path}/mail.svg");
-        height: 1px;
-        width: 35px;
-        display: inline-block;
-        fill: @s2-red;
-        stroke: @s2-red;
-      }
-    }
-    .slack {
-      &::before {
-        content: data-uri("@{image-path}/chat.svg");
-        height: 1px;
-        width: 37px;
-        display: inline-block;
-      }
-    }
-    .move {
-      &::before {
-        content: data-uri("@{image-path}/location.svg");
-        height: 1px;
-        width: 27px;
-        display: inline-block;
+        color: @s2-black;
       }
     }
   }
@@ -125,20 +100,14 @@
     margin: @xl-stack auto;
     text-transform: capitalize;
     position: relative;
-    &::before {
-      position: absolute;
-      width: 19px;
-      height: 11px;
-      top: 22px;
-      left: 50%;
-      transform: translateX(calc(-50% - 3px));
-      content: "";
-      background: data-uri("@{image-path}/chevron-down.svg");
-      background-size: 100% 100%;
+    cursor: pointer;
+
+    &-icon {
+      display: block;
+      margin: 0 auto;
+      transform: rotate(270deg);
     }
-    &::after {
-      content: @more-label;
-    }
+
     &.open {
       display: none;
     }
@@ -163,7 +132,7 @@
       padding: @xs-stack 0;
     }
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       width: 0;
       height: 0;
@@ -181,29 +150,19 @@
       cursor: pointer;
     }
   }
-  .edit {
-    background: data-uri("@{image-path}/edit.svg");
-  }
+
   .add,
   .delete {
     &:hover {
       filter: grayscale(1);
     }
   }
-  .add {
-    background: data-uri("@{image-path}/cross-red.svg");
-  }
-  .delete {
-    background: data-uri("@{image-path}/delete.svg");
-  }
+
   .add,
   .edit,
   .delete {
     display: inline-block;
-    background-size: contain;
-    background-repeat: no-repeat;
-    height: 17px;
-    width: 17px;
+    color: @s2-red;
     cursor: pointer;
   }
   @media (min-width: @tablet-portrait-up) {
@@ -253,6 +212,12 @@
   border-top: 1px solid @s2-grey2;
   background-color: @s2-white;
 
+  .icon {
+    position: relative;
+    bottom: 2px;
+    margin-right: 10px;
+  }
+
   @media (min-width: 1170px) {
     display: inline-block;
     width: auto;
@@ -288,61 +253,31 @@
 }
 .add-skill-btn {
   &::before {
-    content: "";
-    background: data-uri("@{image-path}/cross-red.svg");
-    background-size: 100% 100%;
-    width: 18px;
-    height: 18px;
-    position: absolute;
-    left: -5px;
-    top: 4px;
-
-    .profile-actions[data-skillsearch="true"] & {
-      background: data-uri("@{image-path}/check-red.svg");
+    .profile-actions[data-skillsearch='true'] & {
+      background: data-uri('@{image-path}/check-red.svg');
       height: 18px;
       width: 20px;
     }
   }
 
-  .profile-actions[data-skilledit="true"] & {
+  .profile-actions[data-skilledit='true'] & {
     filter: grayscale(1);
     opacity: 0.5;
     cursor: default;
   }
 }
+
 .edit-skill-btn {
   &::before {
-    content: "";
-    background: data-uri("@{image-path}/edit-red.svg");
-    background-size: 100% 100%;
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    left: -5px;
-    top: 3px;
-
-    .profile-actions[data-skilledit="true"] & {
-      background: data-uri("@{image-path}/check-red.svg");
+    .profile-actions[data-skilledit='true'] & {
+      background: data-uri('@{image-path}/check-red.svg');
       height: 18px;
     }
   }
 
-  .profile-actions[data-skillsearch="true"] & {
+  .profile-actions[data-skillsearch='true'] & {
     filter: grayscale(1);
     opacity: 0.5;
     cursor: default;
-  }
-}
-
-.back-btn {
-  position: fixed;
-  top: @4xl-stack;
-  cursor: pointer;
-  &::after {
-    content: data-uri("@{image-path}/back.svg");
-    height: 50px;
-    width: 50px;
-    display: inline-block;
-    transform: translateX(-@xl-inline);
   }
 }

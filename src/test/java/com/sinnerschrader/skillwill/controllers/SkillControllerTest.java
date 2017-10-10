@@ -89,7 +89,7 @@ public class SkillControllerTest {
 
   @Test
   public void testGetSkillsValidQuery() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("COB", true);
+    ResponseEntity<String> res = skillController.getSkills("COB", true, -1);
     assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONArray resJSON = new JSONArray(res.getBody());
     assertEquals(1, resJSON.length());
@@ -98,7 +98,7 @@ public class SkillControllerTest {
 
   @Test
   public void testGetSkillsEmptyQuery() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("", true);
+    ResponseEntity<String> res = skillController.getSkills("", true, -1);
     assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONArray resJSON = new JSONArray(res.getBody());
     assertEquals(2, resJSON.length());
@@ -108,7 +108,7 @@ public class SkillControllerTest {
 
   @Test
   public void testGetSkillsUnknownSkill() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("glibberish", true);
+    ResponseEntity<String> res = skillController.getSkills("glibberish", true, -1);
     assertEquals(HttpStatus.OK, res.getStatusCode());
     JSONArray resJSON = new JSONArray(res.getBody());
     assertEquals(0, resJSON.length());
@@ -116,11 +116,35 @@ public class SkillControllerTest {
 
   @Test
   public void testGetSkillsHidden() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("hidden", true);
+    ResponseEntity<String> res = skillController.getSkills("hidden", true, -1);
     assertEquals(0, new JSONArray(res.getBody()).length());
-    res = skillController.getSkills("hidden", false);
+    res = skillController.getSkills("hidden", false, -1);
     assertEquals(1, new JSONArray(res.getBody()).length());
     assertEquals("hidden skill", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+  }
+
+  @Test
+  public void testGetSkillsCountNegative() throws JSONException {
+    ResponseEntity<String> res = skillController.getSkills("", true, -1);
+    assertEquals(2, new JSONArray(res.getBody()).length());
+  }
+
+  @Test
+  public void testGetSkillsCoutZero() throws JSONException {
+    ResponseEntity<String> res = skillController.getSkills("", true, 0);
+    assertEquals(0, new JSONArray(res.getBody()).length());
+  }
+
+  @Test
+  public void testGetSkillsCountPositive() throws JSONException {
+    ResponseEntity<String> res = skillController.getSkills("", true, 1);
+    assertEquals(1, new JSONArray(res.getBody()).length());
+  }
+
+  @Test
+  public void testGetSkillsCountHigherThanFound() throws JSONException {
+    ResponseEntity<String> res = skillController.getSkills("", true, 42);
+    assertEquals(2, new JSONArray(res.getBody()).length());
   }
 
   @Test
@@ -195,7 +219,7 @@ public class SkillControllerTest {
   @Test
   public void testAddSkillValid() throws JSONException {
     assertEquals(HttpStatus.OK, skillController.addSkill("foo", false, "", "adminsessionkey").getStatusCode());
-    assertEquals("foo", new JSONArray(skillController.getSkills("fo", true).getBody()).getJSONObject(0).getString("name"));
+    assertEquals("foo", new JSONArray(skillController.getSkills("fo", true, -1).getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test

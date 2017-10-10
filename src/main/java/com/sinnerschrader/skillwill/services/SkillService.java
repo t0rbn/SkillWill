@@ -56,12 +56,13 @@ public class SkillService {
       skills = skills.stream().filter(s -> !s.isHidden()).collect(Collectors.toList());
     }
     skills.sort(new KnownSkillSuggestionComparator(input));
-    logger.debug("Successfully got {} autocompletions for : {}", skills.size(), input);
     return skills;
   }
 
-  public List<KnownSkill> getSkills(String search, boolean excludeHidden) {
-    return StringUtils.isEmpty(search) ? getAllSkills(excludeHidden) : getAutocompleteSkills(search, excludeHidden);
+  public List<KnownSkill> getSkills(String search, boolean excludeHidden, int count) {
+    // count value of -1 means no limiting, so no Integer wrapper is needed,
+    List<KnownSkill> found = StringUtils.isEmpty(search) ? getAllSkills(excludeHidden) : getAutocompleteSkills(search, excludeHidden);
+    return count < 0 ? found : found.stream().limit(count).collect(Collectors.toList());
   }
 
   public KnownSkill getSkillByName(String name) {

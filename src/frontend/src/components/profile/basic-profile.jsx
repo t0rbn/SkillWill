@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
+import TopWills from '../profile/top-wills'
 import Icon from '../icon/icon.jsx'
 import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
 import { connect } from 'react-redux'
@@ -20,10 +21,7 @@ class BasicProfile extends React.Component {
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.getAvatarColor = this.getAvatarColor.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
-		this.renderTopWills = this.renderTopWills.bind(this)
-		this.renderSkills = this.renderSkills.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
-		this.toggleSkillEdit = this.toggleSkillEdit.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
 	}
 
@@ -71,12 +69,6 @@ class BasicProfile extends React.Component {
 		e.target.classList.toggle('open')
 	}
 
-	toggleSkillEdit() {
-		this.setState({
-			isSkillEditActive: !this.state.isSkillEditActive,
-		})
-	}
-
 	getAvatarColor() {
 		const colors = ['blue', 'red', 'green']
 		let index = this.props.user.id
@@ -120,47 +112,6 @@ class BasicProfile extends React.Component {
 	}
 	sortDescending(a, b) {
 		return b - a
-	}
-
-	renderTopWills(skills) {
-		return (
-			<li className="top-wills skill-listing">
-				<div className="listing-header">Top wills</div>
-				<ul className="skills-list">
-					{skills.map((skill, i) => {
-						if (i < 5 && skill['willLevel'] > 1) {
-							return (
-								<SkillItem
-									editSkill={this.props.editSkill}
-									deleteSkill={this.props.deleteSkill}
-									skill={skill}
-									key={skill.name}
-								/>
-							)
-						}
-					})}
-				</ul>
-			</li>
-		)
-	}
-
-	renderSkills(skills, numberOfSkillsToShow) {
-		return (
-			<ul className="skills-list">
-				{skills.map((skill, i) => {
-					if (i < numberOfSkillsToShow) {
-						return (
-							<SkillItem
-								editSkill={this.props.editSkill}
-								deleteSkill={this.props.deleteSkill}
-								skill={skill}
-								key={skill.name}
-							/>
-						)
-					}
-				})}
-			</ul>
-		)
 	}
 
 	renderSearchedSkills() {
@@ -238,7 +189,7 @@ class BasicProfile extends React.Component {
 
 				{this.renderSearchedSkills()}
 
-				{this.renderTopWills(topWills)}
+				<TopWills wills={topWills} />
 
 				<li className="all-skills skill-listing">
 					<div className="listing-header">
@@ -273,7 +224,20 @@ class BasicProfile extends React.Component {
 						</SkillLegend>
 					</div>
 
-					{this.renderSkills(sortedSkills, numberOfSkillsToShow)}
+					<ul className="skills-list">
+						{sortedSkills.map((skill, i) => {
+							if (i < numberOfSkillsToShow) {
+								return (
+									<SkillItem
+										editSkill={this.props.editSkill}
+										deleteSkill={this.props.deleteSkill}
+										skill={skill}
+										key={skill.name}
+									/>
+								)
+							}
+						})}
+					</ul>
 
 					{!shouldShowAllSkills && (
 						<a className="show-more-link" onClick={this.showAllSkills}>

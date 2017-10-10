@@ -83,12 +83,13 @@ class MyProfile extends React.Component {
 		this.setState({
 			skillEditOpen: !this.state.skillEditOpen,
 		})
+		document.body.classList.toggle('is-edit-mode')
 	}
 
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
 		const { userId, sessionKey } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
-      alert('not allowed') // eslint-disable-line
+			alert('Please select a value greater than 0') // eslint-disable-line
 			return
 		}
 		let postData = new FormData()

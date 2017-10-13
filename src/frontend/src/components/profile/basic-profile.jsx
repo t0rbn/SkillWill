@@ -44,10 +44,9 @@ class BasicProfile extends React.Component {
 		)
 	}
 
-	componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps() {
 		this.state.shouldShowAllSkills &&
 			this.setState({ numberOfSkillsToShow: Infinity })
-
 	}
 
 	componentWillUnmount() {
@@ -98,12 +97,12 @@ class BasicProfile extends React.Component {
 			skills.sort((a, b) => {
 				if (order === 'asc') {
 					return a[criterion].toString().toUpperCase() <
-					b[criterion].toString().toUpperCase()
+						b[criterion].toString().toUpperCase()
 						? -1
 						: 1
 				} else {
 					return a[criterion].toString().toUpperCase() <
-					b[criterion].toString().toUpperCase()
+						b[criterion].toString().toUpperCase()
 						? 1
 						: -1
 				}

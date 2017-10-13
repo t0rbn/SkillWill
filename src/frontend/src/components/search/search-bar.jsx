@@ -1,10 +1,13 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Icon from '../icon/icon.jsx'
+import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 
-export default class SearchBar extends React.Component {
+export class SearchBar extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
+			searchTerms: [],
 			currentValue: '',
 		}
 		this.getInputValue = this.getInputValue.bind(this)
@@ -25,8 +28,7 @@ export default class SearchBar extends React.Component {
 	}
 
 	deleteFilter(event, deleteItem) {
-		const { searchTerms } = this.props
-		const { currentValue } = this.state
+		const { currentValue, searchTerms } = this.state
 		const { key, type, currentTarget } = event
 		const isBackspaceKey =
 			currentValue === '' && key === 'Backspace' && searchTerms !== ''
@@ -35,29 +37,45 @@ export default class SearchBar extends React.Component {
 
 		if (isBackspaceKey || isMouseClick) {
 			this.props.onInputDelete(deleteItem)
+			// remove item from search array
+			const searchSet = new Set(searchTerms)
+			searchSet.delete(deleteItem)
+			this.setState({ searchTerms: [...searchSet] })
 		}
 	}
 
 	handleSubmit(event) {
 		event && event.preventDefault()
 		const regex = new RegExp(/\s*,+\s*/, 'g')
-		const currentValue = this.state.currentValue
+		const filteredCurrentValue = this.state.currentValue
 			.trim()
 			.split(regex)
 			.filter(element => element)
-		if (currentValue) {
-			this.props.onInputChange(currentValue)
+		if (filteredCurrentValue.length > 0 || this.props.mountWithResults) {
+			this.props.onInputChange(filteredCurrentValue)
 		}
 		this.setState({
 			currentValue: '',
 		})
 	}
 
-	handleSuggestionSelected(name) {
-		this.setState({
-			searchTerms: this.state.searchTerms.concat(name),
-			currentValue: '',
-		})
+	handleSuggestionSelected(suggestion) {
+		const { searchTerms } = this.props
+
+		if (!searchTerms.includes(suggestion)) {
+			this.setState(
+				prevState => {
+					return {
+						searchTerms: [...prevState.searchTerms, suggestion],
+						currentValue: suggestion,
+					}
+				},
+				() => this.handleSubmit()
+			)
+		} else {
+			this.setState({ currentValue: '' })
+		}
+		this.input.focus()
 	}
 
 	render() {
@@ -67,7 +85,6 @@ export default class SearchBar extends React.Component {
 				<form onSubmit={this.handleSubmit} name="SearchBar" autoComplete="off">
 					<div className="search-container">
 						<div className="input-container">
-							{/*display entered searchTerms in front of the input field*/}
 							{searchTerms.map(searchTerm => {
 								return (
 									<div className="search-term" key={searchTerm}>
@@ -85,6 +102,7 @@ export default class SearchBar extends React.Component {
 							<input
 								name="SearchInput"
 								autoComplete="off"
+								required="true"
 								spellCheck="false"
 								placeholder="Search for skills"
 								type="search"
@@ -98,12 +116,30 @@ export default class SearchBar extends React.Component {
 								}}
 							/>
 						</div>
-						<button type="submit" className="submit-search-button">
+						<button
+							type="submit"
+							className={`submit-search-button ${this.state.currentValue === ''
+								? 'submit-search-button--faded'
+								: ''}`}>
 							<Icon name="search" size={24} />
 						</button>
 					</div>
+					<SearchSuggestions
+						variant={this.props.variant}
+						searchTerms={this.state.searchTerms}
+						currentValue={this.state.currentValue}
+						handleSuggestionSelected={this.handleSuggestionSelected}
+					/>
 				</form>
 			</div>
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	return {
+		skillSearchTerms: state.searchTerms,
+	}
+}
+
+export default connect(mapStateToProps)(SearchBar)

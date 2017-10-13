@@ -37,13 +37,11 @@ class UserSearch extends React.Component {
 					options={locationFilterOptions}
 				/>
 				<SearchBar
+					variant="user"
 					onInputChange={this.handleSearchBarInput}
 					onInputDelete={this.handleSearchBarDelete}
-					searchTerms={searchTerms}>
-					{/*<SearchSuggestions
-						searchTerms={searchItems}
-						noResults={results.length === 0} />*/}
-				</SearchBar>
+					searchTerms={searchTerms}
+				/>
 			</div>
 		)
 	}

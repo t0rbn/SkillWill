@@ -37,6 +37,7 @@ class SkillSearch extends React.Component {
 					<p className="subtitle">Add new skill</p>
 					<p className="search-description">What skills do you have?</p>
 					<SearchBar
+						variant="skill"
 						mountWithResults
 						onInputChange={this.handleSearchBarInput}
 						onInputDelete={this.handleSearchBarDelete}

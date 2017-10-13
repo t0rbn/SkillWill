@@ -74,12 +74,12 @@ class SkillEditor extends React.Component {
 					</ul>
 				</div>
 				{searchTerms.length > 0 &&
-				noUserSkills.length === 0 && (
-					<TicketNotice
-						title={`Sorry, there isn't any "${searchTerms}" skill you can add...`}
-						subtitle="Submit your suggestion!"
-					/>
-				)}
+					noUserSkills.length === 0 && (
+						<TicketNotice
+							title={`Sorry, there isn't any "${searchTerms}" skill you can add...`}
+							subtitle="Submit your suggestion!"
+						/>
+					)}
 			</div>
 		)
 	}

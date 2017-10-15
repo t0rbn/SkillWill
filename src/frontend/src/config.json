@@ -43,5 +43,9 @@
       "value": "Prag",
       "display": "Prag"
     }
-  ]
+  ],
+  "suggestions": {
+    "count": 5,
+    "autoCompleteDelay": 250
+  }
 }

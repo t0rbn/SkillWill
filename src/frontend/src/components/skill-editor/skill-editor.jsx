@@ -45,11 +45,14 @@ class SkillEditor extends React.Component {
 	render() {
 		const { handleEdit, handleDelete, searchTerms } = this.props
 		const { noUserSkills } = this.state
+		const noUserSkillsSorted = noUserSkills.sort((skillA, skillB) =>
+			skillA.name.localeCompare(skillB.name)
+		)
 
 		return (
 			<div className="skill-editor">
 				<div className="skill-listing">
-					{noUserSkills.length > 0 && (
+					{noUserSkillsSorted.length > 0 && (
 						<div className="listing-header">
 							<SkillLegend>
 								<SkillLegendItem title="Name" wide />
@@ -61,7 +64,7 @@ class SkillEditor extends React.Component {
 						</div>
 					)}
 					<ul className="skills-list">
-						{noUserSkills.map((skill, i) => {
+						{noUserSkillsSorted.map((skill, i) => {
 							return (
 								<SkillItem
 									skill={skill}

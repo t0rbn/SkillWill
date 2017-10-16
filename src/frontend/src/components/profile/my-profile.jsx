@@ -110,7 +110,9 @@ class MyProfile extends React.Component {
 	deleteSkill(skill) {
 		const { userId, sessionKey } = this.state
 		const options = { method: 'DELETE', credentials: 'same-origin' }
-		const requestURL = `${apiServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${skill}`
+		const requestURL = `${apiServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${encodeURIComponent(
+			skill
+		)}`
 		fetch(requestURL, options)
 			.then(res => {
 				if (res.status === 403) {

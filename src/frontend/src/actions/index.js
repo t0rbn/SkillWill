@@ -50,7 +50,9 @@ export function setSortFilter(criterion) {
 
 export const FETCH_RESULTS = 'FETCH_RESULTS'
 export function fetchResults(searchTerms) {
-	const requestURL = `${apiServer}/users?skills=${searchTerms}`
+	const requestURL = `${apiServer}/users?skills=${encodeURIComponent(
+		searchTerms
+	)}`
 	const options = {
 		credentials: 'same-origin',
 	}
@@ -92,7 +94,9 @@ export function deleteSkillSearch(searchTerm) {
 
 export const FETCH_SKILLS = 'FETCH_SKILLS'
 export function fetchSkills(searchTerm) {
-	const requestURL = `${apiServer}/skills?search=${searchTerm}`
+	const requestURL = `${apiServer}/skills?search=${encodeURIComponent(
+		searchTerm
+	)}`
 	const options = {
 		credentials: 'same-origin',
 	}

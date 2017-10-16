@@ -54,10 +54,11 @@ export class SearchBar extends React.Component {
 		if (filteredCurrentValue.length > 0 || this.props.mountWithResults) {
 			this.props.onInputChange(filteredCurrentValue)
 		}
-		filteredCurrentValue[0] && this.setState({
-			searchTerms: [...this.state.searchTerms, filteredCurrentValue[0]],
-			currentValue: '',
-		})
+		filteredCurrentValue[0] &&
+			this.setState({
+				searchTerms: [...this.state.searchTerms, filteredCurrentValue[0]],
+				currentValue: '',
+			})
 	}
 
 	handleSuggestionSelected(suggestion) {

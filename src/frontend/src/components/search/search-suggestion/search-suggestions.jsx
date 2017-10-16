@@ -9,8 +9,8 @@ export default class SearchSuggestions extends React.Component {
 		this.state = {
 			results: [],
 			doAutoComplete: true,
-			autoCompleteTimeOut: undefined,
-			hint: ""
+			autoCompleteTimeOut: null,
+			hint: '',
 		}
 		this.getAutoCompletion = this.getAutoCompletion.bind(this)
 		this.getRecommendations = this.getRecommendations.bind(this)
@@ -27,18 +27,18 @@ export default class SearchSuggestions extends React.Component {
 	}
 
 	getResults(props) {
-		if (this.props == props) {
+		if (this.props === props) {
 			return
 		}
 
 		this.resetTimeOut()
 		const isCurrentValueSet = this.props.currentValue.length > 0
 
-		if (this.props.variant === "skill") {
+		if (this.props.variant === 'skill') {
 			this.setState({ doAutoComplete: true })
 
 			isCurrentValueSet
-				?	this.getAutoCompletion(this.props.currentValue)
+				? this.getAutoCompletion(this.props.currentValue)
 				: this.setState({ results: [] })
 
 			return
@@ -51,17 +51,26 @@ export default class SearchSuggestions extends React.Component {
 	}
 
 	getAutoCompletion(searchTerm) {
-		this.setState({ autoCompleteTimeOut: setTimeout(() => {
-			fetch(
-				`${apiServer}/skills?count=${config.suggestions.count}&search=${encodeURIComponent(searchTerm)}`,
-				{
-					credentials: 'same-origin',
-				}
-			)
-				.then(res => (res.status === 200 ? res.json() : []))
-				.then(data => this.setState({ results: data, autoCompleteTimeOut: null, hint: this.getHint() }))
-				.catch(err => console.log(err))
-		}, config.suggestions.autoCompleteDelay)})
+		this.setState({
+			autoCompleteTimeOut: setTimeout(() => {
+				fetch(
+					`${apiServer}/skills?count=${config.suggestions
+						.count}&search=${encodeURIComponent(searchTerm)}`,
+					{
+						credentials: 'same-origin',
+					}
+				)
+					.then(res => (res.status === 200 ? res.json() : []))
+					.then(data =>
+						this.setState({
+							results: data,
+							autoCompleteTimeOut: null,
+							hint: this.getHint(),
+						})
+					)
+					.catch(err => console.log(err))
+			}, config.suggestions.autoCompleteDelay),
+		})
 	}
 
 	resetTimeOut() {
@@ -73,7 +82,8 @@ export default class SearchSuggestions extends React.Component {
 	getRecommendations(searchTerms) {
 		const searchString = searchTerms.map(t => t.trim()).join(',')
 		fetch(
-			`${apiServer}/skills/next?count=${config.suggestions.count}&search=${encodeURIComponent(searchString)}`,
+			`${apiServer}/skills/next?count=${config.suggestions
+				.count}&search=${encodeURIComponent(searchString)}`,
 			{
 				credentials: 'same-origin',
 			}

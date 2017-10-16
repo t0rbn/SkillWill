@@ -89,7 +89,7 @@ class MyProfile extends React.Component {
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
 		const { userId, sessionKey } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
-			alert('Please select a value greater than 0') // eslint-disable-line
+      alert('Please select a value greater than 0') // eslint-disable-line
 			return
 		}
 		let postData = new FormData()

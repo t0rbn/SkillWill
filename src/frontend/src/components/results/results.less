@@ -53,6 +53,12 @@
     color: @s2-red;
     font-size: @xs-title-font-size;
     line-height: @xs-title-font-size;
+    padding: 0 7% 0 7%;
+    box-sizing: border-box;
+
+    @media (max-width: @tablet-portrait-up) {
+      line-height: 32px;
+    }
 
     .dropdown {
       margin-left: @l-inline;
@@ -84,11 +90,18 @@
   background-color: @s2-red;
   color: @s2-white;
   padding: @xl-stack 0;
+  @media (max-width: @tablet-portrait-up) {
+    padding: 0;
+    height: 10px;
+  }
 }
 .results-legend {
   text-transform: uppercase;
   display: flex;
   justify-content: flex-end;
+  @media (max-width: @tablet-portrait-up) {
+    display: none;
+  }
   .name {
     flex-basis: 30%;
   }
@@ -142,6 +155,10 @@
     display: flex;
     justify-content: space-between;
 
+    @media (max-width: @tablet-portrait-up) {
+      flex-direction: column;
+    }
+
     &:focus {
       outline: none;
     }
@@ -186,7 +203,11 @@
   .location {
     font-weight: 100;
     flex-basis: 15%;
-    padding: 0 @l-inline @s-inline @l-inline;
+    padding-bottom: @s-inline;
+
+    @media (min-width: @tablet-portrait-up) {
+      padding: 0 @l-inline @s-inline @l-inline;
+    }
   }
 
   .skills {

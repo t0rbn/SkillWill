@@ -33,10 +33,12 @@ class Layer extends React.Component {
 		return (
 			<div className="layer-container">
 				<Link onClick={this.handleClose} className="close-layer" />
-				<Link onClick={this.handleClose} className="close-btn">
-					<Icon name="cross" size={22} />
-				</Link>
-				<div className="layer">{this.props.children}</div>
+				<div className="layer">
+					<Link onClick={this.handleClose} className="close-btn">
+						<Icon name="cross" size={22} />
+					</Link>
+					{this.props.children}
+				</div>
 			</div>
 		)
 	}

@@ -30,9 +30,8 @@
   .close-btn {
     display: block;
     position: absolute;
-    top: @navigation-height;
-    transform: translateX(((@layer-width / 2) - @l-stack));
-    right: 50%;
+    top: @navigation-height/2;
+    right: @navigation-height/2;
     z-index: 1000;
     color: @s2-red;
     cursor: pointer;
@@ -79,17 +78,19 @@
 
 .layer {
   box-sizing: border-box;
-  margin: (@navigation-height/2) auto;
+  margin: 0;
   max-width: 100vw;
   padding: @l-stack @s-stack;
   background-color: @s2-white;
-  height: ~"calc(100vh - @{navigation-height})";
+  height: 100vh;
   overflow: auto;
   position: relative;
   z-index: 999;
 
   @media (min-width: @tablet-portrait-up) {
     max-width: @layer-width;
+    margin: (@navigation-height/2) auto;
+    height: ~"calc(100vh - @{navigation-height})";
     padding: @layer-padding;
 
     .my-profile-open & {

@@ -44,7 +44,7 @@ public class LoginService {
     // So a user does not need to create an account fist
     if (personRepo.findByIdIgnoreCase(username) == null) {
       try {
-        Person newPerson = new Person(username);
+        Person newPerson = new Person(username.toLowerCase());
         personRepo.insert(newPerson);
         ldapService.syncUser(newPerson);
         logger.info("Successfully created new user {}", username);

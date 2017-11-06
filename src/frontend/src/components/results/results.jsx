@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import config from '../../config.json'
 import User from '../user/user'
 import Dropdown from '../dropdown/dropdown.jsx'
@@ -23,7 +22,7 @@ class Results extends React.Component {
 	}
 
 	componentDidMount() {
-		ReactDOM.findDOMNode(this).addEventListener('animationend', () => {
+		this.node.addEventListener('animationend', () => {
 			if (this.props.isSkillAnimated) {
 				this.props.stopAnimating()
 			}
@@ -58,7 +57,7 @@ class Results extends React.Component {
 				locationFilter
 			)
 			return (
-				<div className={`results-container ${animated ? 'animateable' : ''}`}>
+				<div ref={(ref) => { this.node = ref }} className={`results-container ${animated ? 'animateable' : ''}`}>
 					<div className="counter">
 						{sortedUserList.length} results, sorted
 						<Dropdown
@@ -100,6 +99,7 @@ class Results extends React.Component {
 		} else if (!users) {
 			return (
 				<div
+					ref={(ref) => { this.node = ref }}
 					className="no-results-container-border"
 					data-isEmptyLabel={this.props.noResultsLabel}
 				/>
@@ -107,6 +107,7 @@ class Results extends React.Component {
 		} else {
 			return (
 				<div
+					ref={(ref) => { this.node = ref }}
 					className="no-results-container"
 					data-isEmptyLabel={this.props.noResultsLabel}>
 					<div className="container">

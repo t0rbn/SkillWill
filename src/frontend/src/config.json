@@ -1,6 +1,7 @@
 {
   "skillLegend": ["n/a", "Basic", "Intermediate", "Expert"],
   "willLegend": ["None whatsoever", "ok", "High", "Super high"],
+  "slackChannelUrl": "slack://channel?team=T02T629VC&id=C75606LMR",
   "directionFilterOptions": [{
       "value": "ascending",
       "display": "ascending"

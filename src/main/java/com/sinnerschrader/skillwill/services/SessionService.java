@@ -116,7 +116,7 @@ public class SessionService {
         .filter(Session::isExpired)
         .collect(Collectors.toList());
 
-    sessionRepo.delete(expiredSessions);
+    sessionRepo.deleteAll(expiredSessions);
   }
 
 }

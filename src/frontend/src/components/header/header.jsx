@@ -2,6 +2,7 @@ import React from 'react'
 import Cookies from 'react-cookie'
 import { Link } from 'react-router'
 import Icon from '../icon/icon.jsx'
+import config from '../../config.json'
 
 export default class Header extends React.Component {
 	constructor(props) {
@@ -61,6 +62,9 @@ export default class Header extends React.Component {
 					</Link>
 					<nav className="nav">
 						<ul className="nav-list">
+							<li className="nav-item">
+								<a className="nav-link" href={config.slackChannelUrl}>Slack channel</a>
+							</li>
 							<li className="nav-item">
 								<Link
 									className="nav-link nav-link--profile"

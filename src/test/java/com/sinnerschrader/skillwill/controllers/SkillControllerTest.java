@@ -1,5 +1,12 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.person.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
@@ -10,11 +17,12 @@ import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
 import java.io.IOException;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import org.json.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Integration test for SkillController
@@ -130,7 +135,7 @@ public class SkillControllerTest {
   }
 
   @Test
-  public void testGetSkillsCoutZero() throws JSONException {
+  public void testGetSkillsCountZero() throws JSONException {
     ResponseEntity<String> res = skillController.getSkills("", true, 0);
     assertEquals(0, new JSONArray(res.getBody()).length());
   }
@@ -256,23 +261,87 @@ public class SkillControllerTest {
 
   @Test
   public void testDeleteValid() throws JSONException {
-    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey", null).getStatusCode());
     assertEquals(0, new JSONArray(skillController.getNext("COBOL", 1).getBody()).length());
   }
 
   @Test
   public void testDeleteEmpty() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("", "adminsessionkey", null).getStatusCode());
   }
 
   @Test
   public void testDeleteUnknown() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("foo", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("foo", "adminsessionkey", null).getStatusCode());
   }
 
   @Test
   public void testDeleteUnprivilegedRole() {
-    assertEquals(HttpStatus.FORBIDDEN, skillController.deleteSkill("foo", "usersessionkey").getStatusCode());
+    assertEquals(HttpStatus.FORBIDDEN, skillController.deleteSkill("foo", "usersessionkey", null).getStatusCode());
+  }
+
+  @Test
+  public void testDeleteMigrateTargetNotFound() {
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("Java", "adminsessionkey", "Ramalamadingdong").getStatusCode());
+    assertNotNull(skillRepo.findByName("Java"));
+  }
+
+  @Test
+  public void testDeleteMigrateToSource() {
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.deleteSkill("Java", "adminsessionkey", "Java").getStatusCode());
+    assertNotNull(skillRepo.findByName("Java"));
+  }
+
+  @Test
+  public void testDeleteMigrate() {
+    Person aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    aUser.addUpdateSkill("Java", 1, 3, false, true);
+    personRepo.save(aUser);
+
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey", "COBOL").getStatusCode());
+    assertNull(skillRepo.findByName("Java"));
+
+    aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    assertEquals(1, aUser.getSkill("COBOL").getSkillLevel());
+    assertEquals(3, aUser.getSkill("COBOL").getWillLevel());
+    assertTrue(aUser.getSkill("COBOL").isMentor());
+    assertFalse(aUser.getSkill("COBOL").isHidden());
+    assertNull(aUser.getSkill("Java"));
+  }
+
+  @Test
+  public void testDeleteMigrateAlreadyHavingTarget() {
+    Person aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    aUser.addUpdateSkill("Java", 1, 3, false, true);
+    aUser.addUpdateSkill("COBOL", 2, 0, false, false);
+    personRepo.save(aUser);
+
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey", "COBOL").getStatusCode());
+    assertNull(skillRepo.findByName("Java"));
+
+    aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    assertEquals(2, aUser.getSkill("COBOL").getSkillLevel());
+    assertEquals(0, aUser.getSkill("COBOL").getWillLevel());
+    assertFalse(aUser.getSkill("COBOL").isMentor());
+    assertFalse(aUser.getSkill("COBOL").isHidden());
+    assertNull(aUser.getSkill("Java"));
+  }
+
+  @Test
+  public void testDeleteMigrateNoSkill() {
+    Person aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    aUser.addUpdateSkill("Java", 1, 3, false, true);
+    personRepo.save(aUser);
+
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("COBOL", "adminsessionkey", "Java").getStatusCode());
+    assertNull(skillRepo.findByName("COBOL"));
+
+    aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    assertEquals(1, aUser.getSkill("Java").getSkillLevel());
+    assertEquals(3, aUser.getSkill("Java").getWillLevel());
+    assertTrue(aUser.getSkill("Java").isMentor());
+    assertFalse(aUser.getSkill("Java").isHidden());
+    assertNull(aUser.getSkill("COBOL"));
   }
 
   @Test
@@ -439,7 +508,7 @@ public class SkillControllerTest {
   }
 
   @Test
-  public void testEditSkillunprivileged() {
+  public void testEditSkillUnprivileged() {
     assertEquals(HttpStatus.FORBIDDEN, skillController.updateSkill("Java", null, false, "Rama Lama, Ding Ding, Dong", "useressionkey").getStatusCode());
   }
 

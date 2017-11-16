@@ -2,11 +2,15 @@ package com.sinnerschrader.skillwill.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
+import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.unboundid.ldap.sdk.LDAPException;
 import java.io.IOException;
+import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -33,9 +37,15 @@ public class LoginControllerTest {
   @Autowired
   private EmbeddedLdap embeddedLdap;
 
+  @Autowired
+  private PersonRepository personRepository;
+
   @Before
   public void setUp() throws LDAPException, IOException {
     embeddedLdap.reset();
+
+    personRepository.deleteAll();
+    personRepository.insert(new Person("foobar"));
   }
 
   @Test
@@ -93,6 +103,22 @@ public class LoginControllerTest {
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(session, new JSONObject(res.getBody()).getString("sessionKey"));
     assertFalse(new JSONObject(res.getBody()).getBoolean("valid"));
+  }
+
+  @Test
+  public void testCreateNewUser() {
+    personRepository.deleteAll();
+    loginController.login("foobar", "fleischkrem");
+    assertNotNull(personRepository.findById("foobar"));
+  }
+
+  public void testCreateNewUserIgnoreCapitalization() {
+    personRepository.deleteAll();
+    assertEquals(HttpStatus.OK, loginController.login("fOObaR", "fleischkrem").getStatusCode());
+
+    Optional<Person> person = personRepository.findById("foobar");
+    assertTrue(person.isPresent());
+    assertEquals("foobar", person.get().getId());
   }
 
 }

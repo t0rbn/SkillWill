@@ -67,16 +67,13 @@ public class Person {
         .orElse(null);
   }
 
+  public boolean hasSkill(String skill) {
+    return this.getSkill(skill) != null;
+  }
+
   public PersonalSkill getSkillExcludeHidden(String name) {
     PersonalSkill skill = this.getSkill(name);
     return skill == null || skill.isHidden() ? null : skill;
-  }
-
-  public void deleteSkill(String name) {
-    PersonalSkill skill = getSkill(name);
-    if (skill != null) {
-      this.skills.remove(skill);
-    }
   }
 
   public PersonalLdapDetails getLdapDetails() {
@@ -102,7 +99,7 @@ public class Person {
     }
   }
 
-  public void removeSkill(String name) {
+  public void removeSkill(String name) throws SkillNotFoundException {
     PersonalSkill skill = skills.stream()
         .filter(s -> s.getName().equals(name))
         .findAny()
@@ -158,4 +155,5 @@ public class Person {
   public void setRole(Role role) {
     this.role = role;
   }
+
 }

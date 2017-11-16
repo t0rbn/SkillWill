@@ -12,6 +12,7 @@ import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -243,7 +244,7 @@ public class SkillService {
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   private void updateInSubskills(KnownSkill oldSkill, KnownSkill newSkill) {
     List<KnownSkill> containingSkills = skillRepository.findBySubskillName(oldSkill.getName());
-    containingSkills.forEach(s -> s.renameSubSkillName(oldSkill.getName(), newSkill.getName()));
+    containingSkills.forEach(s -> s.renameSubSkill(oldSkill.getName(), newSkill.getName()));
     skillRepository.saveAll(containingSkills);
   }
 
@@ -260,10 +261,22 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void deleteSkill(String name) {
-    if (skillRepository.findByName(name) == null) {
+  public void deleteSkill(String name, String migrateTo) throws IllegalArgumentException {
+    KnownSkill deleteSkill = skillRepository.findByName(name);
+    if (deleteSkill == null) {
       logger.debug("Failed to delete skill {}: not found", name);
       throw new SkillNotFoundException("skill not found");
+    }
+
+    if (!StringUtils.isEmpty(migrateTo)) {
+      KnownSkill migrateSkill = skillRepository.findByName(migrateTo);
+      migratePersonalSkills(deleteSkill, migrateSkill);
+    }
+
+    // delete from persons
+    for (Person person : personRepository.findBySkill(name)) {
+      person.removeSkill(name);
+      personRepository.save(person);
     }
 
     // delete from known skills
@@ -275,13 +288,29 @@ public class SkillService {
       skillRepository.save(knownSkill);
     }
 
-    // delete from persons
-    for (Person person : personRepository.findBySkill(name)) {
-      person.deleteSkill(name);
-      personRepository.save(person);
+    logger.info("Successfully deleted skill {}", name);
+  }
+
+  private void migratePersonalSkills(KnownSkill from, KnownSkill to) throws IllegalArgumentException {
+    if (from == null || to == null) {
+      logger.info("Failed to migrate {} to {}: not found", from, to);
+      throw new SkillNotFoundException("Failed to migrate personal skills");
+    } else if (from.getName().equals(to.getName())) {
+      logger.info("Failed to migrate {} to {}: source and target equal");
+      throw new IllegalArgumentException("Source and target may not be equal");
     }
 
-    logger.info("Successfully deleted skill {}", name);
+    List<Person> migrateables = personRepository.findBySkill(from.getName()).stream()
+      .filter(user -> !user.hasSkill(to.getName()))
+      .collect(Collectors.toList());
+
+    migrateables.forEach(user -> {
+      PersonalSkill oldSkill = user.getSkill(from.getName());
+      user.addUpdateSkill(to.getName(), oldSkill.getSkillLevel(), oldSkill.getWillLevel(), to.isHidden(), oldSkill.isMentor());
+      user.removeSkill(from.getName());
+    });
+
+    personRepository.saveAll(migrateables);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -294,10 +323,7 @@ public class SkillService {
   }
 
   private boolean isValidSubSkills(Collection<String> subSkills) {
-    if (CollectionUtils.isEmpty(subSkills)) {
-      return true;
-    }
-    return subSkills.size() == skillRepository.findByNameIn(subSkills).size();
+    return CollectionUtils.isEmpty(subSkills) || subSkills.size() == skillRepository.findByNameIn(subSkills).size();
   }
 
 }

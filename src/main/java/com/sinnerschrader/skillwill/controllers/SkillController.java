@@ -198,7 +198,8 @@ public class SkillController {
    */
   @ApiOperation(value = "delete skill", nickname = "delete skill", notes = "parameter must be a valid skill Id")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form")
+    @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form", required = true),
+    @ApiImplicitParam(name = "migrateTo", value = "skill to which old levels will be migrated", paramType = "form")
   })
   @ApiResponses({
     @ApiResponse(code = 200, message = "Success"),
@@ -207,13 +208,13 @@ public class SkillController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey) {
+  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey, @RequestParam String migrateTo) {
     if (!sessionService.check(sessionKey, Role.ADMIN)) {
       return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 
     try {
-      skillService.deleteSkill(skill);
+      skillService.deleteSkill(skill, migrateTo);
       logger.info("Successfully deleted skill {}", skill);
       return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
     } catch (SkillNotFoundException e) {

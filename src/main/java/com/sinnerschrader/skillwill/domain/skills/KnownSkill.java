@@ -119,7 +119,7 @@ public class KnownSkill {
     this.subSkillNames = new HashSet<>(names);
   }
 
-  public void renameSubSkillName(String oldName, String newName) {
+  public void renameSubSkill(String oldName, String newName) {
     this.removeSubSkillName(oldName);
     this.addSubSkillName(newName);
   }
@@ -175,4 +175,5 @@ public class KnownSkill {
     result = 31 * result + (hidden ? 1 : 0);
     return result;
   }
+
 }

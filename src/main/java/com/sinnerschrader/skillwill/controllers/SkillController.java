@@ -208,7 +208,7 @@ public class SkillController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey, @RequestParam String migrateTo) {
+  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey, @RequestParam(required = false) String migrateTo) {
     if (!sessionService.check(sessionKey, Role.ADMIN)) {
       return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }

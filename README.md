@@ -1,10 +1,13 @@
-# What the heck is SkillWill (DE)?
-Was ist SkillWill?
-SkillWill ist ein internes S2 Tool, das veranschaulicht, was jeder MA wie gut kann (Skills) und was ihn wie sehr interessiert (Wills).
-Die eigenen Skills und Wills werden dabei von jedem MA in ein Profil eingepflegt und sind dadurch für alle anderen, disziplin- und standortübergreifend zugänglich.
-SkillWill schafft mehr Transparenz und gibt uns Einblicke, was hinter den Köpfen von S2 steckt. Durch dieses Wissen entstehen neue Möglichkeiten und es kann uns helfen, uns besser kennenzulernen und lose Enden zu verknüpfen.
-In der Einsatzplanung ermöglicht es, MA und ihre Talenten gezielter einzusetzen und persönliche Entwicklungswünsche besser zu berücksichtigen.
-Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mit SkillWill schneller die richtige Person.
+# What the heck is SkillWill?
+
+SkillWill is SinnerSchrader's internal tool to track what people know (their skills) and what people want to do (their wills).
+Every employee can define their personal levels of interest and knowledge for each skill in the system; anyone can search for persons by those skills, e.g.
+* You want somebody to teach you programming language x? → Search for x and see who can help.
+* You're a project manager and need somebody who can do x? → Search x foobar and you get a list of candidates.
+* You want to get better at x? → Show your interest for x and people who need some to do x will find you.
+* ...
+
+SkillWill creates more transparency about the collective knowledge and needs at SinnerSchrader and provides insights about our employees' skills that might not have been revealed. It encourages teamwork and and simplifies team planning as everyone's.
 
 
 
@@ -39,9 +42,9 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
 
 ## Important URLs
 * `/`: Application main view
-* `/swagger`: Interactive API documentation
-* `/info`: Show application-specific stats (# of users, skills per user, etc.)
-* `/metrics`: Show technical stats (memory, thread info, etc.)
+* `/swagger-ui.html`: Interactive API documentation
+* `/actuator/info`: Show application-specific stats (# of users, skills per user, etc.)
+* `/actuator/metrics`: Show technical stats (memory, thread info, etc.)
 
 
 
@@ -69,7 +72,6 @@ Wer im Arbeitsalltag einen Ansprechpartner zu bestimmten Themen sucht, findet mi
   * To quote Robert Martin
 
 > Functions should have a small number of arguments. No argument is best, followed by one, two, and three. More than three is very questionable and should be avoided with prejudice.
-
 
 
 

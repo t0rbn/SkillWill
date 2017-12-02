@@ -25,7 +25,7 @@ dn: cn=tech-user,ou=tech-user,dc=sinnerschrader,dc=com
 userPassword: fleischcreme
 
 dn: uid=foobar,ou=users,dc=sinnerschrader,dc=com
-objectClass: person
+objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: szzUser
@@ -41,7 +41,7 @@ l: Hamburg
 telephoneNumber: +49 666 666 666
 
 dn: uid=user,ou=users,dc=sinnerschrader,dc=com
-objectClass: person
+objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: szzUser
@@ -57,7 +57,7 @@ l: Hamburg
 telephoneNumber: +49 666 666 666
 
 dn: uid=admin,ou=users,dc=sinnerschrader,dc=com
-objectClass: person
+objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: szzUser
@@ -73,7 +73,7 @@ l: Hamburg
 telephoneNumber: +49 666 666 666
 
 dn: uid=abc,ou=users,dc=sinnerschrader,dc=com
-objectClass: person
+objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: szzUser
@@ -89,7 +89,7 @@ l: Hamburg
 telephoneNumber: +49 666 666 666
 
 dn: uid=def,ou=users,dc=sinnerschrader,dc=com
-objectClass: person
+objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: szzUser
@@ -105,7 +105,7 @@ l: Hamburg
 telephoneNumber: +49 666 666 666
 
 dn: uid=ghi,ou=users,dc=sinnerschrader,dc=com
-objectClass: person
+objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: szzUser

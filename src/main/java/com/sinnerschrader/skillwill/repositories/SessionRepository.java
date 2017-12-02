@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.repositories;
 
 import com.sinnerschrader.skillwill.session.Session;
+import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -11,8 +12,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface SessionRepository extends MongoRepository<Session, String> {
 
-  Session findByKey(String key);
+  Session findByToken(String token);
 
-  Session findByUsername(String username);
+  List<Session> findByMail(String mail);
 
 }

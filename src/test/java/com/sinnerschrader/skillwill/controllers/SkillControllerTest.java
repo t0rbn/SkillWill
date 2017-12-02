@@ -7,20 +7,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import org.json.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Before;
@@ -48,7 +46,7 @@ public class SkillControllerTest {
   private SkillRepository skillRepo;
 
   @Autowired
-  private PersonRepository personRepo;
+  private userRepository personRepo;
 
   @Autowired
   private SessionRepository sessionRepo;
@@ -76,19 +74,17 @@ public class SkillControllerTest {
     skillRepo.insert(cobolSkill);
 
 
-    Person userPerson = new Person("aaaaaa");
-    personRepo.insert(userPerson);
+    User userUser = new User("aaaaaa");
+    personRepo.insert(userUser);
 
-    Person adminPerson = new Person("bbbbbb");
-    adminPerson.setRole(Role.ADMIN);
-    personRepo.insert(adminPerson);
+    User adminUser = new User("bbbbbb");
+    adminUser.setRole(Role.ADMIN);
+    personRepo.insert(adminUser);
 
-    Session userSession = new Session("usersessionkey" ,"aaaaaa", new Date());
-    userSession.renewSession(60);
+    Session userSession = new Session("usersessionkey");
     sessionRepo.insert(userSession);
 
-    Session adminSession = new Session("adminsessionkey", "bbbbbb", new Date());
-    adminSession.renewSession(60);
+    Session adminSession = new Session("adminsessionkey");
     sessionRepo.insert(adminSession);
   }
 
@@ -174,7 +170,7 @@ public class SkillControllerTest {
   }
 
   @Test
-  public void testGetNextCountZero() throws JSONException {
+  public void testGetNextCountZero() {
     ResponseEntity<String> res = skillController.getNext("Java", 0);
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
@@ -294,7 +290,7 @@ public class SkillControllerTest {
 
   @Test
   public void testDeleteMigrate() {
-    Person aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    User aUser = personRepo.findByIdIgnoreCase("aaaaaa");
     aUser.addUpdateSkill("Java", 1, 3, false, true);
     personRepo.save(aUser);
 
@@ -311,7 +307,7 @@ public class SkillControllerTest {
 
   @Test
   public void testDeleteMigrateAlreadyHavingTarget() {
-    Person aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    User aUser = personRepo.findByIdIgnoreCase("aaaaaa");
     aUser.addUpdateSkill("Java", 1, 3, false, true);
     aUser.addUpdateSkill("COBOL", 2, 0, false, false);
     personRepo.save(aUser);
@@ -329,7 +325,7 @@ public class SkillControllerTest {
 
   @Test
   public void testDeleteMigrateNoSkill() {
-    Person aUser = personRepo.findByIdIgnoreCase("aaaaaa");
+    User aUser = personRepo.findByIdIgnoreCase("aaaaaa");
     aUser.addUpdateSkill("Java", 1, 3, false, true);
     personRepo.save(aUser);
 
@@ -428,7 +424,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditKeepPersonalSkillsWithNull() {
-    Person p = personRepo.findByIdIgnoreCase("aaaaaa");
+    User p = personRepo.findByIdIgnoreCase("aaaaaa");
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
@@ -438,7 +434,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditKeepPersonalSkillsWithEmptyl() {
-    Person p = personRepo.findByIdIgnoreCase("aaaaaa");
+    User p = personRepo.findByIdIgnoreCase("aaaaaa");
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
@@ -448,7 +444,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditRenamePersonalSkills() {
-    Person p = personRepo.findByIdIgnoreCase("aaaaaa");
+    User p = personRepo.findByIdIgnoreCase("aaaaaa");
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
@@ -458,7 +454,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditRenamePersonalSkillsWithSpace() {
-    Person p = personRepo.findByIdIgnoreCase("aaaaaa");
+    User p = personRepo.findByIdIgnoreCase("aaaaaa");
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
@@ -468,7 +464,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditKeepPersonalSkillsVisibility() {
-    Person p = personRepo.findByIdIgnoreCase("aaaaaa");
+    User p = personRepo.findByIdIgnoreCase("aaaaaa");
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
@@ -478,7 +474,7 @@ public class SkillControllerTest {
 
   @Test
   public void testEditPersonalSkillsHide() {
-    Person p = personRepo.findByIdIgnoreCase("aaaaaa");
+    User p = personRepo.findByIdIgnoreCase("aaaaaa");
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 

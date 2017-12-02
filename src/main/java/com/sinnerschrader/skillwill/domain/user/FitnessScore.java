@@ -1,14 +1,14 @@
-package com.sinnerschrader.skillwill.domain.person;
+package com.sinnerschrader.skillwill.domain.user;
 
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
+import com.sinnerschrader.skillwill.domain.skills.UserSkill;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Calculate how well a person fits into a searched skill set.
+ * Calculate how well a user fits into a searched skill set.
  * The result can be on a scale from 0 (does not fit at all) to 1 (perfect match)
  *
  * @author torree
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 public class FitnessScore {
 
   private final FitnessScoreProperties props;
-  private final Person person;
+  private final User user;
   private final Collection<KnownSkill> searchedSkills;
   private final double value;
 
-  public FitnessScore(Person person, Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
-    this.person = person;
+  public FitnessScore(User user, Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
+    this.user = user;
     this.searchedSkills = searchedSkills;
     this.props = props;
     this.value = (double) Math.round(calculateValue() * 10000) / 10000;
@@ -35,42 +35,42 @@ public class FitnessScore {
     return searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.toSet());
   }
 
-  private Set<PersonalSkill> getSearchedPersonalSkills() {
-    return this.person.getSkillsExcludeHidden().stream()
+  private Set<UserSkill> getSearchedPersonalSkills() {
+    return this.user.getSkillsExcludeHidden().stream()
         .filter(s -> getSearchedSkillNames(this.searchedSkills).contains(s.getName()))
         .collect(Collectors.toSet());
   }
 
-  private Set<PersonalSkill> getUnsearchedPersonalSkills() {
-    HashSet<PersonalSkill> skillset = new HashSet<>(this.person.getSkillsExcludeHidden());
+  private Set<UserSkill> getUnsearchedPersonalSkills() {
+    HashSet<UserSkill> skillset = new HashSet<>(this.user.getSkillsExcludeHidden());
     skillset.removeAll(getSearchedPersonalSkills());
     return skillset;
   }
 
   private double getAverageSkillLevelSearched() {
     return getSearchedPersonalSkills().stream()
-        .mapToInt(PersonalSkill::getSkillLevel)
+        .mapToInt(UserSkill::getSkillLevel)
         .average()
         .orElse(0);
   }
 
   private double getAverageWillLevelSearched() {
     return getSearchedPersonalSkills().stream()
-        .mapToInt(PersonalSkill::getWillLevel)
+        .mapToInt(UserSkill::getWillLevel)
         .average()
         .orElse(0);
   }
 
   private double getAverageSkillLevelUnsearched() {
     return getUnsearchedPersonalSkills().stream()
-        .mapToInt(PersonalSkill::getSkillLevel)
+        .mapToInt(UserSkill::getSkillLevel)
         .average()
         .orElse(0);
   }
 
   private double getAverageWillLevelUnsearched() {
     return this.getUnsearchedPersonalSkills().stream()
-        .mapToInt(PersonalSkill::getWillLevel)
+        .mapToInt(UserSkill::getWillLevel)
         .average()
         .orElse(0);
   }

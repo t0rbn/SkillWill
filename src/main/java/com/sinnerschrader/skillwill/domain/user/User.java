@@ -1,7 +1,7 @@
-package com.sinnerschrader.skillwill.domain.person;
+package com.sinnerschrader.skillwill.domain.user;
 
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
-import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
+import com.sinnerschrader.skillwill.domain.skills.UserSkill;
 import com.sinnerschrader.skillwill.domain.skills.SkillUtils;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import java.util.ArrayList;
@@ -15,19 +15,19 @@ import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
-import org.springframework.util.StringUtils;
 
 /**
  * Class holding all information about a person
  *
  * @author torree
  */
-public class Person {
+public class User {
 
   @Id
   private String id;
-  private List<PersonalSkill> skills;
+  private List<UserSkill> skills;
   private Role role;
+  private String ldapDN;
 
   @Transient
   private FitnessScore fitnessScore;
@@ -36,31 +36,32 @@ public class Person {
   private Long version;
 
   // LDAP Details will be updates regularly
-  private PersonalLdapDetails ldapDetails;
+  private UserLdapDetails ldapDetails;
 
-  public Person(String id) {
+  public User(String id) {
     this.id = id;
     this.skills = new ArrayList<>();
     this.ldapDetails = null;
     this.fitnessScore = null;
     this.role = Role.USER;
+    this.ldapDN = null;
   }
 
   public String getId() {
     return this.id;
   }
 
-  public List<PersonalSkill> getSkillsExcludeHidden() {
+  public List<UserSkill> getSkillsExcludeHidden() {
     return this.skills.stream()
       .filter(s -> !s.isHidden())
       .collect(Collectors.toList());
   }
 
-  public List<PersonalSkill>  getSkills() {
+  public List<UserSkill>  getSkills() {
     return this.skills;
   }
 
-  public PersonalSkill getSkill(String name) {
+  public UserSkill getSkill(String name) {
     return this.skills.stream()
         .filter(s -> s.getName().equals(name))
         .findFirst()
@@ -71,22 +72,22 @@ public class Person {
     return this.getSkill(skill) != null;
   }
 
-  public PersonalSkill getSkillExcludeHidden(String name) {
-    PersonalSkill skill = this.getSkill(name);
+  public UserSkill getSkillExcludeHidden(String name) {
+    UserSkill skill = this.getSkill(name);
     return skill == null || skill.isHidden() ? null : skill;
   }
 
-  public PersonalLdapDetails getLdapDetails() {
+  public UserLdapDetails getLdapDetails() {
     return this.ldapDetails;
   }
 
-  public void setLdapDetails(PersonalLdapDetails ldapDetails) {
+  public void setLdapDetails(UserLdapDetails ldapDetails) {
     this.ldapDetails = ldapDetails;
   }
 
   public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
     // Remove old skill if existing...
-    Optional<PersonalSkill> existing = skills.stream()
+    Optional<UserSkill> existing = skills.stream()
         .filter(s -> s.getName().equals(SkillUtils.sanitizeName(name)))
         .findFirst();
     if (existing.isPresent()) {
@@ -95,12 +96,12 @@ public class Person {
       existing.get().setMentor(mentor);
       existing.get().setHidden(hidden);
     } else {
-      this.skills.add(new PersonalSkill(name, skillLevel, willLevel, hidden, mentor));
+      this.skills.add(new UserSkill(name, skillLevel, willLevel, hidden, mentor));
     }
   }
 
   public void removeSkill(String name) throws SkillNotFoundException {
-    PersonalSkill skill = skills.stream()
+    UserSkill skill = skills.stream()
         .filter(s -> s.getName().equals(name))
         .findAny()
         .orElseThrow(() -> new SkillNotFoundException("user does not have skill"));
@@ -140,8 +141,8 @@ public class Person {
     JSONArray skillsArr = new JSONArray();
     this.skills.stream()
       .filter(s -> !s.isHidden())
-      .sorted(Comparator.comparing(PersonalSkill::getName))
-      .map(PersonalSkill::toJSON)
+      .sorted(Comparator.comparing(UserSkill::getName))
+      .map(UserSkill::toJSON)
       .forEach(skillsArr::put);
 
     obj.put("skills", skillsArr);
@@ -154,6 +155,14 @@ public class Person {
 
   public void setRole(Role role) {
     this.role = role;
+  }
+
+  public String getLdapDN() {
+    return this.ldapDN;
+  }
+
+  public void setLdapDN(String ldapDN) {
+    this.ldapDN = ldapDN;
   }
 
 }

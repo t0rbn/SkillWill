@@ -1,4 +1,4 @@
-package com.sinnerschrader.skillwill.domain.person;
+package com.sinnerschrader.skillwill.domain.user;
 
 import com.unboundid.ldap.sdk.SearchResultEntry;
 
@@ -7,7 +7,7 @@ import com.unboundid.ldap.sdk.SearchResultEntry;
  *
  * @author torree
  */
-public class PersonalLdapDetails {
+public class UserLdapDetails {
 
   private final String firstName;
   private final String lastName;
@@ -16,7 +16,7 @@ public class PersonalLdapDetails {
   private final String location;
   private final String title;
 
-  public PersonalLdapDetails(String firstName, String lastName, String mail, String telephone,
+  public UserLdapDetails(String firstName, String lastName, String mail, String telephone,
       String location, String title) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -26,11 +26,11 @@ public class PersonalLdapDetails {
     this.title = title;
   }
 
-  public PersonalLdapDetails() {
+  public UserLdapDetails() {
     this(null, null, null, null, null, null);
   }
 
-  public PersonalLdapDetails(SearchResultEntry entry) {
+  public UserLdapDetails(SearchResultEntry entry) {
     this(
       entry.getAttributeValue("givenName"),
       entry.getAttributeValue("sn"),
@@ -75,7 +75,7 @@ public class PersonalLdapDetails {
       return false;
     }
 
-    PersonalLdapDetails that = (PersonalLdapDetails) o;
+    UserLdapDetails that = (UserLdapDetails) o;
 
     if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) {
       return false;

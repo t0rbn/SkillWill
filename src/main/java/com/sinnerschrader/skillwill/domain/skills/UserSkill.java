@@ -9,7 +9,7 @@ import org.springframework.data.annotation.Id;
  *
  * @author torree
  */
-public class PersonalSkill {
+public class UserSkill {
 
   @Id
   private String name;
@@ -18,7 +18,7 @@ public class PersonalSkill {
   private boolean hidden;
   private boolean mentor;
 
-  public PersonalSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
+  public UserSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
     this.name = name;
     this.skillLevel = skillLevel;
     this.willLevel = willLevel;

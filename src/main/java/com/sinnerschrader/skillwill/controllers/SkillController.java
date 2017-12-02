@@ -1,7 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
@@ -174,7 +173,7 @@ public class SkillController {
     @RequestParam(required = false, defaultValue = "") String subSkills,
     @RequestParam String sessionKey) {
 
-    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
       return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 
@@ -209,7 +208,7 @@ public class SkillController {
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
   public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey, @RequestParam(required = false) String migrateTo) {
-    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
       return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 
@@ -249,7 +248,7 @@ public class SkillController {
     @RequestParam(required = false) String subskills,
     @RequestParam String sessionKey) {
 
-    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
       return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 

@@ -1,15 +1,15 @@
 package com.sinnerschrader.skillwill.services;
 
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
-import com.sinnerschrader.skillwill.domain.person.JaccardFilter;
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.domain.user.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.user.JaccardFilter;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.util.Collection;
 import java.util.Comparator;
@@ -39,7 +39,7 @@ public class UserService {
   private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   @Autowired
-  private PersonRepository personRepository;
+  private userRepository userRepository;
 
   @Autowired
   private LdapService ldapService;
@@ -56,18 +56,18 @@ public class UserService {
   @Value("${maxLevelValue}")
   private int maxLevelValue;
 
-  public List<Person> getUsers(Collection<KnownSkill> skills, String location)
+  public List<User> getUsers(Collection<KnownSkill> skills, String location)
       throws IllegalArgumentException {
 
-    List<Person> candidates;
+    List<User> candidates;
 
     if (CollectionUtils.isEmpty(skills)) {
-      candidates = personRepository.findAll();
+      candidates = userRepository.findAll();
     } else {
       List<String> skillNames = skills.stream().map(KnownSkill::getName).collect(Collectors.toList());
-      candidates = personRepository.findBySkills(skillNames).stream()
+      candidates = userRepository.findBySkills(skillNames).stream()
           .peek(p -> p.setFitnessScore(skills, fitnessScoreProperties))
-          .sorted(Comparator.comparingDouble(Person::getFitnessScoreValue).reversed())
+          .sorted(Comparator.comparingDouble(User::getFitnessScoreValue).reversed())
           .collect(Collectors.toList());
     }
 
@@ -83,7 +83,7 @@ public class UserService {
     return candidates;
   }
 
-  private List<Person> filterByLocation(List<Person> unfiltered, String location) {
+  private List<User> filterByLocation(List<User> unfiltered, String location) {
     if (StringUtils.isEmpty(location)) {
       return unfiltered;
     }
@@ -92,8 +92,8 @@ public class UserService {
         .collect(Collectors.toList());
   }
 
-  public Person getUser(String id) {
-    Person p = personRepository.findByIdIgnoreCase(id);
+  public User getUser(String id) {
+    User p = userRepository.findByIdIgnoreCase(id);
 
     if (p == null) {
       logger.debug("Failed to find user {}: not found", id);
@@ -117,9 +117,9 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    Person person = personRepository.findByIdIgnoreCase(username);
+    User user = userRepository.findByIdIgnoreCase(username);
 
-    if (person == null) {
+    if (user == null) {
       logger.debug("Failed to add/modify {}'s skills: user not found", username);
       throw new UserNotFoundException("user not found");
     }
@@ -136,8 +136,8 @@ public class UserService {
       throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
     }
 
-    person.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName), mentor);
-    personRepository.save(person);
+    user.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName), mentor);
+    userRepository.save(user);
 
     logger.info("Successfully updated {}'s skill {}", username, skillName);
   }
@@ -151,9 +151,9 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    Person person = personRepository.findByIdIgnoreCase(username);
+    User user = userRepository.findByIdIgnoreCase(username);
 
-    if (person == null) {
+    if (user == null) {
       logger.debug("Failed to remove {}'s skills: user not found", username);
       throw new UserNotFoundException("user not found");
     }
@@ -163,8 +163,8 @@ public class UserService {
       throw new SkillNotFoundException("skill not found");
     }
 
-    person.removeSkill(skillName);
-    personRepository.save(person);
+    user.removeSkill(skillName);
+    userRepository.save(user);
   }
 
   private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
@@ -176,13 +176,13 @@ public class UserService {
     return isValidSkillLevel && isValidWillLevel && isOneGreaterZero;
   }
 
-  public List<Person> getSimilar(String username, int count) throws UserNotFoundException {
+  public List<User> getSimilar(String username, int count) throws UserNotFoundException {
     if (count < 0) {
       throw new IllegalArgumentException("count must be a positive integer");
     }
 
-    List<Person> toSearch = personRepository.findAll();
-    Optional<Person> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
+    List<User> toSearch = userRepository.findAll();
+    Optional<User> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
 
     if (!person.isPresent()) {
       logger.debug("Failed to get users similar to {}: user not found", username);
@@ -194,26 +194,26 @@ public class UserService {
   }
 
   public Role getRole(String userId) {
-    Person person = personRepository.findByIdIgnoreCase(userId);
-    if (person == null) {
+    User user = userRepository.findByIdIgnoreCase(userId);
+    if (user == null) {
       throw new UserNotFoundException("user not found");
     }
 
-    return person.getRole();
+    return user.getRole();
   }
 
   public void updateRole(String userId, Role role) {
-    Person person = personRepository.findByIdIgnoreCase(userId);
-    if (person == null) {
+    User user = userRepository.findByIdIgnoreCase(userId);
+    if (user == null) {
       throw new UserNotFoundException("user not found");
     }
 
-    if (person.getRole() == role) {
+    if (user.getRole() == role) {
       return;
     }
 
-    person.setRole(role);
-    personRepository.save(person);
+    user.setRole(role);
+    userRepository.save(user);
   }
 
   public void updateRole(String userId, String roleName) throws IllegalArgumentException {

@@ -1,12 +1,11 @@
 package com.sinnerschrader.skillwill.mock;
 
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.jobs.LdapSyncJob;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
-import com.sinnerschrader.skillwill.services.LdapService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +33,7 @@ public class MockData {
   private SkillRepository skillRepo;
 
   @Autowired
-  private PersonRepository personRepo;
+  private userRepository personRepo;
 
   @Autowired
   private LdapSyncJob ldapSyncJob;
@@ -70,13 +69,13 @@ public class MockData {
     JSONArray persons = readMockFileToJsonArray(personsPath);
     for (int i = 0; i < persons.length(); i++) {
       JSONObject personJson = persons.getJSONObject(i);
-      Person person = new Person(personJson.getString("id"));
-      person.setRole(Role.valueOf(personJson.getString("role")));
+      User user = new User(personJson.getString("id"));
+      user.setRole(Role.valueOf(personJson.getString("role")));
 
       JSONArray skills = personJson.getJSONArray("skills");
       for (int j = 0; j < skills.length(); j++) {
         JSONObject skillJson = skills.getJSONObject(j);
-        person.addUpdateSkill(
+        user.addUpdateSkill(
           skillJson.getString("name"),
           skillJson.getInt("skillLevel"),
           skillJson.getInt("willLevel"),
@@ -85,8 +84,8 @@ public class MockData {
         );
       }
 
-      logger.info("Inserting person " + person.getId());
-      personRepo.save(person);
+      logger.info("Inserting user " + user.getId());
+      personRepo.save(user);
     }
   }
 

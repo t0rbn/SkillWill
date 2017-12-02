@@ -1,19 +1,22 @@
 package com.sinnerschrader.skillwill.services;
 
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.Role;
+import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.session.Session;
-import java.util.Date;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -35,88 +38,136 @@ public class SessionService {
   @Value("${sessionExpireDuration}")
   private int expireDuration;
 
+  @Value("${oAuthUrl}")
+  private String oAuthUrl;
+
   @Autowired
   private SessionRepository sessionRepo;
 
   @Autowired
-  private PersonRepository personRepository;
+  private userRepository userRepository;
 
-  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public String create(String username) {
-    String key = null;
-    do {
-      key = UUID.randomUUID().toString().replaceAll("-", "");
-    } while (key == null || sessionRepo.findByKey(key) != null);
+  @Autowired
+  private LdapService ldapService;
 
-    // Session is initialized with expire date = now
-    // renew to set initial expiration date
-    Session session = new Session(key, username, new Date());
-    sessionRepo.insert(session);
-    renew(session);
+  private boolean isTokenInProxy(String token) {
+    try {
+      URL authUrl = new URL(oAuthUrl);
+      HttpURLConnection connection = (HttpURLConnection) authUrl.openConnection();
+      connection.addRequestProperty("Cookie", "_oauth2_proxy=" + token);
+      connection.connect();
 
-    logger.debug("Created new session for {}", username);
+      int resonseCode = connection.getResponseCode();
+      connection.disconnect();
 
-    return session.getKey();
-  }
-
-  public void remove(String sessionKey) {
-    Session session = sessionRepo.findByKey(sessionKey);
-
-    if (session == null) {
-      logger.debug("Failed to log out session with key {}: no session found", sessionKey);
-      throw new IllegalArgumentException("session key not found or username not matching");
-    }
-
-    sessionRepo.delete(session);
-  }
-
-  public boolean check(Session session) {
-    if (session == null) {
+      logger.debug("Successfully checked token with oauth proxy, result {}", resonseCode);
+      return resonseCode == HttpStatus.ACCEPTED.value();
+    } catch (IOException e) {
+      logger.error("Failed to check session token at oauth Proxy");
       return false;
     }
-
-    if (session.isExpired() || getPerson(session) == null) {
-      logger.debug("Failed checking session {}: expired; will remove from DB", session.getKey());
-      sessionRepo.delete(session);
-      return false;
-    }
-
-    renew(session);
-    logger.debug("Successfully checked session {}", session.getKey());
-    return true;
-  }
-
-  public boolean check(String sessionKey) {
-    return check(sessionRepo.findByKey(sessionKey));
-  }
-
-  public boolean check(String sessionKey, String username) {
-    Session session = sessionRepo.findByKey(sessionKey);
-    return check(session) && session.getUsername().equals(username);
-  }
-
-  public boolean check(String sessionKey, Role role) {
-    Session session = sessionRepo.findByKey(sessionKey);
-    return check(session) && getPerson(session).getRole() == role;
-  }
-
-  private Person getPerson(Session session) {
-    return personRepository.findByIdIgnoreCase(session.getUsername());
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  private void renew(Session session) {
-    logger.debug("Renewed session {}", session.getKey());
-    session.renewSession(expireDuration);
-    sessionRepo.save(session);
+  private boolean isTokenInDB(String token) {
+    return sessionRepo.findByToken(token) != null;
   }
 
+  private String getMailFromToken(String token) {
+    return new String(Base64.getDecoder().decode(token.split("\\|")[0]));
+  }
+
+  private boolean isTokenMail(String token, String mail) {
+    String tokenMail;
+    try {
+      tokenMail = getMailFromToken(token);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      return false;
+    }
+
+    return tokenMail.equals(mail);
+  }
+
+  private boolean isTokenMail(String token, User user) {
+    try {
+      return isTokenMail(token, user.getLdapDetails().getMail());
+    } catch (NullPointerException e) {
+      logger.warn("Cannot verify mail, user {}, has empty LDAP details", user.getId());
+      return false;
+    }
+  }
+
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public boolean checkToken(String token, String userId) {
+    User userFromId = userRepository.findByIdIgnoreCase(userId);
+
+    if (userFromId == null) {
+      if (isTokenInProxy(token)) {
+        // create user, create session, return true
+        User newUser = ldapService.createUserByMail(getMailFromToken(token));
+        userRepository.insert(newUser);
+        sessionRepo.insert(new Session(token));
+        logger.debug("Successfully new user {}", userId);
+        return true;
+      }
+      return false;
+    }
+
+    if (isTokenInDB(token)) {
+      return true;
+    }
+
+    if (isTokenInProxy(token)) {
+      sessionRepo.insert(new Session(token));
+      return true;
+    }
+
+    logger.debug("Failed to authenticate user {}", userId);
+    return false;
+  }
+
+  public boolean checkTokenRole(String token, Role role) {
+    if (!isTokenInDB(token)) {
+      if (isTokenInProxy(token)) {
+        sessionRepo.insert(new Session(token));
+      } else {
+        return false;
+      }
+    }
+
+    User user = userRepository.findByMail(getMailFromToken(token));
+    return user != null && user.getRole() == role;
+  }
+
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public void clearUserSessions(User user) {
+    String mail;
+
+    try {
+      mail = user.getLdapDetails().getMail();
+    } catch (NullPointerException e) {
+      logger.warn("Cannot check session for user {}: no mail in LDAP details", user.getId());
+      return;
+    }
+
+    List<Session> clearables = sessionRepo.findByMail(mail)
+      .stream()
+      .filter(session -> !isTokenInProxy(session.getToken()))
+      .collect(Collectors.toList());
+
+    logger.debug("will remove {} session for user {}", clearables.size(), user.getId());
+    sessionRepo.deleteAll(clearables);
+  }
+
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public void cleanUp() {
-    List<Session> expiredSessions = sessionRepo.findAll().stream()
-        .filter(Session::isExpired)
-        .collect(Collectors.toList());
+    List<Session> clearables = sessionRepo.findAll()
+      .stream()
+      .filter(session -> !isTokenInProxy(session.getToken()))
+      .collect(Collectors.toList());
 
-    sessionRepo.deleteAll(expiredSessions);
+    logger.info("Starting session cleanup, will remove {} sessions", clearables.size());
+    sessionRepo.deleteAll(clearables);
   }
 
 }

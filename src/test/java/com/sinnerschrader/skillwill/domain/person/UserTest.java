@@ -3,6 +3,9 @@ package com.sinnerschrader.skillwill.domain.person;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import com.sinnerschrader.skillwill.domain.user.Role;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.UserLdapDetails;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -12,41 +15,41 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Partial unit tests for Person
+ * Partial unit tests for User
  *
  * @author torree
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class PersonTest {
+public class UserTest {
 
-  private Person person;
+  private User user;
 
   @Before
   public void init() {
-    person = new Person("foobar");
-    person.addUpdateSkill("skillname", 2, 3, false, false);
+    user = new User("foobar");
+    user.addUpdateSkill("skillname", 2, 3, false, false);
   }
 
   @Test
   public void testAddUpdateNewSkill() {
-    person.addUpdateSkill("new skill", 2, 3, false, false);
-    assertEquals(2, person.getSkillsExcludeHidden().size());
+    user.addUpdateSkill("new skill", 2, 3, false, false);
+    assertEquals(2, user.getSkillsExcludeHidden().size());
   }
 
   @Test
   public void testAddUpdateKnownSkill() {
-    person.addUpdateSkill("skillname", 0, 1, false, false);
-    assertEquals(1, person.getSkillsExcludeHidden().size());
-    assertEquals(0, person.getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(1, person.getSkillsExcludeHidden().get(0).getWillLevel());
+    user.addUpdateSkill("skillname", 0, 1, false, false);
+    assertEquals(1, user.getSkillsExcludeHidden().size());
+    assertEquals(0, user.getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(1, user.getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test
   public void testToJson() throws JSONException {
-    person.setRole(Role.ADMIN);
-    person.setLdapDetails(
-        new PersonalLdapDetails(
+    user.setRole(Role.ADMIN);
+    user.setLdapDetails(
+        new UserLdapDetails(
             "Fooberius",
             "Barblub",
             "fooberius.barblub@sinnerschrader.com",
@@ -55,7 +58,7 @@ public class PersonTest {
             "Senior Web Unicorn"
         )
     );
-    JSONObject obj = person.toJSON();
+    JSONObject obj = user.toJSON();
 
     assertEquals("foobar", obj.getString("id"));
     assertEquals("ADMIN", obj.getString("role"));

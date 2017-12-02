@@ -5,18 +5,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +42,7 @@ public class UserControllerTest {
   private UserController userController;
 
   @Autowired
-  private PersonRepository personRepo;
+  private userRepository personRepo;
 
   @Autowired
   private SkillRepository skillRepo;
@@ -64,21 +63,19 @@ public class UserControllerTest {
     skillRepo.insert(new KnownSkill("Java"));
     skillRepo.insert(new KnownSkill("hidden", new ArrayList<>(), true, new HashSet<>()));
 
-    Person user = new Person("user");
+    User user = new User("user");
     user.addUpdateSkill("Java", 2, 3, false, false);
     user.addUpdateSkill("hidden", 0, 1, true, false);
     personRepo.insert(user);
 
-    Person admin = new Person("admin");
+    User admin = new User("admin");
     admin.setRole(Role.ADMIN);
     personRepo.insert(admin);
 
-    Session userSession = new Session("usersessionkey", "user", new Date());
-    userSession.renewSession(60);
+    Session userSession = new Session("usersessionkey");
     sessionRepo.insert(userSession);
 
-    Session adminSession = new Session("adminsessionkey", "admin", new Date());
-    adminSession.renewSession(60);
+    Session adminSession = new Session("adminsessionkey");
     sessionRepo.insert(adminSession);
   }
 
@@ -252,8 +249,7 @@ public class UserControllerTest {
   @Test
   public void testModifySkillsUserUnknown() {
     sessionRepo.deleteAll();
-    Session session = new Session("2342", "IAmUnknown", new Date());
-    session.renewSession(60);
+    Session session = new Session("2342");
     sessionRepo.insert(session);
 
     ResponseEntity<String> res = userController.updateSkills("IAmUnknown", "Java", "0", "0", false, "2342");
@@ -359,17 +355,17 @@ public class UserControllerTest {
 
   @Test
   public void testGetSimilarUser() throws JSONException {
-    Person p1 = new Person("abc");
+    User p1 = new User("abc");
     p1.addUpdateSkill("Java", 1, 2, false, false);
     p1.addUpdateSkill(".NET", 3, 2, false, false);
     p1.addUpdateSkill("Text", 1, 3, false, false);
     personRepo.insert(p1);
 
-    Person p2 = new Person("def");
+    User p2 = new User("def");
     p2.addUpdateSkill("Java", 3, 2, false, false);
     personRepo.insert(p2);
 
-    Person p3 = new Person("ghi");
+    User p3 = new User("ghi");
     p3.addUpdateSkill("Java", 1, 0, false, false);
     p3.addUpdateSkill(".NET", 3, 2, false, false);
     personRepo.insert(p3);

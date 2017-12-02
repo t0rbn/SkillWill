@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.user.FitnessScore;
+import com.sinnerschrader.skillwill.domain.user.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.domain.user.User;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,68 +29,68 @@ public class FitnessScoreTest {
 
   @Test
   public void testSearchedSkillsOnly() {
-    Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 3, 3, false, false);
-    person.addUpdateSkill("AEM", 3, 3, false, false);
+    User user = new User("foobar");
+    user.addUpdateSkill("Java", 3, 3, false, false);
+    user.addUpdateSkill("AEM", 3, 3, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java"));
     searchItems.add(new KnownSkill("AEM"));
-    assertEquals(1.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
+    assertEquals(1.0, new FitnessScore(user, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
   @Test
   public void testNoSearchedSkills() {
-    Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 3, 3, false, false);
-    person.addUpdateSkill("AEM", 3, 3, false, false);
+    User user = new User("foobar");
+    user.addUpdateSkill("Java", 3, 3, false, false);
+    user.addUpdateSkill("AEM", 3, 3, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Ruby"));
-    assertEquals(0.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
+    assertEquals(0.0, new FitnessScore(user, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
   @Test
   public void testMaximumScore() {
-    Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 3, 3, false, false);
-    person.addUpdateSkill("AEM", 3, 3, false, false);
-    person.addUpdateSkill("Foo", 0, 0, false, false);
-    person.addUpdateSkill("Bar", 0, 0, false, false);
+    User user = new User("foobar");
+    user.addUpdateSkill("Java", 3, 3, false, false);
+    user.addUpdateSkill("AEM", 3, 3, false, false);
+    user.addUpdateSkill("Foo", 0, 0, false, false);
+    user.addUpdateSkill("Bar", 0, 0, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java"));
     searchItems.add(new KnownSkill("AEM"));
-    assertEquals(1.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
+    assertEquals(1.0, new FitnessScore(user, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
   @Test
   public void testMinimalScore() {
-    Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 0, 0, false, false);
-    person.addUpdateSkill("AEM", 0, 0, false, false);
-    person.addUpdateSkill("Foo", 3, 3, false, false);
-    person.addUpdateSkill("Bar", 3, 3, false, false);
+    User user = new User("foobar");
+    user.addUpdateSkill("Java", 0, 0, false, false);
+    user.addUpdateSkill("AEM", 0, 0, false, false);
+    user.addUpdateSkill("Foo", 3, 3, false, false);
+    user.addUpdateSkill("Bar", 3, 3, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java"));
     searchItems.add(new KnownSkill("AEM"));
-    assertEquals(0.0, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
+    assertEquals(0.0, new FitnessScore(user, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
   @Test
   public void testRealisticScore() {
-    Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 2, 3, false, false);
-    person.addUpdateSkill("AEM", 2, 2, false, false);
-    person.addUpdateSkill("Foo", 1, 3, false, false);
-    person.addUpdateSkill("Bar", 1, 0, false, false);
+    User user = new User("foobar");
+    user.addUpdateSkill("Java", 2, 3, false, false);
+    user.addUpdateSkill("AEM", 2, 2, false, false);
+    user.addUpdateSkill("Foo", 1, 3, false, false);
+    user.addUpdateSkill("Bar", 1, 0, false, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java"));
     searchItems.add(new KnownSkill("AEM"));
     searchItems.add(new KnownSkill("Bar"));
-    assertEquals(0.5278, new FitnessScore(person, searchItems, fitnessScoreProperties).getValue(), 0);
+    assertEquals(0.5278, new FitnessScore(user, searchItems, fitnessScoreProperties).getValue(), 0);
   }
 
 }

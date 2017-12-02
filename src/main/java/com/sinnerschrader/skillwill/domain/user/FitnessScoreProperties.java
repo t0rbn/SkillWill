@@ -1,4 +1,4 @@
-package com.sinnerschrader.skillwill.domain.person;
+package com.sinnerschrader.skillwill.domain.user;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

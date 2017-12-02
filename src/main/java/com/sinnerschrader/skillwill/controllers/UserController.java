@@ -1,8 +1,7 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
-import com.sinnerschrader.skillwill.domain.person.Person;
-import com.sinnerschrader.skillwill.domain.person.Role;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.SkillUtils;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
@@ -64,9 +63,6 @@ public class UserController {
   @Autowired
   private SessionService sessionService;
 
-  @Autowired
-  private FitnessScoreProperties fitnessScoreProperties;
-
   /**
    * Search for users with specific skills / list all users if no search query is specified
    */
@@ -87,13 +83,13 @@ public class UserController {
     Set<KnownSkill> sanitizedSkills = skillService.getSkillsByStemsExcludeHidden(skillList);
     skillService.registerSkillSearch(sanitizedSkills);
 
-    List<Person> matches = CollectionUtils.isEmpty(sanitizedSkills) && !StringUtils.isEmpty(skills)
+    List<User> matches = CollectionUtils.isEmpty(sanitizedSkills) && !StringUtils.isEmpty(skills)
       ? new ArrayList<>()
       : userService.getUsers(sanitizedSkills, location);
 
     JSONObject returnJsonObj = new JSONObject();
     returnJsonObj.put("results", new JSONArray(matches.stream()
-      .map(Person::toJSON)
+      .map(User::toJSON)
       .collect(Collectors.toList())));
 
     Map<String, String> sanitizedNameSkillMap = new HashMap<>();
@@ -126,7 +122,7 @@ public class UserController {
   @RequestMapping(path = "/users/{user}", method = RequestMethod.GET)
   public ResponseEntity<String> getUser(@PathVariable String user) {
     try {
-      Person p = userService.getUser(user);
+      User p = userService.getUser(user);
       return new ResponseEntity<>(p.toJSON().toString(), HttpStatus.OK);
     } catch (UserNotFoundException e) {
       StatusJSON json = new StatusJSON("user not found");
@@ -157,7 +153,7 @@ public class UserController {
     @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
     @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, @RequestParam("sessionKey") String sessionKey) {
 
-    if (!sessionService.check(sessionKey, user)) {
+    if (!sessionService.checkToken(sessionKey, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.FORBIDDEN);
     }
@@ -191,7 +187,7 @@ public class UserController {
   public ResponseEntity<String> removeSkill(@PathVariable String user,
     @RequestParam("skill") String skill, @RequestParam String sessionKey) {
 
-    if (!sessionService.check(sessionKey, user)) {
+    if (!sessionService.checkToken(sessionKey, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in").toString(),
         HttpStatus.FORBIDDEN);
@@ -228,7 +224,7 @@ public class UserController {
     @RequestParam String sessionKey,
     @RequestParam(value = "role") String role) {
 
-    if (!sessionService.check(sessionKey, Role.ADMIN)) {
+    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
       logger.debug("Failed to edit {}'s role: forbidden operation for current user", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in or not allowed").toString(), HttpStatus.FORBIDDEN);
     }
@@ -262,7 +258,7 @@ public class UserController {
   public ResponseEntity<String> getSimilar(@PathVariable String user,
     @RequestParam(value = "count", required = false, defaultValue = "10") int count) {
 
-    List<Person> similar;
+    List<User> similar;
 
     try {
       similar = userService.getSimilar(user, count);
@@ -275,7 +271,7 @@ public class UserController {
     }
 
     JSONArray arr = new JSONArray(
-      similar.stream().map(Person::toJSON).collect(Collectors.toList()));
+      similar.stream().map(User::toJSON).collect(Collectors.toList()));
     logger.debug("Successfully found {} users similar to {}", arr.length(), user);
     return new ResponseEntity<>(arr.toString(), HttpStatus.OK);
   }

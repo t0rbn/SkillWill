@@ -1,6 +1,6 @@
 package com.sinnerschrader.skillwill.jobs;
 
-import com.sinnerschrader.skillwill.repositories.PersonRepository;
+import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +24,12 @@ public class LdapSyncJob {
   private LdapService ldapService;
 
   @Autowired
-  private PersonRepository personRepository;
+  private userRepository userRepository;
 
   @Scheduled(cron = "${ldapSyncCron}")
   public void run() {
     logger.info("Starting regular LDAP sync, this may take a while");
-    ldapService.syncUsers(personRepository.findAll(), true);
+    ldapService.syncUsers(userRepository.findAll(), true);
     logger.info("Finished regular LDAP sync");
   }
 

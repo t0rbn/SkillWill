@@ -55,7 +55,8 @@ public class UserTest {
             "fooberius.barblub@sinnerschrader.com",
             "+49 666 666",
             "Hamburg",
-            "Senior Web Unicorn"
+            "Senior Web Unicorn",
+            "Firma"
         )
     );
     JSONObject obj = user.toJSON();

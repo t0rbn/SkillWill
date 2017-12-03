@@ -35,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,7 +80,7 @@ public class UserController {
   public ResponseEntity<String> getUsers(@RequestParam(required = false) String skills,
     @RequestParam(required = false) String location) {
 
-    List<String> skillList = skills != null ? Arrays.asList(skills.split("\\s*,\\s*")) : Collections.emptyList();
+    List<String> skillList = !StringUtils.isEmpty(skills) ? Arrays.asList(skills.split("\\s*,\\s*")) : Collections.emptyList();
     Set<KnownSkill> sanitizedSkills = skillService.getSkillsByStemsExcludeHidden(skillList);
     skillService.registerSkillSearch(sanitizedSkills);
 
@@ -142,7 +143,7 @@ public class UserController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "sessionKey", value = "users's active session key", paramType = "form", required = true),
+    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
     @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "form", required = true),
     @ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType = "form", required = true),
     @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true),
@@ -151,9 +152,9 @@ public class UserController {
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkills(@PathVariable String user,
     @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
-    @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, @RequestParam("sessionKey") String sessionKey) {
+    @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, @CookieValue("_oauth2_proxy") String oAuthToken) {
 
-    if (!sessionService.checkToken(sessionKey, user)) {
+    if (!sessionService.checkToken(oAuthToken, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in").toString(), HttpStatus.FORBIDDEN);
     }
@@ -180,14 +181,14 @@ public class UserController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "sessionKey", value = "users's active session key", paramType = "query", required = true),
+    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
     @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
   })
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
   public ResponseEntity<String> removeSkill(@PathVariable String user,
-    @RequestParam("skill") String skill, @RequestParam String sessionKey) {
+    @RequestParam("skill") String skill, @CookieValue("_oauth2_proxy") String oAuthToken) {
 
-    if (!sessionService.checkToken(sessionKey, user)) {
+    if (!sessionService.checkToken(oAuthToken, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in").toString(),
         HttpStatus.FORBIDDEN);
@@ -216,15 +217,15 @@ public class UserController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "sessionKey", value = "current users's active session key", paramType = "query", required = true),
+    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
     @ApiImplicitParam(name = "role", value = "new role (USER or ADMIN)", paramType = "query", required = true)
   })
   @RequestMapping(path = "/users/{user}/role", method = RequestMethod.POST)
   public ResponseEntity<String> updateRole(@PathVariable String user,
-    @RequestParam String sessionKey,
+    @CookieValue("_oauth2_proxy") String oAuthToken,
     @RequestParam(value = "role") String role) {
 
-    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
+    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
       logger.debug("Failed to edit {}'s role: forbidden operation for current user", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in or not allowed").toString(), HttpStatus.FORBIDDEN);
     }

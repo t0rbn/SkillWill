@@ -24,6 +24,38 @@ ou: tech-user
 dn: cn=tech-user,ou=tech-user,dc=sinnerschrader,dc=com
 userPassword: fleischcreme
 
+dn: uid=aaaaaa,ou=users,dc=sinnerschrader,dc=com
+objectClass: user
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Fooberius
+uid: aaaaaa
+sn: Barblub
+mail: aaa.aaa@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
+dn: uid=bbbbbb,ou=users,dc=sinnerschrader,dc=com
+objectClass: user
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: szzUser
+objectClass: posixAccount
+objectClass: sambaSamAccount
+givenName: Anton
+uid: bbbbbb
+sn: Fleischmacher
+mail: bbb.bbb@sinnerschrader.com
+userPassword:  fleischcreme
+title: Senior Web Unicorm
+l: Hamburg
+telephoneNumber: +49 666 666 666
+
 dn: uid=foobar,ou=users,dc=sinnerschrader,dc=com
 objectClass: user
 objectClass: organizationalPerson

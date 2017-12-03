@@ -1,6 +1,6 @@
 package com.sinnerschrader.skillwill.domain.user;
 
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import java.util.Objects;
 
 /**
  * Data Structure for Details from LDAP.
@@ -15,30 +15,17 @@ public class UserLdapDetails {
   private final String phone;
   private final String location;
   private final String title;
+  private final String company;
 
-  public UserLdapDetails(String firstName, String lastName, String mail, String telephone,
-      String location, String title) {
+  public UserLdapDetails(String firstName, String lastName, String mail, String phone,
+      String location, String title, String company) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.mail = mail;
-    this.phone = telephone;
+    this.phone = phone;
     this.location = location;
     this.title = title;
-  }
-
-  public UserLdapDetails() {
-    this(null, null, null, null, null, null);
-  }
-
-  public UserLdapDetails(SearchResultEntry entry) {
-    this(
-      entry.getAttributeValue("givenName"),
-      entry.getAttributeValue("sn"),
-      entry.getAttributeValue("mail"),
-      entry.getAttributeValue("telephoneNumber"),
-      entry.getAttributeValue("l"),
-      entry.getAttributeValue("title")
-    );
+    this.company = company;
   }
 
   public String getFirstName() {
@@ -65,6 +52,9 @@ public class UserLdapDetails {
     return title;
   }
 
+  public String getCompany() {
+    return this.company;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -74,25 +64,19 @@ public class UserLdapDetails {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
     UserLdapDetails that = (UserLdapDetails) o;
-
-    if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) {
-      return false;
-    }
-    if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) {
-      return false;
-    }
-    if (mail != null ? !mail.equals(that.mail) : that.mail != null) {
-      return false;
-    }
-    if (phone != null ? !phone.equals(that.phone) : that.phone != null) {
-      return false;
-    }
-    if (location != null ? !location.equals(that.location) : that.location != null) {
-      return false;
-    }
-    return title != null ? title.equals(that.title) : that.title == null;
+    return Objects.equals(firstName, that.firstName) &&
+      Objects.equals(lastName, that.lastName) &&
+      Objects.equals(mail, that.mail) &&
+      Objects.equals(phone, that.phone) &&
+      Objects.equals(location, that.location) &&
+      Objects.equals(title, that.title) &&
+      Objects.equals(company, that.company);
   }
 
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(firstName, lastName, mail, phone, location, title, company);
+  }
 }

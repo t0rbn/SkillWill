@@ -3,12 +3,11 @@ package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.UserLdapDetails;
+import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.userRepository;
-import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
@@ -19,8 +18,11 @@ import com.unboundid.util.ssl.TrustAllTrustManager;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -53,17 +55,17 @@ public class LdapService {
   @Value("${ldapPort}")
   private int ldapPort;
 
-  @Value("${ldapAuthBaseDN}")
-  private String ldapAuthBaseDN;
+  @Value("${ldapUserBaseDN}")
+  private String ldapUserBaseDN;
 
-  @Value("${ldapAuthBaseOUs}")
-  private String ldapAuthBaseOUs;
+  @Value("${ldapUserBaseOUs}")
+  private String ldapUserBaseOUs;
 
   @Value("${ldapLookupBaseDN}")
   private String ldapLookupBaseDN;
 
-  @Value("${ldapEmbeded}")
-  private boolean ldapEmbeded;
+  @Value("${ldapEmbedded}")
+  private boolean ldapEmbedded;
 
   @Value("${ldapSsl}")
   private boolean ldapSsl;
@@ -80,8 +82,11 @@ public class LdapService {
   @Autowired
   private EmbeddedLdap embeddedLdap;
 
+  @Autowired
+  private UserLdapDetailsFactory userLdapDetailsFactory;
+
   private void tryStartEmbeddedLdap() {
-    if (!ldapEmbeded) {
+    if (!ldapEmbedded) {
       return;
     }
 
@@ -128,6 +133,12 @@ public class LdapService {
     ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
   }
 
+  private List<String> allOUs() {
+    return Arrays.stream(ldapUserBaseOUs.split("\\|"))
+      .map(pair -> pair.split(",")[0])
+      .collect(Collectors.toList());
+  }
+
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public User syncUser(User user) {
     List<User> lst = new ArrayList<>();
@@ -141,8 +152,8 @@ public class LdapService {
 
   private SearchResultEntry getEntryByMail(String mail) {
     try {
-      for (String ou : ldapAuthBaseOUs.split(",")) {
-        String dn = ldapAuthBaseDN.replace("{}", ou);
+      for (String ou : allOUs()) {
+        String dn = ldapUserBaseDN.replace("{}", ou);
         SearchRequest ldapRequest = new SearchRequest(dn, SearchScope.SUB, "(mail=" + mail + ")");
         SearchResult ldapResult = ldapConnection.search(ldapRequest);
 
@@ -159,9 +170,8 @@ public class LdapService {
 
   private SearchResultEntry getEntryById(String id) {
     try {
-      for (String ou : ldapAuthBaseOUs.split(",")) {
-        String dn = ldapAuthBaseDN.replace("{}", ou);
-        logger.warn("tororlrlrororlro" + id);
+      for (String ou : ldapUserBaseOUs.split(",")) {
+        String dn = ldapUserBaseDN.replace("{}", ou);
         SearchRequest ldapRequest = new SearchRequest(dn, SearchScope.SUB, "(uid=" + id + ")");
         SearchResult ldapResult = ldapConnection.search(ldapRequest);
 
@@ -189,7 +199,7 @@ public class LdapService {
         return null;
       }
 
-      UserLdapDetails ldapDetails = new UserLdapDetails(ldapEntry);
+      UserLdapDetails ldapDetails = userLdapDetailsFactory.get(ldapEntry);
       String dn = null;
       try {
         dn = ldapEntry.getParentDNString();
@@ -214,16 +224,25 @@ public class LdapService {
       return users;
     }
 
-    List<User> updateables = forceUpdate ? users : getNoDetailsUsers(users);
     List<User> updated = new ArrayList<>();
 
-    for (User user : updateables) {
+    for (User user : users) {
       SearchRequest ldapRequest;
       SearchResultEntry ldapEntry;
+      boolean isRemoved = false;
 
       try {
+        // user does not need to update, irgnore
+        if (!forceUpdate && user.getLdapDetails() != null) {
+          updated.add(user);
+          continue;
+        }
+
         if (StringUtils.isEmpty(user.getLdapDN())) {
           ldapEntry = getEntryById(user.getId());
+          if (ldapEntry != null) {
+            user.setLdapDN(ldapEntry.getParentDNString());
+          }
         } else {
           ldapRequest = new SearchRequest(user.getLdapDN(), SearchScope.SUB, "(uid=" + user.getId() + ")");
           List<SearchResultEntry> entries = ldapConnection.search(ldapRequest).getSearchEntries();
@@ -232,12 +251,17 @@ public class LdapService {
 
         if (ldapEntry == null) {
           logger.warn("Failed to sync user {}: Not found in LDAP, will remove", user.getId());
+          userRepo.delete(user);
+          isRemoved = true;
         } else {
-          user.setLdapDetails(new UserLdapDetails(ldapEntry));
-          updated.add(user);
+          user.setLdapDetails(userLdapDetailsFactory.get(ldapEntry));
         }
       } catch (LDAPException e) {
         logger.error("Failed to sync user {}: LDAP error", user.getId());
+      }
+
+      if (!isRemoved) {
+        updated.add(user);
       }
     }
 

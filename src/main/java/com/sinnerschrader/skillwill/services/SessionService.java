@@ -73,101 +73,79 @@ public class SessionService {
     return sessionRepo.findByToken(token) != null;
   }
 
-  private String getMailFromToken(String token) {
+  private String extractMail(String token) {
     return new String(Base64.getDecoder().decode(token.split("\\|")[0]));
   }
 
-  private boolean isTokenMail(String token, String mail) {
-    String tokenMail;
-    try {
-      tokenMail = getMailFromToken(token);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      return false;
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public User getUserByToken(String token) {
+    Session session = getSession(token);
+    if (session == null) {
+      return null;
     }
-
-    return tokenMail.equals(mail);
-  }
-
-  private boolean isTokenMail(String token, User user) {
-    try {
-      return isTokenMail(token, user.getLdapDetails().getMail());
-    } catch (NullPointerException e) {
-      logger.warn("Cannot verify mail, user {}, has empty LDAP details", user.getId());
-      return false;
-    }
+    return userRepository.findByMail(session.getMail());
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public boolean checkToken(String token, String userId) {
-    User userFromId = userRepository.findByIdIgnoreCase(userId);
-
-    if (userFromId == null) {
-      if (isTokenInProxy(token)) {
-        // create user, create session, return true
-        User newUser = ldapService.createUserByMail(getMailFromToken(token));
-        userRepository.insert(newUser);
-        sessionRepo.insert(new Session(token));
-        logger.debug("Successfully new user {}", userId);
-        return true;
-      }
-      return false;
-    }
+  private Session getSession(String token) {
+    logger.debug("Getting session for token {}", token);
 
     if (isTokenInDB(token)) {
-      return true;
+      logger.debug("Successfully found token {} in DB", token);
+      return sessionRepo.findByToken(token);
     }
 
     if (isTokenInProxy(token)) {
-      sessionRepo.insert(new Session(token));
-      return true;
-    }
-
-    logger.debug("Failed to authenticate user {}", userId);
-    return false;
-  }
-
-  public boolean checkTokenRole(String token, Role role) {
-    if (!isTokenInDB(token)) {
-      if (isTokenInProxy(token)) {
-        sessionRepo.insert(new Session(token));
-      } else {
-        return false;
+      logger.debug("Successfully validated token {} with proxy", token);
+      if (userRepository.findByMail(extractMail(token)) == null) {
+        // user not in db yet, will create
+        User newUser = ldapService.createUserByMail(extractMail(token));
+        userRepository.insert(newUser);
+        logger.info("Successfully created new user {}", newUser.getId());
       }
+
+      // session not in DB, but in proxy -> create new session and revalidate old ones
+      refreshUserSessions(extractMail(token));
+      Session newSession = new Session(token);
+      sessionRepo.insert(newSession);
+      return newSession;
     }
 
-    User user = userRepository.findByMail(getMailFromToken(token));
-    return user != null && user.getRole() == role;
+    logger.debug("Failed to get Session for token {}: no session found", token);
+    return null;
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void clearUserSessions(User user) {
-    String mail;
-
-    try {
-      mail = user.getLdapDetails().getMail();
-    } catch (NullPointerException e) {
-      logger.warn("Cannot check session for user {}: no mail in LDAP details", user.getId());
-      return;
-    }
-
-    List<Session> clearables = sessionRepo.findByMail(mail)
-      .stream()
+  private void refreshUserSessions(String mail) {
+    List<Session> cleanables = sessionRepo.findByMail(mail).stream()
       .filter(session -> !isTokenInProxy(session.getToken()))
       .collect(Collectors.toList());
 
-    logger.debug("will remove {} session for user {}", clearables.size(), user.getId());
-    sessionRepo.deleteAll(clearables);
+    logger.debug("will remove {} sessions for mail {}", cleanables.size(), mail);
+    sessionRepo.deleteAll(cleanables);
+  }
+
+
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public boolean checkToken(String token, String userId) {
+    logger.debug("checking token {} for user {}", token, userId);
+    return getSession(token) != null && getUserByToken(token) != null && getUserByToken(token).getId().equals(userId);
+  }
+
+  public boolean checkTokenRole(String token, Role role) {
+    logger.debug("checking token {} for role {}", token, role.toString());
+    return getSession(token) != null && getUserByToken(token).getRole() == role;
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public void cleanUp() {
-    List<Session> clearables = sessionRepo.findAll()
+    List<Session> cleanables = sessionRepo.findAll()
       .stream()
-      .filter(session -> !isTokenInProxy(session.getToken()))
+      .filter(session -> !isTokenInProxy(session.getToken()) || userRepository.findByMail(session.getMail()) == null)
       .collect(Collectors.toList());
 
-    logger.info("Starting session cleanup, will remove {} sessions", clearables.size());
-    sessionRepo.deleteAll(clearables);
+    logger.info("Starting session cleanup, will remove {} sessions", cleanables.size());
+    sessionRepo.deleteAll(cleanables);
   }
 
 }

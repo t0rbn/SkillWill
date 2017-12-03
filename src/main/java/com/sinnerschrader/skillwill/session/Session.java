@@ -25,7 +25,11 @@ public class Session {
 
   private String getMailFromToken(String token) {
     // Oauth2 token: fooo|bar|baz -> foo = base64 encoded user mail
-    return new String(Base64.getDecoder().decode(token.split("\\|")[0]));
+    try {
+      return new String(Base64.getDecoder().decode(token.split("\\|")[0]));
+    } catch (NullPointerException e) {
+      return null;
+    }
   }
 
   public String getMail() {

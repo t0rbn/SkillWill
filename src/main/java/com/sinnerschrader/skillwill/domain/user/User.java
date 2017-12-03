@@ -132,6 +132,7 @@ public class User {
       obj.put("phone", ldapDetails.getPhone());
       obj.put("location", ldapDetails.getLocation());
       obj.put("title", ldapDetails.getTitle());
+      obj.put("company", ldapDetails.getCompany());
     }
 
     if (this.fitnessScore != null) {

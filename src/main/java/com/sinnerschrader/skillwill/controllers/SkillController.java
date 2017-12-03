@@ -32,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -164,17 +165,17 @@ public class SkillController {
     @ApiImplicitParam(name = "name", value = "new skill's name", paramType = "form", required = true),
     @ApiImplicitParam(name = "hidden", value = "hide skill in search/suggestions", paramType = "form", defaultValue = "false"),
     @ApiImplicitParam(name = "subskills", value = "list of subskills (separated with comma)", paramType = "form"),
-    @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form")
+    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true)
   })
   @RequestMapping(path = "/skills", method = RequestMethod.POST)
   public ResponseEntity<String> addSkill(
     @RequestParam String name,
     @RequestParam(required = false, defaultValue = "false") boolean hidden,
     @RequestParam(required = false, defaultValue = "") String subSkills,
-    @RequestParam String sessionKey) {
+    @CookieValue("_oauth2_proxy") String oAuthToken) {
 
-    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
-      return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
+    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
+      return new ResponseEntity<>(new StatusJSON("invalid session token or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -197,7 +198,7 @@ public class SkillController {
    */
   @ApiOperation(value = "delete skill", nickname = "delete skill", notes = "parameter must be a valid skill Id")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form", required = true),
+    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
     @ApiImplicitParam(name = "migrateTo", value = "skill to which old levels will be migrated", paramType = "form")
   })
   @ApiResponses({
@@ -207,9 +208,9 @@ public class SkillController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @RequestParam String sessionKey, @RequestParam(required = false) String migrateTo) {
-    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
-      return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
+  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @CookieValue("_oauth2_proxy") String oAuthToken, @RequestParam(required = false) String migrateTo) {
+    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
+      return new ResponseEntity<>(new StatusJSON("invalid session token or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -239,17 +240,17 @@ public class SkillController {
     @ApiImplicitParam(name = "name", value = "skill's new name", paramType = "form", required = false),
     @ApiImplicitParam(name = "hidden", value = "hide skill", paramType = "form", required = false),
     @ApiImplicitParam(name = "subskills", value = "skill's new subskills", paramType = "form", required = false),
-    @ApiImplicitParam(name = "sessionKey", value = "session of the current user", paramType = "form")
+    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkill(@PathVariable String skill,
     @RequestParam(required = false) String name,
     @RequestParam(required = false) Boolean hidden,
     @RequestParam(required = false) String subskills,
-    @RequestParam String sessionKey) {
+    @CookieValue("_oauth2_proxy") String oAuthToken) {
 
-    if (!sessionService.checkTokenRole(sessionKey, Role.ADMIN)) {
-      return new ResponseEntity<>(new StatusJSON("invalid sessionKey or user is not admin").toString(), HttpStatus.FORBIDDEN);
+    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
+      return new ResponseEntity<>(new StatusJSON("invalid session token or user is not admin").toString(), HttpStatus.FORBIDDEN);
     }
 
     try {

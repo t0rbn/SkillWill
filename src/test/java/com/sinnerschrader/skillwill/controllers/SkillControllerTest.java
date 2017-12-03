@@ -14,6 +14,7 @@ import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.userRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import com.sinnerschrader.skillwill.services.LdapService;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
 import java.io.IOException;
@@ -52,6 +53,9 @@ public class SkillControllerTest {
   private SessionRepository sessionRepo;
 
   @Autowired
+  private LdapService ldapService;
+
+  @Autowired
   private EmbeddedLdap embeddedLdap;
 
   @Before
@@ -73,7 +77,6 @@ public class SkillControllerTest {
     cobolSkill.incrementSuggestion("Java");
     skillRepo.insert(cobolSkill);
 
-
     User userUser = new User("aaaaaa");
     personRepo.insert(userUser);
 
@@ -81,10 +84,12 @@ public class SkillControllerTest {
     adminUser.setRole(Role.ADMIN);
     personRepo.insert(adminUser);
 
-    Session userSession = new Session("usersessionkey");
+    ldapService.syncUsers(personRepo.findAll(), true);
+
+    Session userSession = new Session("YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     sessionRepo.insert(userSession);
 
-    Session adminSession = new Session("adminsessionkey");
+    Session adminSession = new Session("YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     sessionRepo.insert(adminSession);
   }
 
@@ -219,72 +224,72 @@ public class SkillControllerTest {
 
   @Test
   public void testAddSkillValid() throws JSONException {
-    assertEquals(HttpStatus.OK, skillController.addSkill("foo", false, "", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.addSkill("foo", false, "", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertEquals("foo", new JSONArray(skillController.getSkills("fo", true, -1).getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testAddSkillEmptyName() {
-    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("", false, "", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("", false, "", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
   }
 
   @Test
   public void testAddSkillDuplicateName() {
-    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("Java", false, "", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("Java", false, "", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
   }
 
   @Test
   public void testAddSkillWithSubskills() {
-    assertEquals(HttpStatus.OK, skillController.addSkill("New Skill", false, "Java, COBOL", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.addSkill("New Skill", false, "Java, COBOL", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertEquals(HttpStatus.OK, skillController.getSkill("New Skill").getStatusCode());
   }
 
   @Test
   public void testAddSkillWithUnknownSubskill() {
-    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("New Skill", false, "Java, COBOL, Wurstwasser", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.addSkill("New Skill", false, "Java, COBOL, Wurstwasser", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertEquals(HttpStatus.NOT_FOUND, skillController.getSkill("New Skill").getStatusCode());
   }
 
   @Test
   public void testAddSkillWithHiddenSubskill() {
-    assertEquals(HttpStatus.OK, skillController.addSkill("New Skill", false, "Java, hidden skill", "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.addSkill("New Skill", false, "Java, hidden skill", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
   }
 
   @Test
   public  void testAddSkillUnprivilegedRole() {
-    assertEquals(HttpStatus.FORBIDDEN, skillController.addSkill("New Skill", false, "Java, hidden skill", "usersessionkey").getStatusCode());
+    assertEquals(HttpStatus.FORBIDDEN, skillController.addSkill("New Skill", false, "Java, hidden skill", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
   }
 
   @Test
   public void testDeleteValid() throws JSONException {
-    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey", null).getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", null).getStatusCode());
     assertEquals(0, new JSONArray(skillController.getNext("COBOL", 1).getBody()).length());
   }
 
   @Test
   public void testDeleteEmpty() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("", "adminsessionkey", null).getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", null).getStatusCode());
   }
 
   @Test
   public void testDeleteUnknown() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("foo", "adminsessionkey", null).getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("foo", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", null).getStatusCode());
   }
 
   @Test
   public void testDeleteUnprivilegedRole() {
-    assertEquals(HttpStatus.FORBIDDEN, skillController.deleteSkill("foo", "usersessionkey", null).getStatusCode());
+    assertEquals(HttpStatus.FORBIDDEN, skillController.deleteSkill("foo", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", null).getStatusCode());
   }
 
   @Test
   public void testDeleteMigrateTargetNotFound() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("Java", "adminsessionkey", "Ramalamadingdong").getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.deleteSkill("Java", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "Ramalamadingdong").getStatusCode());
     assertNotNull(skillRepo.findByName("Java"));
   }
 
   @Test
   public void testDeleteMigrateToSource() {
-    assertEquals(HttpStatus.BAD_REQUEST, skillController.deleteSkill("Java", "adminsessionkey", "Java").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.deleteSkill("Java", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "Java").getStatusCode());
     assertNotNull(skillRepo.findByName("Java"));
   }
 
@@ -294,7 +299,7 @@ public class SkillControllerTest {
     aUser.addUpdateSkill("Java", 1, 3, false, true);
     personRepo.save(aUser);
 
-    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey", "COBOL").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "COBOL").getStatusCode());
     assertNull(skillRepo.findByName("Java"));
 
     aUser = personRepo.findByIdIgnoreCase("aaaaaa");
@@ -312,7 +317,7 @@ public class SkillControllerTest {
     aUser.addUpdateSkill("COBOL", 2, 0, false, false);
     personRepo.save(aUser);
 
-    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "adminsessionkey", "COBOL").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "COBOL").getStatusCode());
     assertNull(skillRepo.findByName("Java"));
 
     aUser = personRepo.findByIdIgnoreCase("aaaaaa");
@@ -329,7 +334,7 @@ public class SkillControllerTest {
     aUser.addUpdateSkill("Java", 1, 3, false, true);
     personRepo.save(aUser);
 
-    assertEquals(HttpStatus.OK, skillController.deleteSkill("COBOL", "adminsessionkey", "Java").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.deleteSkill("COBOL", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "Java").getStatusCode());
     assertNull(skillRepo.findByName("COBOL"));
 
     aUser = personRepo.findByIdIgnoreCase("aaaaaa");
@@ -342,83 +347,83 @@ public class SkillControllerTest {
 
   @Test
   public void testEditValid() {
-    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "foobar", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "foobar", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNull(skillRepo.findByName("Java"));
     assertNotNull(skillRepo.findByName("foobar"));
   }
 
   @Test
   public void testEditOldUnknown() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill("foobar", "barfoo", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill("foobar", "barfoo", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNull(skillRepo.findByName("barfoo"));
     assertNull(skillRepo.findByName("foobar"));
   }
 
   @Test
   public void testEditOldEmpty() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill("", "barfoo", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill("", "barfoo", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNull(skillRepo.findByName(""));
     assertNull(skillRepo.findByName("foobar"));
   }
 
   @Test
   public void testEditOldNull() {
-    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill(null, "barfoo", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, skillController.updateSkill(null, "barfoo", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNull(skillRepo.findByName("barfoo"));
   }
 
   @Test
   public void testEditNewExisting() {
-    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", "COBOL", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", "COBOL", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNotNull(skillRepo.findByName("Java"));
   }
 
   @Test
   public void testEditNewEmptyString() {
-    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNotNull(skillRepo.findByName("Java"));
     assertNull(skillRepo.findByName(""));
   }
 
   @Test
   public void testEditNewNull() {
-    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", null, null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", null, null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNotNull(skillRepo.findByName("Java"));
   }
 
   @Test
   public void testEditOldHasSpace() {
-    assertEquals(HttpStatus.OK, skillController.updateSkill("Java ", "Foobar", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java ", "Foobar", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNotNull(skillRepo.findByName("Foobar"));
   }
 
   @Test
   public void testEditNewHasSpaceValid() {
-    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "Foobar ", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.OK, skillController.updateSkill("Java", "Foobar ", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNotNull(skillRepo.findByName("Foobar"));
   }
 
   @Test
   public void testEditNewHasSpaceExisting() {
-    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", " COBOL", null, null, "adminsessionkey").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, skillController.updateSkill("Java", " COBOL", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
     assertNotNull(skillRepo.findByName("Java"));
   }
 
   @Test
   public void testEditKeepSubskills() {
-   skillController.updateSkill("Java", "foobar", null, null, "adminsessionkey");
+   skillController.updateSkill("Java", "foobar", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
    assertEquals("COBOL", skillRepo.findByName("foobar").getSuggestions().get(0).getName());
   }
 
   @Test
   public void testEditRenameSubskills() {
-    skillController.updateSkill("Java", "foobar", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "foobar", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals("foobar", skillRepo.findByName("COBOL").getSuggestions().get(0).getName());
   }
 
   @Test
   public void testEditRenameSubskillsWithSpace() {
-    skillController.updateSkill("Java", "foobar ", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "foobar ", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals("foobar", skillRepo.findByName("COBOL").getSuggestions().get(0).getName());
   }
 
@@ -428,7 +433,7 @@ public class SkillControllerTest {
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
-    skillController.updateSkill("Java", null, null, null, "adminsessionkey");
+    skillController.updateSkill("Java", null, null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals("aaaaaa", personRepo.findBySkill("Java").get(0).getId());
   }
 
@@ -438,7 +443,7 @@ public class SkillControllerTest {
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
-    skillController.updateSkill("Java", "", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals("aaaaaa", personRepo.findBySkill("Java").get(0).getId());
   }
 
@@ -448,7 +453,7 @@ public class SkillControllerTest {
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
-    skillController.updateSkill("Java", "Foobar", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "Foobar", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals("aaaaaa", personRepo.findBySkill("Foobar").get(0).getId());
   }
 
@@ -458,7 +463,7 @@ public class SkillControllerTest {
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
-    skillController.updateSkill("Java", "Foobar ", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "Foobar ", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals("aaaaaa", personRepo.findBySkill("Foobar").get(0).getId());
   }
 
@@ -468,7 +473,7 @@ public class SkillControllerTest {
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
-    skillController.updateSkill("Java", "", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertFalse(personRepo.findBySkill("Java").get(0).getSkill("Java").isHidden());
   }
 
@@ -478,27 +483,27 @@ public class SkillControllerTest {
     p.addUpdateSkill("Java", 3, 3, false, true);
     personRepo.save(p);
 
-    skillController.updateSkill("Java", "", true, null, "adminsessionkey");
+    skillController.updateSkill("Java", "", true, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertTrue(personRepo.findBySkill("Java").get(0).getSkill("Java").isHidden());
   }
 
   @Test
   public void testEditKeepSuggestions() {
-    skillController.updateSkill("Java", "", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals(1, skillRepo.findByName("COBOL").getSuggestions().size());
     assertEquals("Java", skillRepo.findByName("COBOL").getSuggestions().get(0).getName());
   }
 
   @Test
   public void testEditRenameSuggestions() {
-    skillController.updateSkill("Java", "Foobar", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "Foobar", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals(1, skillRepo.findByName("COBOL").getSuggestions().size());
     assertEquals("Foobar", skillRepo.findByName("COBOL").getSuggestions().get(0).getName());
   }
 
   @Test
   public void testEditRenameSuggestionsWithSpace() {
-    skillController.updateSkill("Java", "   Foobar ", null, null, "adminsessionkey");
+    skillController.updateSkill("Java", "   Foobar ", null, null, "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
     assertEquals(1, skillRepo.findByName("COBOL").getSuggestions().size());
     assertEquals("Foobar", skillRepo.findByName("COBOL").getSuggestions().get(0).getName());
   }

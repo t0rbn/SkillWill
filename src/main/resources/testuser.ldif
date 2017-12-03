@@ -508,7 +508,7 @@ dn: uid=markoc,ou=users,dc=sinnerschrader,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
-objectClass: szzUser
+objectClass: szzUser`
 objectClass: posixAccount
 objectClass: sambaSamAccount
 givenName: Marlene

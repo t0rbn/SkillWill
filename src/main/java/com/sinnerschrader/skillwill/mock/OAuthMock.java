@@ -1,6 +1,8 @@
 package com.sinnerschrader.skillwill.mock;
 
 import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.services.SessionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,16 @@ public class OAuthMock {
   @Value("${mockOAuth}")
   private String mockOAuth;
 
+  @Autowired
+  private SessionService sessionService;
+
   @RequestMapping(path = "/oauthmock", method = RequestMethod.GET)
   public ResponseEntity<String> getOAuthMock(@CookieValue("_oauth2_proxy") String oAuthToken) {
     if (StringUtils.isEmpty(mockOAuth) || !mockOAuth.equals("true")) {
       return new ResponseEntity<>(new StatusJSON("mocking disabled").getJSON().toString(), HttpStatus.LOCKED);
     }
 
-    if (oAuthToken.equals("YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar") || oAuthToken.equals("YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar")) {
+    if (sessionService.getUserByToken(oAuthToken) != null) {
       return new ResponseEntity<>(new StatusJSON("ok").getJSON().toString(), HttpStatus.ACCEPTED);
     }
 

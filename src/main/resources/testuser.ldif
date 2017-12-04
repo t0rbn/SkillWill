@@ -24,7 +24,7 @@ ou: tech-user
 dn: cn=tech-user,ou=tech-user,dc=sinnerschrader,dc=com
 userPassword: fleischcreme
 
-dn: uid=torree,ou=users,dc=sinnerschrader,dc=com
+dn: uid=isawer,ou=users,dc=sinnerschrader,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -32,9 +32,9 @@ objectClass: szzUser
 objectClass: posixAccount
 objectClass: sambaSamAccount
 givenName: Isabella
-uid: torree
+uid: isawer
 sn: Werner
-mail: torben.reetz@sinnerschrader.com
+mail: isabella.werner@sinnerschrader.com
 userPassword:  password
 title:  Designer
 l: Frankfurt

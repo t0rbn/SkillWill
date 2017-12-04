@@ -83,7 +83,13 @@ public class SessionService {
     if (session == null) {
       return null;
     }
-    return userRepository.findByMail(session.getMail());
+
+    User user = userRepository.findByMail(session.getMail());
+    if (user == null) {
+      user = ldapService.createUserByMail(extractMail(token));
+    }
+
+    return user;
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

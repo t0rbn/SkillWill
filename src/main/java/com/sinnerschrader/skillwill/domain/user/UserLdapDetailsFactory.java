@@ -49,7 +49,7 @@ public class UserLdapDetailsFactory {
       entry.getAttributeValue("givenName"),
       entry.getAttributeValue("sn"),
       entry.getAttributeValue("mail"),
-      entry.getAttributeValue("telephoneNumberNumber"),
+      entry.getAttributeValue("telephoneNumber"),
       entry.getAttributeValue("l"),
       entry.getAttributeValue("title"),
       company

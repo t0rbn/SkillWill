@@ -1,10 +1,9 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
 import BasicProfile from './basic-profile.jsx'
 import SkillSearch from '../search/skill-search.jsx'
 import Icon from '../icon/icon.jsx'
+import Layer from "../layer/layer"
 import { apiServer } from '../../env.js'
-import Cookies from 'react-cookie'
 import {
 	getUserProfileData,
 	toggleSkillsEditMode,
@@ -19,8 +18,7 @@ class MyProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			sessionKey: null,
-			userId: this.props.params.id,
+			userId: this.props.user.id,
 			data: null,
 			dataLoaded: false,
 			editLayerOpen: false,
@@ -29,7 +27,6 @@ class MyProfile extends React.Component {
 			skillSearchOpen: false,
 			skillEditOpen: false,
 		}
-		this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this)
 		this.toggleSkillsSearch = this.toggleSkillsSearch.bind(this)
 		this.toggleSkillsEdit = this.toggleSkillsEdit.bind(this)
 		this.editSkill = this.editSkill.bind(this)
@@ -37,37 +34,15 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		this.props.getUserProfileData(this.state.userId)
-		if (!this.checkAndOpenLogin()) {
-			browserHistory.push('/my-profile/login')
+		// this.props.getUserProfileData(this.state.userId)
+		if (this.props.user.userLoaded) {
+			document.body.classList.add('my-profile-open')
 		}
-		if (!this.checkUser()) {
-			browserHistory.push('/my-profile/login')
-		}
-		document.body.classList.add('my-profile-open')
 	}
 
 	componentWillUnmount() {
 		this.props.exitSkillsEditMode()
 		document.body.classList.remove('my-profile-open')
-	}
-
-	checkAndOpenLogin() {
-		const sessionKey = this.state.sessionKey || Cookies.load('sessionKey')
-		if (sessionKey !== this.state.sessionKey || !sessionKey) {
-			this.setState({ sessionKey: sessionKey })
-		}
-		return !!sessionKey
-	}
-
-	checkUser() {
-		const { userId } = this.state
-		// check if the profiles userID matches with the logged in user
-		const user = Cookies.load('user')
-		if (user !== userId) {
-			return false
-		}
-		return true
 	}
 
 	toggleSkillsSearch() {
@@ -87,7 +62,7 @@ class MyProfile extends React.Component {
 	}
 
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
-		const { userId, sessionKey } = this.state
+		const { userId } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
       alert('Please select a value greater than 0') // eslint-disable-line
 			return
@@ -96,7 +71,6 @@ class MyProfile extends React.Component {
 		postData.append('skill', skill)
 		postData.append('skill_level', skillLevel)
 		postData.append('will_level', willLevel)
-		postData.append('sessionKey', sessionKey)
 		postData.append('mentor', isMentor)
 		const options = {
 			method: 'POST',
@@ -108,18 +82,16 @@ class MyProfile extends React.Component {
 	}
 
 	deleteSkill(skill) {
-		const { userId, sessionKey } = this.state
+		const { userId } = this.state
 		const options = { method: 'DELETE', credentials: 'same-origin' }
-		const requestURL = `${apiServer}/users/${userId}/skills?sessionKey=${sessionKey}&skill=${encodeURIComponent(
+		const requestURL = `${apiServer}/users/${userId}/skills?skill=${encodeURIComponent(
 			skill
 		)}`
 		fetch(requestURL, options)
 			.then(res => {
 				if (res.status === 403) {
-          alert('sessionKey abgelaufen') // eslint-disable-line
-					Cookies.remove('sessionKey')
+          alert('session invalid') // eslint-disable-line
 					this.setState({
-						sessionKey: null,
 						editLayerOpen: false,
 					})
 					this.props.getUserProfileData(userId)
@@ -142,67 +114,69 @@ class MyProfile extends React.Component {
 			skillEditOpen,
 			userId,
 		} = this.state
-		const { userLoaded } = this.props
-
+		const { userLoaded } = this.props.user
 		return userLoaded ? (
 			skillSearchOpen ? (
-				<div className="profile">
-					<SkillSearch
-						handleEdit={this.editSkill}
-						handleDelete={this.deleteSkill}
-						userId={userId}
-					/>
-					<div className="profile-actions" data-skillsearch={skillSearchOpen}>
-						<button
-							className="edit-skill-btn"
-							onClick={this.toggleSkillsEdit}
-							disabled={skillSearchOpen}>
-							<Icon name="edit" size={19} />
-							Customize skills
-						</button>
-						<button className="add-skill-btn" onClick={this.toggleSkillsSearch}>
-							<Icon name="checkmark" size={19} />
-							Done
-						</button>
+				<Layer>
+					<div className="profile">
+						<SkillSearch
+							handleEdit={this.editSkill}
+							handleDelete={this.deleteSkill}
+							userId={userId}
+						/>
+						<div className="profile-actions" data-skillsearch={skillSearchOpen}>
+							<button
+								className="edit-skill-btn"
+								onClick={this.toggleSkillsEdit}
+								disabled={skillSearchOpen}>
+								<Icon name="edit" size={19} />
+								Customize skills
+							</button>
+							<button className="add-skill-btn" onClick={this.toggleSkillsSearch}>
+								<Icon name="checkmark" size={19} />
+								Done
+							</button>
+						</div>
 					</div>
-				</div>
-			) : (
-				<div className="profile">
-					<BasicProfile
-						openLayerAt={openLayerAt}
-						shouldShowAllSkills={shouldShowAllSkills}
-						checkLogin={this.checkAndOpenLogin}
-						editSkill={this.editSkill}
-						deleteSkill={this.deleteSkill}
-						setLastSortedBy={this.props.setLastSortedBy}
-						lastSortedBy={this.props.lastSortedBy}
-						getUserProfileData={this.props.getUserProfileData}
-					/>
-					<div className="profile-actions" data-skilledit={skillEditOpen}>
-						<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
-							{skillEditOpen ? (
-								<Icon name="checkmark" size={18} />
-							) : (
-								<Icon name="edit" size={18} />
-							)}
-							{skillEditOpen ? 'Done' : 'Customize skills'}
-						</button>
-						<button
-							className="add-skill-btn"
-							onClick={this.toggleSkillsSearch}
-							disabled={skillEditOpen}>
-							<Icon name="plus" size={18} />
-							Add new skill
-						</button>
+				</Layer>
+				) : (
+				<Layer>
+					<div className="profile">
+						<BasicProfile
+							openLayerAt={openLayerAt}
+							shouldShowAllSkills={shouldShowAllSkills}
+							editSkill={this.editSkill}
+							deleteSkill={this.deleteSkill}
+							setLastSortedBy={this.props.setLastSortedBy}
+							lastSortedBy={this.props.lastSortedBy}
+							getUserProfileData={this.props.getUserProfileData}
+						/>
+						<div className="profile-actions" data-skilledit={skillEditOpen}>
+							<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
+								{skillEditOpen ? (
+									<Icon name="checkmark" size={18} />
+								) : (
+									<Icon name="edit" size={18} />
+								)}
+								{skillEditOpen ? 'Done' : 'Customize skills'}
+							</button>
+							<button
+								className="add-skill-btn"
+								onClick={this.toggleSkillsSearch}
+								disabled={skillEditOpen}>
+								<Icon name="plus" size={18} />
+								Add new skill
+							</button>
+						</div>
 					</div>
-				</div>
+				</Layer>
 			)
 		) : null
 	}
 }
 function mapStateToProps(state) {
 	return {
-		userLoaded: state.user.userLoaded,
+		user: state.user,
 		lastSortedBy: state.lastSortedBy,
 	}
 }

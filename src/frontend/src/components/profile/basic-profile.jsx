@@ -135,7 +135,7 @@ class BasicProfile extends React.Component {
 
 	render() {
 		const {
-			user: { id, firstName, lastName, title, location, mail, phone },
+			user: { id, firstName, lastName, title, location, mail, phone, company },
 		} = this.props
 
 		const {
@@ -166,7 +166,7 @@ class BasicProfile extends React.Component {
 					<p className="id">{id}</p>
 					<p className="department">{title}</p>
 					<p className="location phone">
-						{location} / TEL. {phone}
+						{company} - {location} / TEL. {phone}
 					</p>
 					<div className="social">
 						<Link className="mail" href={`mailto:${mail}`} target="_blank">

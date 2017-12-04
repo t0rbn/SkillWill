@@ -132,6 +132,18 @@ export function getUserProfileData(profile) {
 	}
 }
 
+export function login() {
+	return function(dispatch) {
+		const requestURL = `${apiServer}/session/user`
+		fetch(requestURL, {credentials: 'include'}).then(res => res.json()).then(user => {
+			dispatch({
+				type: GET_PROFILE_DATA,
+				payload: user
+			})
+		})
+	}
+}
+
 export const CLEAR_USER_DATA = 'CLEAR_USER_DATA'
 export function clearUserData() {
 	return {

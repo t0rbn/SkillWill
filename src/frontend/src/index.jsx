@@ -14,8 +14,6 @@ import SkillSearch from './components/search/skill-search.jsx'
 import Layer from './components/layer/layer.jsx'
 import MyProfile from './components/profile/my-profile.jsx'
 import OthersProfile from './components/profile/others-profile.jsx'
-import Login from './components/login/login.jsx'
-import Logout from './components/logout/logout.jsx'
 
 const store = createStore(
 	combineReducers(Object.assign({}, reducers, { routing: routerReducer })),
@@ -42,12 +40,8 @@ const renderApp = Application => {
 						<Route path="profile" component={Layer}>
 							<Route path=":id" component={OthersProfile} />
 						</Route>
-						<Route path="my-profile" component={Layer}>
-							<Route path="login" component={Login} />
-							<Route path="logout" component={Logout} />
-							<Route path=":id" component={MyProfile}>
-								<Route path="add-skill" component={SkillSearch} />
-							</Route>
+						<Route path="my-profile" component={MyProfile}>
+							<Route path="add-skill" component={SkillSearch} />
 						</Route>
 					</Route>
 				</Router>

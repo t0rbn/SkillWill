@@ -9,7 +9,7 @@ import com.sinnerschrader.skillwill.domain.skills.SuggestionSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +44,7 @@ public class SkillService {
   private SkillRepository skillRepository;
 
   @Autowired
-  private userRepository userRepository;
+  private UserRepository UserRepository;
 
   private List<KnownSkill> getAllSkills(boolean excludeHidden) {
     return excludeHidden ? skillRepository.findAllExcludeHidden() : skillRepository.findAll();
@@ -250,13 +250,13 @@ public class SkillService {
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   private void updateInPersons(KnownSkill oldSkill, KnownSkill newSkill) {
     logger.debug("updating Skill {} in users", oldSkill.getName());
-    List<User> users = userRepository.findBySkill(oldSkill.getName());
+    List<User> users = UserRepository.findBySkill(oldSkill.getName());
 
     users.forEach(p -> {
       UserSkill oldUserSkill = p.getSkill(oldSkill.getName());
       p.addUpdateSkill(newSkill.getName(), oldUserSkill.getSkillLevel(), oldUserSkill.getWillLevel(), newSkill.isHidden(), oldUserSkill.isMentor());
     });
-    userRepository.saveAll(users);
+    UserRepository.saveAll(users);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -273,9 +273,9 @@ public class SkillService {
     }
 
     // delete from persons
-    for (User user : userRepository.findBySkill(name)) {
+    for (User user : UserRepository.findBySkill(name)) {
       user.removeSkill(name);
-      userRepository.save(user);
+      UserRepository.save(user);
     }
 
     // delete from known skills
@@ -299,7 +299,7 @@ public class SkillService {
       throw new IllegalArgumentException("Source and target may not be equal");
     }
 
-    List<User> migrateables = userRepository.findBySkill(from.getName()).stream()
+    List<User> migrateables = UserRepository.findBySkill(from.getName()).stream()
       .filter(user -> !user.hasSkill(to.getName()))
       .collect(Collectors.toList());
 
@@ -309,7 +309,7 @@ public class SkillService {
       user.removeSkill(from.getName());
     });
 
-    userRepository.saveAll(migrateables);
+    UserRepository.saveAll(migrateables);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

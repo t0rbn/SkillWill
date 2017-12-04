@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.Query;
  *
  * @author torree
  */
-public interface userRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<User, String> {
 
   User findByIdIgnoreCase(String id);
 

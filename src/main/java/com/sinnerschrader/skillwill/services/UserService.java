@@ -9,7 +9,7 @@ import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.util.Collection;
 import java.util.Comparator;
@@ -39,7 +39,7 @@ public class UserService {
   private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   @Autowired
-  private userRepository userRepository;
+  private UserRepository UserRepository;
 
   @Autowired
   private LdapService ldapService;
@@ -62,10 +62,10 @@ public class UserService {
     List<User> candidates;
 
     if (CollectionUtils.isEmpty(skills)) {
-      candidates = userRepository.findAll();
+      candidates = UserRepository.findAll();
     } else {
       List<String> skillNames = skills.stream().map(KnownSkill::getName).collect(Collectors.toList());
-      candidates = userRepository.findBySkills(skillNames).stream()
+      candidates = UserRepository.findBySkills(skillNames).stream()
           .peek(p -> p.setFitnessScore(skills, fitnessScoreProperties))
           .sorted(Comparator.comparingDouble(User::getFitnessScoreValue).reversed())
           .collect(Collectors.toList());
@@ -93,7 +93,7 @@ public class UserService {
   }
 
   public User getUser(String id) {
-    User p = userRepository.findByIdIgnoreCase(id);
+    User p = UserRepository.findByIdIgnoreCase(id);
 
     if (p == null) {
       logger.debug("Failed to find user {}: not found", id);
@@ -117,7 +117,7 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    User user = userRepository.findByIdIgnoreCase(username);
+    User user = UserRepository.findByIdIgnoreCase(username);
 
     if (user == null) {
       logger.debug("Failed to add/modify {}'s skills: user not found", username);
@@ -137,7 +137,7 @@ public class UserService {
     }
 
     user.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName), mentor);
-    userRepository.save(user);
+    UserRepository.save(user);
 
     logger.info("Successfully updated {}'s skill {}", username, skillName);
   }
@@ -151,7 +151,7 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    User user = userRepository.findByIdIgnoreCase(username);
+    User user = UserRepository.findByIdIgnoreCase(username);
 
     if (user == null) {
       logger.debug("Failed to remove {}'s skills: user not found", username);
@@ -164,7 +164,7 @@ public class UserService {
     }
 
     user.removeSkill(skillName);
-    userRepository.save(user);
+    UserRepository.save(user);
   }
 
   private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
@@ -181,7 +181,7 @@ public class UserService {
       throw new IllegalArgumentException("count must be a positive integer");
     }
 
-    List<User> toSearch = userRepository.findAll();
+    List<User> toSearch = UserRepository.findAll();
     Optional<User> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
 
     if (!person.isPresent()) {
@@ -194,7 +194,7 @@ public class UserService {
   }
 
   public Role getRole(String userId) {
-    User user = userRepository.findByIdIgnoreCase(userId);
+    User user = UserRepository.findByIdIgnoreCase(userId);
     if (user == null) {
       throw new UserNotFoundException("user not found");
     }
@@ -203,7 +203,7 @@ public class UserService {
   }
 
   public void updateRole(String userId, Role role) {
-    User user = userRepository.findByIdIgnoreCase(userId);
+    User user = UserRepository.findByIdIgnoreCase(userId);
     if (user == null) {
       throw new UserNotFoundException("user not found");
     }
@@ -213,7 +213,7 @@ public class UserService {
     }
 
     user.setRole(role);
-    userRepository.save(user);
+    UserRepository.save(user);
   }
 
   public void updateRole(String userId, String roleName) throws IllegalArgumentException {

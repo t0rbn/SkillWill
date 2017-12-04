@@ -3,7 +3,7 @@ package com.sinnerschrader.skillwill.misc;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.UserSkill;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Component;
 public class StatisticsInfoContributor implements InfoContributor {
 
   @Autowired
-  private userRepository userRepository;
+  private UserRepository UserRepository;
 
   @Autowired
   private SkillRepository skillRepository;
 
   private void contributeUserCount(Info.Builder builder) {
-    builder.withDetail("users_total", userRepository.count());
+    builder.withDetail("users_total", UserRepository.count());
   }
 
   private void contributeSkillCount(Info.Builder builder) {
@@ -58,7 +58,7 @@ public class StatisticsInfoContributor implements InfoContributor {
 
   @Override
   public void contribute(Info.Builder builder) {
-    List<User> users = userRepository.findAll();
+    List<User> users = UserRepository.findAll();
 
     contributeUserCount(builder);
     contributeSkillCount(builder);

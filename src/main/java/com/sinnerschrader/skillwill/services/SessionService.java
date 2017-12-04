@@ -2,7 +2,7 @@ package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class SessionService {
   private SessionRepository sessionRepo;
 
   @Autowired
-  private userRepository userRepository;
+  private UserRepository UserRepository;
 
   @Autowired
   private LdapService ldapService;
@@ -73,7 +73,7 @@ public class SessionService {
     return sessionRepo.findByToken(token) != null;
   }
 
-  private String extractMail(String token) {
+  public String extractMail(String token) {
     return new String(Base64.getDecoder().decode(token.split("\\|")[0]));
   }
 
@@ -84,7 +84,7 @@ public class SessionService {
       return null;
     }
 
-    User user = userRepository.findByMail(session.getMail());
+    User user = UserRepository.findByMail(session.getMail());
     if (user == null) {
       user = ldapService.createUserByMail(extractMail(token));
     }
@@ -103,10 +103,10 @@ public class SessionService {
 
     if (isTokenInProxy(token)) {
       logger.debug("Successfully validated token {} with proxy", token);
-      if (userRepository.findByMail(extractMail(token)) == null) {
+      if (UserRepository.findByMail(extractMail(token)) == null) {
         // user not in db yet, will create
         User newUser = ldapService.createUserByMail(extractMail(token));
-        userRepository.insert(newUser);
+        UserRepository.insert(newUser);
         logger.info("Successfully created new user {}", newUser.getId());
       }
 
@@ -147,7 +147,7 @@ public class SessionService {
   public void cleanUp() {
     List<Session> cleanables = sessionRepo.findAll()
       .stream()
-      .filter(session -> !isTokenInProxy(session.getToken()) || userRepository.findByMail(session.getMail()) == null)
+      .filter(session -> !isTokenInProxy(session.getToken()) || UserRepository.findByMail(session.getMail()) == null)
       .collect(Collectors.toList());
 
     logger.info("Starting session cleanup, will remove {} sessions", cleanables.size());

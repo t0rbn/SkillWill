@@ -4,7 +4,7 @@ import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.jobs.LdapSyncJob;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class MockData {
   private SkillRepository skillRepo;
 
   @Autowired
-  private userRepository personRepo;
+  private UserRepository personRepo;
 
   @Autowired
   private LdapSyncJob ldapSyncJob;

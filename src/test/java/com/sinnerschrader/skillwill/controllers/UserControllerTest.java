@@ -9,7 +9,7 @@ import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
@@ -43,7 +43,7 @@ public class UserControllerTest {
   private UserController userController;
 
   @Autowired
-  private userRepository personRepo;
+  private UserRepository personRepo;
 
   @Autowired
   private SkillRepository skillRepo;

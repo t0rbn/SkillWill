@@ -5,7 +5,7 @@ import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.UserLdapDetails;
 import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
-import com.sinnerschrader.skillwill.repositories.userRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
@@ -20,9 +20,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -77,7 +75,7 @@ public class LdapService {
   private String ldapLookupPassword;
 
   @Autowired
-  private userRepository userRepo;
+  private UserRepository userRepo;
 
   @Autowired
   private EmbeddedLdap embeddedLdap;

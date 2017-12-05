@@ -46,10 +46,6 @@ class BasicProfile extends React.Component {
 			this.setState({ numberOfSkillsToShow: Infinity })
 	}
 
-	componentWillUnmount() {
-		this.props.clearUserData()
-	}
-
 	removeAnimationClass() {
 		this.node.classList.remove('animateable')
 		this.node.removeEventListener(

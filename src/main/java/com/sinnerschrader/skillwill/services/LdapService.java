@@ -168,7 +168,7 @@ public class LdapService {
 
   private SearchResultEntry getEntryById(String id) {
     try {
-      for (String ou : ldapUserBaseOUs.split(",")) {
+      for (String ou : allOUs()) {
         String dn = ldapUserBaseDN.replace("{}", ou);
         SearchRequest ldapRequest = new SearchRequest(dn, SearchScope.SUB, "(uid=" + id + ")");
         SearchResult ldapResult = ldapConnection.search(ldapRequest);

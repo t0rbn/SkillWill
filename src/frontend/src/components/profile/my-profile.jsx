@@ -11,6 +11,7 @@ import {
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
+	fetchCurrentUser
 } from '../../actions'
 import { connect } from 'react-redux'
 
@@ -18,7 +19,6 @@ class MyProfile extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			userId: this.props.user.id,
 			data: null,
 			dataLoaded: false,
 			editLayerOpen: false,
@@ -34,9 +34,11 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		// this.props.getUserProfileData(this.state.userId)
-		if (this.props.user.userLoaded) {
+		const { currentUser } = this.props
+		if (currentUser.loaded) {
 			document.body.classList.add('my-profile-open')
+		}else{
+			this.props.fetchCurrentUser()
 		}
 	}
 
@@ -46,14 +48,14 @@ class MyProfile extends React.Component {
 	}
 
 	toggleSkillsSearch() {
-		this.props.getUserProfileData(this.state.userId)
+		this.props.fetchCurrentUser()
 		this.setState({
 			skillSearchOpen: !this.state.skillSearchOpen,
 		})
 	}
 
 	toggleSkillsEdit() {
-		this.props.getUserProfileData(this.state.userId)
+		this.props.fetchCurrentUser()
 		this.props.toggleSkillsEditMode()
 		this.setState({
 			skillEditOpen: !this.state.skillEditOpen,
@@ -61,8 +63,12 @@ class MyProfile extends React.Component {
 		document.body.classList.toggle('is-edit-mode')
 	}
 
+	getCurrentUserId() {
+		const { currentUser } = this.props
+		return currentUser.id
+	}
+
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
-		const { userId } = this.state
 		if (skillLevel === '0' && willLevel === '0') {
       alert('Please select a value greater than 0') // eslint-disable-line
 			return
@@ -77,14 +83,12 @@ class MyProfile extends React.Component {
 			body: postData,
 			credentials: 'same-origin',
 		}
-
-		this.props.updateUserSkills(options, userId)
+		this.props.updateUserSkills(options, this.getCurrentUserId())
 	}
 
 	deleteSkill(skill) {
-		const { userId } = this.state
 		const options = { method: 'DELETE', credentials: 'same-origin' }
-		const requestURL = `${apiServer}/users/${userId}/skills?skill=${encodeURIComponent(
+		const requestURL = `${apiServer}/users/${this.getCurrentUserId()}/skills?skill=${encodeURIComponent(
 			skill
 		)}`
 		fetch(requestURL, options)
@@ -94,13 +98,13 @@ class MyProfile extends React.Component {
 					this.setState({
 						editLayerOpen: false,
 					})
-					this.props.getUserProfileData(userId)
+					this.props.fetchCurrentUser()
 				}
 
 				if (res.status !== 200) {
 					throw Error('error while deleting skills')
 				} else {
-					this.props.getUserProfileData(userId)
+					this.props.fetchCurrentUser()
 				}
 			})
 			.catch(err => console.log(err))
@@ -114,8 +118,12 @@ class MyProfile extends React.Component {
 			skillEditOpen,
 			userId,
 		} = this.state
-		const { userLoaded } = this.props.user
-		return userLoaded ? (
+		const {
+			currentUser: {
+				loaded
+			}
+		}= this.props
+		return loaded ? (
 			skillSearchOpen ? (
 				<Layer>
 					<div className="profile">
@@ -176,15 +184,15 @@ class MyProfile extends React.Component {
 }
 function mapStateToProps(state) {
 	return {
-		user: state.user,
+		currentUser: state.currentUser,
 		lastSortedBy: state.lastSortedBy,
 	}
 }
 export default connect(mapStateToProps, {
-	getUserProfileData,
 	toggleSkillsEditMode,
 	exitSkillsEditMode,
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
+	fetchCurrentUser
 })(MyProfile)

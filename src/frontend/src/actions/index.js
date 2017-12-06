@@ -196,3 +196,30 @@ export function stopAnimating() {
 		type: STOP_ANIMATING,
 	}
 }
+
+export const REQUEST_CURRENT_USER = 'REQUEST_CURRENT_USER'
+export function requestCurrentUser() {
+	return {
+		type: REQUEST_CURRENT_USER
+	}
+}
+
+export const RECEIVE_CURRENT_USER = 'RECEIVE_CURRENT_USER'
+export function receiveCurrentUser(payload) {
+	return {
+		type: RECEIVE_CURRENT_USER,
+		payload
+	}
+}
+
+export function fetchCurrentUser() {
+	return function(dispatch){
+		dispatch(requestCurrentUser())
+		const requestURL = `${apiServer}/session/user`
+		fetch(requestURL, {credentials: 'include'})
+		.then(res => res.json())
+		.then(user => {
+			dispatch(receiveCurrentUser(user))
+		})
+	}
+}

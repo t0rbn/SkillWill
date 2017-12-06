@@ -15,6 +15,8 @@ import {
 	SET_DIRECTION_FILTER,
 	START_ANIMATING,
 	STOP_ANIMATING,
+	REQUEST_CURRENT_USER,
+	RECEIVE_CURRENT_USER,
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -165,6 +167,26 @@ function isSkillAnimated(state = true, action) {
 	}
 }
 
+function currentUser(state = {
+	loaded: false
+}, action) {
+	switch(action.type) {
+		case REQUEST_CURRENT_USER:
+			return {
+				...state,
+				loaded: false
+			}
+		case 'RECEIVE_CURRENT_USER':
+			return {
+				...state,
+				loaded: true,
+				...action.payload
+			}
+		default:
+			return state
+	}
+}
+
 export default {
 	searchTerms: setSearchTerms,
 	results: fetchResultsBySearchTerms,
@@ -179,4 +201,5 @@ export default {
 	directionFilter,
 	isResultsLoaded,
 	isSkillAnimated,
+	currentUser
 }

@@ -176,7 +176,7 @@ function currentUser(state = {
 				...state,
 				loaded: false
 			}
-		case 'RECEIVE_CURRENT_USER':
+		case RECEIVE_CURRENT_USER:
 			return {
 				...state,
 				loaded: true,

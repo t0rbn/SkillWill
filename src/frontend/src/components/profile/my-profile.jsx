@@ -35,11 +35,8 @@ class MyProfile extends React.Component {
 
 	componentWillMount() {
 		const { currentUser } = this.props
-		if (currentUser.loaded) {
-			document.body.classList.add('my-profile-open')
-		}else{
-			this.props.fetchCurrentUser()
-		}
+		document.body.classList.add('my-profile-open')
+		this.props.fetchCurrentUser()
 	}
 
 	componentWillUnmount() {
@@ -123,63 +120,62 @@ class MyProfile extends React.Component {
 				loaded
 			}
 		}= this.props
-		return loaded ? (
-			skillSearchOpen ? (
-				<Layer>
-					<div className="profile">
-						<SkillSearch
-							handleEdit={this.editSkill}
-							handleDelete={this.deleteSkill}
-							userId={userId}
-						/>
-						<div className="profile-actions" data-skillsearch={skillSearchOpen}>
-							<button
-								className="edit-skill-btn"
-								onClick={this.toggleSkillsEdit}
-								disabled={skillSearchOpen}>
-								<Icon name="edit" size={19} />
-								Customize skills
-							</button>
-							<button className="add-skill-btn" onClick={this.toggleSkillsSearch}>
-								<Icon name="checkmark" size={19} />
-								Done
-							</button>
+		return (
+			<Layer>
+				{ loaded ? (
+					skillSearchOpen ? (
+						<div className="profile">
+							<SkillSearch
+								handleEdit={this.editSkill}
+								handleDelete={this.deleteSkill}
+								userId={userId}
+							/>
+							<div className="profile-actions" data-skillsearch={skillSearchOpen}>
+								<button
+									className="edit-skill-btn"
+									onClick={this.toggleSkillsEdit}
+									disabled={skillSearchOpen}>
+									<Icon name="edit" size={19} />
+									Customize skills
+								</button>
+								<button className="add-skill-btn" onClick={this.toggleSkillsSearch}>
+									<Icon name="checkmark" size={19} />
+									Done
+								</button>
+							</div>
 						</div>
-					</div>
-				</Layer>
-				) : (
-				<Layer>
-					<div className="profile">
-						<BasicProfile
-							openLayerAt={openLayerAt}
-							shouldShowAllSkills={shouldShowAllSkills}
-							editSkill={this.editSkill}
-							deleteSkill={this.deleteSkill}
-							setLastSortedBy={this.props.setLastSortedBy}
-							lastSortedBy={this.props.lastSortedBy}
-							getUserProfileData={this.props.getUserProfileData}
-						/>
-						<div className="profile-actions" data-skilledit={skillEditOpen}>
-							<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
-								{skillEditOpen ? (
-									<Icon name="checkmark" size={18} />
-								) : (
-									<Icon name="edit" size={18} />
-								)}
-								{skillEditOpen ? 'Done' : 'Customize skills'}
-							</button>
-							<button
-								className="add-skill-btn"
-								onClick={this.toggleSkillsSearch}
-								disabled={skillEditOpen}>
-								<Icon name="plus" size={18} />
-								Add new skill
-							</button>
+					) : (
+						<div className="profile">
+							<BasicProfile
+								openLayerAt={openLayerAt}
+								shouldShowAllSkills={shouldShowAllSkills}
+								editSkill={this.editSkill}
+								deleteSkill={this.deleteSkill}
+								setLastSortedBy={this.props.setLastSortedBy}
+								lastSortedBy={this.props.lastSortedBy}
+								getUserProfileData={this.props.getUserProfileData}
+							/>
+							<div className="profile-actions" data-skilledit={skillEditOpen}>
+								<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
+									{skillEditOpen ? (
+										<Icon name="checkmark" size={18} />
+									) : (
+										<Icon name="edit" size={18} />
+									)}
+									{skillEditOpen ? 'Done' : 'Customize skills'}
+								</button>
+								<button
+									className="add-skill-btn"
+									onClick={this.toggleSkillsSearch}
+									disabled={skillEditOpen}>
+									<Icon name="plus" size={18} />
+									Add new skill
+								</button>
+							</div>
 						</div>
-					</div>
-				</Layer>
-			)
-		) : null
+					)
+				) : null }
+			</Layer>)
 	}
 }
 function mapStateToProps(state) {

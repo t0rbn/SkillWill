@@ -4,27 +4,39 @@ version: 1
 # Test Users for Integration Testing #
 ######################################
 
-dn: dc=sinnerschrader,dc=com
+dn: dc=example,dc=com
 objectClass: top
 objectClass: domain
 dc: server
 
-dn: ou=users,dc=sinnerschrader,dc=com
+dn: ou=users,dc=example,dc=com
 objectClass: organizationalUnit
 objectClass: top
-description: SinnerSchrader Users
+description: Users OU
+dc: example
+
+dn: ou=ec,ou=users,dc=example,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: Example Company Users
 ou: users
 
-dn: ou=tech-user,dc=sinnerschrader,dc=com
+dn: ou=fb,ou=users,dc=example,dc=com
 objectClass: organizationalUnit
 objectClass: top
-description: SinnerSchrader Users
+description: Foobar Inc. Users
+ou: users
+
+dn: ou=tech-user,dc=example,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: All Users
 ou: tech-user
 
-dn: cn=tech-user,ou=tech-user,dc=sinnerschrader,dc=com
-userPassword: fleischcreme
+dn: cn=tech-user,ou=tech-user,dc=example,dc=com
+userPassword: password
 
-dn: uid=aaaaaa,ou=users,dc=sinnerschrader,dc=com
+dn: uid=aaaaaa,ou=ec,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -34,13 +46,13 @@ objectClass: sambaSamAccount
 givenName: Fooberius
 uid: aaaaaa
 sn: Barblub
-mail: aaa.aaa@sinnerschrader.com
+mail: aaa.aaa@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=bbbbbb,ou=users,dc=sinnerschrader,dc=com
+dn: uid=bbbbbb,ou=ec,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -50,13 +62,13 @@ objectClass: sambaSamAccount
 givenName: Anton
 uid: bbbbbb
 sn: Fleischmacher
-mail: bbb.bbb@sinnerschrader.com
+mail: bbb.bbb@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=foobar,ou=users,dc=sinnerschrader,dc=com
+dn: uid=foobar,ou=ec,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -66,13 +78,13 @@ objectClass: sambaSamAccount
 givenName: Fooberius
 uid: foobar
 sn: Barblub
-mail: fooberius.barblub@sinnerschrader.com
+mail: fooberius.barblub@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=user,ou=users,dc=sinnerschrader,dc=com
+dn: uid=user,ou=ec,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -82,13 +94,13 @@ objectClass: sambaSamAccount
 givenName: Ulrich
 uid: user
 sn: Serpenbrecher
-mail: fooberius.barblub@sinnerschrader.com
+mail: fooberius.barblub@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=admin,ou=users,dc=sinnerschrader,dc=com
+dn: uid=admin,ou=ec,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -98,13 +110,13 @@ objectClass: sambaSamAccount
 givenName: Achim
 uid: admin
 sn: dminskowsky
-mail: fooberius.barblub@sinnerschrader.com
+mail: fooberius.barblub@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=abc,ou=users,dc=sinnerschrader,dc=com
+dn: uid=abc,ou=fb,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -114,13 +126,13 @@ objectClass: sambaSamAccount
 givenName: abc
 uid: abc
 sn: abc
-mail: fooberius.barblub@sinnerschrader.com
+mail: fooberius.barblub@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=def,ou=users,dc=sinnerschrader,dc=com
+dn: uid=def,ou=fb,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -130,13 +142,13 @@ objectClass: sambaSamAccount
 givenName: def
 uid: def
 sn: def
-mail: fooberius.barblub@sinnerschrader.com
+mail: fooberius.barblub@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789
 
-dn: uid=ghi,ou=users,dc=sinnerschrader,dc=com
+dn: uid=ghi,ou=fb,ou=users,dc=example,dc=com
 objectClass: user
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
@@ -146,8 +158,8 @@ objectClass: sambaSamAccount
 givenName: ghi
 uid: ghi
 sn: ghi
-mail: fooberius.barblub@sinnerschrader.com
+mail: fooberius.barblub@example.com
 userPassword:  fleischcreme
 title: Senior Web Unicorm
 l: Hamburg
-telephoneNumber: +49 666 666 666
+telephoneNumber: +49 123 456 789

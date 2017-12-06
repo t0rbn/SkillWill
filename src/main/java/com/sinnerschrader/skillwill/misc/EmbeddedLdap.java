@@ -28,7 +28,7 @@ public class EmbeddedLdap {
   public void startup() throws LDAPException, IOException {
     logger.warn("Starting embedded LDAP");
 
-    InMemoryDirectoryServerConfig serverconfig = new InMemoryDirectoryServerConfig("dc=sinnerschrader,dc=com");
+    InMemoryDirectoryServerConfig serverconfig = new InMemoryDirectoryServerConfig("dc=example,dc=com");
     serverconfig.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig(
         "default",
         InetAddress.getLoopbackAddress(), 1338, null));

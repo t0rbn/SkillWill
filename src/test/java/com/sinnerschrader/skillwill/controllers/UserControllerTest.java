@@ -78,10 +78,10 @@ public class UserControllerTest {
 
     ldapService.syncUsers(personRepo.findAll(), true);
 
-    Session userSession = new Session("YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    Session userSession = new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     sessionRepo.insert(userSession);
 
-    Session adminSession = new Session("YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    Session adminSession = new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
     sessionRepo.insert(adminSession);
   }
 
@@ -226,7 +226,7 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsValid() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "3", "0", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "3", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
     assertEquals(0, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
@@ -234,13 +234,13 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsLevelsZero() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "0", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testModifySkillsLevelOverMax() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "4", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "4", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
@@ -266,7 +266,7 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsSkillUnknown() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "UnknownSkill", "0", "0", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "UnknownSkill", "0", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
     assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
@@ -274,7 +274,7 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsSkillLevelOutOfRange() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "5", "0", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "5", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
     assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
@@ -282,7 +282,7 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsWillLevelOutOfRange() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "5", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "5", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
     assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
@@ -290,7 +290,7 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsHidden() {
-    assertEquals(HttpStatus.BAD_REQUEST, userController.updateSkills("aaaaaa", "hidden", "0", "3", false, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, userController.updateSkills("aaaaaa", "hidden", "0", "3", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar").getStatusCode());
     assertNull(personRepo.findByIdIgnoreCase("aaaaaa").getSkillExcludeHidden("hidden"));
   }
 
@@ -306,7 +306,7 @@ public class UserControllerTest {
       .getJSONObject(0)
       .getBoolean("mentor"));
 
-    assertEquals(HttpStatus.OK, userController.updateSkills("aaaaaa", "Java", "3", "3", true, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
+    assertEquals(HttpStatus.OK, userController.updateSkills("aaaaaa", "Java", "3", "3", true, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar").getStatusCode());
 
     assertTrue(new JSONObject(userController.getUser("aaaaaa").getBody())
       .getJSONArray("skills")
@@ -316,13 +316,13 @@ public class UserControllerTest {
 
   @Test
   public void testSetMentorNewSkill() throws JSONException {
-    assertEquals(HttpStatus.OK, userController.removeSkill("aaaaaa", "Java", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
+    assertEquals(HttpStatus.OK, userController.removeSkill("aaaaaa", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar").getStatusCode());
 
     assertEquals(0, new JSONObject(userController.getUser("aaaaaa").getBody())
       .getJSONArray("skills")
       .length());
 
-    assertEquals(HttpStatus.OK, userController.updateSkills("aaaaaa", "Java", "3", "3", true, "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar").getStatusCode());
+    assertEquals(HttpStatus.OK, userController.updateSkills("aaaaaa", "Java", "3", "3", true, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar").getStatusCode());
 
     assertTrue(new JSONObject(userController.getUser("aaaaaa").getBody())
       .getJSONArray("skills")
@@ -332,19 +332,19 @@ public class UserControllerTest {
 
   @Test
   public void testRemoveSkill() {
-    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "Java", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.OK, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillSkillUnknown() {
-    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "UNKNOWN", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "UNKNOWN", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserUnknown() {
-    ResponseEntity<String> res = userController.removeSkill("IAmUnknown", "Java", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar");
+    ResponseEntity<String> res = userController.removeSkill("IAmUnknown", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
   }
 
@@ -395,28 +395,28 @@ public class UserControllerTest {
 
   @Test
   public void testSetRoleValid() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "ADMIN");
+    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(Role.ADMIN, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleValidIgnoreCase() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "aDmiN");
+    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "aDmiN");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(Role.ADMIN, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleInvalid() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "unicorn");
+    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "unicorn");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(Role.USER, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleNotAdmin() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YWFhLmFhYUBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "ADMIN");
+    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
     assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
     assertEquals(Role.USER, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
@@ -430,7 +430,7 @@ public class UserControllerTest {
 
   @Test
   public void testSetRoleUnknonwUser() {
-    ResponseEntity<String> res = userController.updateRole("dermönchmitderpeitsche", "YmJiLmJiYkBzaW5uZXJzY2hyYWRlci5jb20=|foo|bar", "ADMIN");
+    ResponseEntity<String> res = userController.updateRole("dermönchmitderpeitsche", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
     assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
   }
 

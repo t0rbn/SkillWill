@@ -1,4 +1,4 @@
-# What the heck is SkillWill?
+# What exactly is SkillWill?
 
 SkillWill is SinnerSchrader's internal tool to track what people know (their skills) and what people want to do (their wills).
 Every employee can define their personal levels of interest and knowledge for each skill in the system; anyone can search for persons by those skills, e.g.

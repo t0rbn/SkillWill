@@ -1,0 +1,34 @@
+@import '../vars.less';
+
+.navigation {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: @s-stack @l-stack;
+
+  &__link {
+    color: @s2-white;
+    display: inline-block;
+
+    &--active,
+    &:hover {
+      color: @s2-red;
+    }
+  }
+
+  &__item {
+    flex: 1 0;
+  }
+
+  &__list {
+    text-align: right;
+
+    &-item {
+      display: inline-block;
+
+      & + & {
+        padding-left: @l-inline;
+      }
+    }
+  }
+}

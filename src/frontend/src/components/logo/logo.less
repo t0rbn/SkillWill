@@ -1,0 +1,80 @@
+@import "../vars.less";
+
+.logo {
+  color: @s2-red;
+  display: inline-block;
+  left: 50%;
+  position: absolute;
+  top: 0;
+  transform: translate(-50%, @6xl-stack);
+  transition: transform 0.4s ease-in 0.4s;
+  will-change: transform;
+
+  &:before,
+  &:after {
+    display: inline-block;
+    font-size: @xs-title-font-size;
+    opacity: 0;
+    transition: opacity 0.2s ease-in 0.8s;
+    will-change: opacity;
+  }
+
+  &:before {
+    content: 'skill';
+  }
+
+  &:after {
+    content: 'will';
+  }
+
+  &__icon {
+    transform: scale(7);
+    transition: transform 0.4s ease-in 0.2s;
+    will-change: transform;
+  }
+
+  &__title {
+    color: @s2-red;
+    font-size: @m-title-font-size;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, @5xl-stack);
+    transition: opacity 0.2s ease-in;
+    top: 0;
+    will-change: opacity;
+  }
+
+  &--small,
+  .results-loaded & {
+    transform: translate(-50%, @xxs-stack * 5);
+
+    &:before,
+    &:after {
+      opacity: 1;
+    }
+
+    .logo__icon {
+      padding-right: @xs-stack;
+      padding-left: @xs-stack;
+      transform: scale(1);
+    }
+
+    .logo__title {
+      opacity: 0;
+    }
+  }
+
+  &--small {
+    opacity: 0;
+  }
+
+  .my-profile-open & {
+    opacity: 0;
+
+    &--small {
+      opacity: 1;
+    } 
+  }
+
+  @media (min-width: @tablet-portrait-up) {}
+}

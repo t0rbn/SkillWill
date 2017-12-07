@@ -1,4 +1,14 @@
+
+[![Build Status](https://travis-ci.org/sinnerschrader/SkillWill.svg?branch=travis_openjdk9)](https://travis-ci.org/sinnerschrader/SkillWill)
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+[![Made by SinnerSchrader](https://img.shields.io/badge/made%20by-SinnerSchrader-orange.svg?style=flat-square)](https://sinnerschrader.com/)
+![#cyber](https://img.shields.io/badge/contains-cyber-yellow.svg)
+
+
+
 # What exactly is SkillWill?
+
+![screenshot](screenshot.png)
 
 SkillWill is SinnerSchrader's internal tool to track what people know (their skills) and what people want to do (their wills).
 Every employee can define their personal levels of interest and knowledge for each skill in the system; anyone can search for persons by those skills, e.g.

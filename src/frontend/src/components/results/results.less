@@ -134,9 +134,6 @@
 .result-item {
   width: auto;
   height: auto;
-  background-image: linear-gradient(to bottom, hsla(174, 22%, 56%, .1) 50%, transparent 50%);
-  background-size: 200% 200%;
-  background-position-y: bottom;
   border-bottom: 1px solid @s2-grey2;
   padding: 0;
 
@@ -221,13 +218,7 @@
     padding: 0 @m-stack;
 
     &:hover {
-      animation: .15s ease-in .15s curtain;
-      animation-fill-mode: forwards;
+      background-color: @s2-lightgrey;
     }
-  }
-
-  @keyframes curtain {
-    from {background-position-y: bottom;}
-    to {background-position-y: top;}
   }
 }

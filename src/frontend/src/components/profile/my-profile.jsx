@@ -5,13 +5,13 @@ import Icon from '../icon/icon.jsx'
 import Layer from "../layer/layer"
 import { apiServer } from '../../env.js'
 import {
-	getUserProfileData,
 	toggleSkillsEditMode,
 	exitSkillsEditMode,
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
-	fetchCurrentUser
+	fetchCurrentUser,
+	login
 } from '../../actions'
 import { connect } from 'react-redux'
 
@@ -34,7 +34,7 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		const { currentUser } = this.props
+		this.props.login()
 		document.body.classList.add('my-profile-open')
 		this.props.fetchCurrentUser()
 	}
@@ -190,5 +190,6 @@ export default connect(mapStateToProps, {
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
-	fetchCurrentUser
+	fetchCurrentUser,
+	login
 })(MyProfile)

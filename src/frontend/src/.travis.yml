@@ -1,0 +1,9 @@
+language: java
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - openjdk-9-jdk
+
+script: mvn clean package

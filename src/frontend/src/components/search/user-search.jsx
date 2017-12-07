@@ -40,7 +40,7 @@ class UserSearch extends React.Component {
 				<Dropdown
 					onDropdownSelect={setLocationFilter}
 					dropdownLabel={locationFilter}
-					options={locationOptionsForCompany[companyFilter]}
+					options={locationOptionsForCompany(companyFilter)}
 				/>
 				<SearchBar
 					variant="user"

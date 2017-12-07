@@ -118,13 +118,13 @@ function locationFilter(state = '', action) {
 		case SET_LOCATION_FILTER:
 			return action.payload
 			case SET_COMPANY_FILTER:
-			return 'all'
+			return ''
 		default:
 			return state
 	}
 }
 
-function companyFilter(state = 'all', action) {
+function companyFilter(state = '', action) {
 	switch (action.type) {
 		case SET_COMPANY_FILTER:
 			return action.filter

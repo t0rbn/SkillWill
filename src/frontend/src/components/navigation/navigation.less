@@ -1,35 +1,33 @@
 @import '../vars.less';
 
 .navigation {
+  align-items: center;
   display: flex;
+  justify-content: center;
+  padding: @s-stack @l-stack;
 
-  &__brand {
-    display: flex;
-    position: relative;
-    margin-right: inherit;
-    background-image: data-uri('@{image-path}/s2-logo.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-left: @l-stack;
-    width: 131px;
-    height: 30px;
-  }
-
-  &__list {
+  &__link {
+    color: @s2-white;
     display: inline-block;
+
+    &--active,
+    &:hover {
+      color: @s2-red;
+    }
   }
 
   &__item {
-    display: inline-block;
+    flex: 1 0;
+  }
+
+  &__list {
     text-align: right;
-    padding-right: @l-inline;
 
-    > a {
+    &-item {
       display: inline-block;
-      color: @s2-white;
 
-      &:hover {
-        color: @s2-red;
+      & + & {
+        padding-left: @l-inline;
       }
     }
   }

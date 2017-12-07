@@ -75,9 +75,11 @@ public class UserController {
   @ApiImplicitParams({
     @ApiImplicitParam(name = "skills", value = "Names of skills to search, separated by ','", paramType = "query", required = false),
     @ApiImplicitParam(name = "location", value = "Location to filter results by", paramType = "query", required = false),
+    @ApiImplicitParam(name = "company", value = "Company to filter results by", paramType = "query", required = false),
   })
   @RequestMapping(path = "/users", method = RequestMethod.GET)
   public ResponseEntity<String> getUsers(@RequestParam(required = false) String skills,
+    @RequestParam(required = false) String company,
     @RequestParam(required = false) String location) {
 
     List<String> skillList = !StringUtils.isEmpty(skills) ? Arrays.asList(skills.split("\\s*,\\s*")) : Collections.emptyList();
@@ -86,7 +88,7 @@ public class UserController {
 
     List<User> matches = CollectionUtils.isEmpty(sanitizedSkills) && !StringUtils.isEmpty(skills)
       ? new ArrayList<>()
-      : userService.getUsers(sanitizedSkills, location);
+      : userService.getUsers(sanitizedSkills,company, location);
 
     JSONObject returnJsonObj = new JSONObject();
     returnJsonObj.put("results", new JSONArray(matches.stream()

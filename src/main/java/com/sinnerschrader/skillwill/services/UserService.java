@@ -56,7 +56,7 @@ public class UserService {
   @Value("${maxLevelValue}")
   private int maxLevelValue;
 
-  public List<User> getUsers(Collection<KnownSkill> skills, String location)
+  public List<User> getUsers(Collection<KnownSkill> skills, String company, String location)
       throws IllegalArgumentException {
 
     List<User> candidates;
@@ -71,9 +71,10 @@ public class UserService {
           .collect(Collectors.toList());
     }
 
-    // sync needed to search for location
-    if (!StringUtils.isEmpty(location)) {
+    // sync needed to search for location and company
+    if (!StringUtils.isEmpty(location) || !StringUtils.isEmpty(company)) {
       candidates = ldapService.syncUsers(candidates, false);
+      candidates = filterByCompany(candidates, company);
       candidates = filterByLocation(candidates, location);
     }
 
@@ -88,8 +89,17 @@ public class UserService {
       return unfiltered;
     }
     return unfiltered.stream()
-        .filter(p -> p.getLdapDetails().getLocation().equals(location))
+        .filter(user -> user.getLdapDetails().getLocation().equals(location))
         .collect(Collectors.toList());
+  }
+
+  private List<User> filterByCompany(List<User> unfiltered, String company) {
+    if (StringUtils.isEmpty(company)) {
+      return unfiltered;
+    }
+    return unfiltered.stream()
+      .filter(user -> user.getLdapDetails().getCompany().equals(company))
+      .collect(Collectors.toList());
   }
 
   public User getUser(String id) {

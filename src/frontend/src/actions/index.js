@@ -212,6 +212,14 @@ export function receiveCurrentUser(payload) {
 	}
 }
 
+export const SET_COMPANY_FILTER = 'SET_COMPANY_FILTER'
+export function setCompanyFilter(filter) {
+	return {
+		type: SET_COMPANY_FILTER,
+		filter
+	}
+}
+
 export function fetchCurrentUser() {
 	return function(dispatch){
 		dispatch(requestCurrentUser())

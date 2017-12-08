@@ -80,12 +80,12 @@ function getUserProfileData(state = {}, action) {
 			return {
 				...state,
 				...action.payload,
-				userLoaded: true
+				loaded: true
 			}
 		case CLEAR_USER_DATA:
 		case REQUEST_PROFILE_DATA:
 			return {
-				userLoaded: false
+				loaded: false
 			}
 		default:
 			return state

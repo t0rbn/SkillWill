@@ -16,7 +16,7 @@ class OthersProfile extends React.Component {
 
 	render() {
 		const { user } = this.props
-		return user.userLoaded ? (
+		return user.loaded ? (
 			<div className="profile">
 				<BasicProfile user={user} infoLayer={this.infoLayer} renderSearchedSkills={true} />
 			</div>

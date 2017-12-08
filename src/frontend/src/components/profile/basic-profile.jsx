@@ -248,10 +248,10 @@ class BasicProfile extends React.Component {
 }
 
 function mapStateToProps(state) {
+	const { shouldSkillsAnimate, searchedSkills } = state
 	return {
-		shouldSkillsAnimate: state.shouldSkillsAnimate,
-		searchedSkills: state.results.searched,
-		user: state.user,
+		shouldSkillsAnimate,
+		searchedSkills
 	}
 }
 export default connect(mapStateToProps, { clearUserData })(BasicProfile)

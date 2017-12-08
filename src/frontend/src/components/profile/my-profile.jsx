@@ -154,6 +154,7 @@ class MyProfile extends React.Component {
 								setLastSortedBy={this.props.setLastSortedBy}
 								lastSortedBy={this.props.lastSortedBy}
 								getUserProfileData={this.props.getUserProfileData}
+								user={this.props.currentUser}
 							/>
 							<div className="profile-actions" data-skilledit={skillEditOpen}>
 								<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>

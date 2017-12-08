@@ -7,7 +7,6 @@ class OthersProfile extends React.Component {
 
 	componentWillMount = () => {
 		const userId = this.props.params.id || 'id'
-		this.props.clearUserData()
 		this.props.getUserProfileData(userId)
 	}
 

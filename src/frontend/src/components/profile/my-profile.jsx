@@ -10,8 +10,7 @@ import {
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
-	fetchCurrentUser,
-	login
+	fetchCurrentUser
 } from '../../actions'
 import { connect } from 'react-redux'
 
@@ -34,7 +33,6 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		this.props.login()
 		document.body.classList.add('my-profile-open')
 		this.props.fetchCurrentUser()
 	}
@@ -191,6 +189,5 @@ export default connect(mapStateToProps, {
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
-	fetchCurrentUser,
-	login
+	fetchCurrentUser
 })(MyProfile)

@@ -10,9 +10,6 @@ import { connect } from 'react-redux'
 import { login } from './actions'
 
 class App extends React.Component {
-	componentWillMount = () => {
-		this.props.dispatch(login())
-	}
 
 	render() {
 		const { isResultsLoaded, isSkillAnimated } = this.props

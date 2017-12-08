@@ -1,18 +1,13 @@
 import React from 'react'
 import BasicProfile from './basic-profile.jsx'
-import { getUserProfileData } from '../../actions'
-
+import { getUserProfileData, clearUserData } from '../../actions'
 import { connect } from 'react-redux'
 
 class OthersProfile extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			userId: this.props.params.id || 'id',
-			dataLoaded: true,
-			infoLayerAt: 0,
-		}
-		this.props.getUserProfileData(this.state.userId)
+
+	componentWillMount = () => {
+		const userId = this.props.params.id || 'id'
+		this.props.getUserProfileData(userId)
 	}
 
 	infoLayer() {
@@ -20,17 +15,22 @@ class OthersProfile extends React.Component {
 	}
 
 	render() {
-		return this.props.userLoaded ? (
+		const { user } = this.props
+		return user.loaded ? (
 			<div className="profile">
-				<BasicProfile infoLayer={this.infoLayer} renderSearchedSkills={true} />
+				<BasicProfile user={user} infoLayer={this.infoLayer} renderSearchedSkills={true} />
 			</div>
 		) : null
 	}
 }
 function mapStateToProps(state) {
+	const { user } = state
 	return {
-		userLoaded: state.user.userLoaded,
+		user
 	}
 }
 
-export default connect(mapStateToProps, { getUserProfileData })(OthersProfile)
+export default connect(mapStateToProps, {
+	getUserProfileData,
+	clearUserData
+})(OthersProfile)

@@ -119,27 +119,28 @@ export function getSkillsBySearchTerm(term, method) {
 	}
 }
 
-export const GET_PROFILE_DATA = 'GET_PROFILE_DATA'
-export function getUserProfileData(profile) {
-	const requestURL = `${apiServer}/users/${profile}`
-	const options = {
-		credentials: 'same-origin',
-	}
-	const request = fetch(requestURL, options).then(response => response.json())
-	return {
-		type: GET_PROFILE_DATA,
-		payload: request,
-	}
-}
+export const REQUEST_PROFILE_DATA = 'REQUEST_PROFILE_DATA'
+export const requestProfileData = () => ({
+	type: REQUEST_PROFILE_DATA
+})
 
-export function login() {
-	return function(dispatch) {
-		const requestURL = `${apiServer}/session/user`
-		fetch(requestURL, {credentials: 'include'}).then(res => res.json()).then(user => {
-			dispatch({
-				type: GET_PROFILE_DATA,
-				payload: user
-			})
+export const RECEIVE_PROFILE_DATA = 'RECEIVE_PROFILE_DATA'
+export const receiveProfileData = (payload) => ({
+	type: RECEIVE_PROFILE_DATA,
+	payload
+})
+
+export function getUserProfileData(profile) {
+	return (dispatch) => {
+		dispatch(requestProfileData())
+		const requestURL = `${apiServer}/users/${profile}`
+		const options = {
+			credentials: 'same-origin',
+		}
+		fetch(requestURL, options)
+		.then(response => response.json())
+		.then(json => {
+			dispatch(receiveProfileData(json))
 		})
 	}
 }

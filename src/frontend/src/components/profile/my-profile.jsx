@@ -10,8 +10,7 @@ import {
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
-	fetchCurrentUser,
-	login
+	fetchCurrentUser
 } from '../../actions'
 import { connect } from 'react-redux'
 
@@ -34,7 +33,6 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		this.props.login()
 		document.body.classList.add('my-profile-open')
 		this.props.fetchCurrentUser()
 	}
@@ -154,6 +152,7 @@ class MyProfile extends React.Component {
 								setLastSortedBy={this.props.setLastSortedBy}
 								lastSortedBy={this.props.lastSortedBy}
 								getUserProfileData={this.props.getUserProfileData}
+								user={this.props.currentUser}
 							/>
 							<div className="profile-actions" data-skilledit={skillEditOpen}>
 								<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
@@ -190,6 +189,5 @@ export default connect(mapStateToProps, {
 	editSkill,
 	setLastSortedBy,
 	updateUserSkills,
-	fetchCurrentUser,
-	login
+	fetchCurrentUser
 })(MyProfile)

@@ -1,8 +1,7 @@
 .search {
   background-color: @s2-verydarkblue;
   height: auto;
-  min-height: 100vh;
-  max-height: 1000vh;
+  min-height: ~"calc(100vh - 54px)"; // 54px -> 30px Logo + 24px padding (12 top, 12 bottom)
   transition: all 0.4s ease-in;
   border-bottom: 5px solid @s2-red;
   box-sizing: border-box;

@@ -6,7 +6,9 @@ function option(value, display) {
   }
 }
 
-const all = option('', 'all')
+const allLocations = option('all', 'all locations')
+
+const allCompanies = option('all', 'all companies')
 
 const hamburg = option('Hamburg')
 
@@ -19,7 +21,7 @@ const berlin = option('Berlin')
 const prague = option('Prag')
 
 export const companiesFilterOptions = [
-  all,
+  allCompanies,
   option('S2 Germany'),
   option('S2 Swipe'),
   option('S2 Commerce'),
@@ -30,16 +32,16 @@ export const companiesFilterOptions = [
 export const locationOptionsForCompany = (company) => {
   switch(company) {
     case 'S2 Germany':
-      return [all, hamburg, frankfurt, munich, prague, berlin]
+      return [allLocations, hamburg, frankfurt, munich, prague, berlin]
     case 'S2 Swipe':
-      return [all, hamburg, berlin]
+      return [allLocations, hamburg, berlin]
     case 'S2 Commerce':
-      return [all, hamburg, prague]
+      return [allLocations, hamburg, prague]
     case 'S2 Content':
-      return [all, hamburg]
+      return [allLocations, hamburg]
     case 'S2 AG':
-      return [all, hamburg]
+      return [allLocations, hamburg]
     default:
-      return [all, hamburg, frankfurt, munich, prague, berlin]
+      return [allLocations, hamburg, frankfurt, munich, prague, berlin]
   }
 }

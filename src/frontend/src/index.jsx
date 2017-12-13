@@ -20,7 +20,7 @@ const store = createStore(
 	{
 		searchTerms: [],
 		skills: [],
-		locationFilter: '',
+		locationFilter: 'all',
 		lastSortedBy: {
 			lastSortedBy: 'fitness',
 		},

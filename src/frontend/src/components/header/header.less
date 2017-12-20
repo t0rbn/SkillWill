@@ -1,85 +1,13 @@
-.mod-navigation-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.header {
+  background-color: @s2-verydarkblue;
+  position: relative;
   margin: 0 auto;
+  width: 100%;
 
   .my-profile-open & {
     position: fixed;
-    position: fixed;
-    background-color: @s2-verydarkblue;
+    top: 0;
+    left: 0;
     z-index: 1000;
-
-    .nav-link {
-      &--profile {
-        color: @s2-red;
-      }
-    }
-  }
-}
-
-
-.mod-navigation {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: @m-stack 0;
-  margin: 0 auto;
-}
-
-.s2-logo {
-  display: flex;
-  position: relative;
-  margin-right: inherit;
-  margin-left: @l-stack;
-  color: @s2-white;
-}
-
-.sw-title {
-  position: absolute;
-  left: 50%;
-  display: inline-block;
-  transform: translateX(-50%);
-  color: @s2-red;
-  font-size: @s-title-font-size;
-  opacity: 0;
-  
-  &:hover {
-    color: @s2-white;
-  }
-  
-  @media (min-width: @tablet-portrait-up) {
-    .results-view & {
-      opacity: 0;
-    }
-    .layer-open & {
-      opacity: 1;
-    }
-  }
-}
-
-.nav {
-  display: flex;
-}
-
-.nav-list {
-  display: inline-block;
-}
-
-.nav-item {
-  display: inline-block;
-  text-align: right;
-  padding-right: @l-inline;
-  
-  .nav-link {
-    display: inline-block;
-    color: @s2-white;
-    
-    &:hover {
-      color: @s2-red;
-    }
   }
 }

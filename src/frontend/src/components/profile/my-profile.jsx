@@ -5,7 +5,6 @@ import Icon from '../icon/icon.jsx'
 import Layer from "../layer/layer"
 import { apiServer } from '../../env.js'
 import {
-	getUserProfileData,
 	toggleSkillsEditMode,
 	exitSkillsEditMode,
 	editSkill,
@@ -34,7 +33,6 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		const { currentUser } = this.props
 		document.body.classList.add('my-profile-open')
 		this.props.fetchCurrentUser()
 	}
@@ -154,6 +152,7 @@ class MyProfile extends React.Component {
 								setLastSortedBy={this.props.setLastSortedBy}
 								lastSortedBy={this.props.lastSortedBy}
 								getUserProfileData={this.props.getUserProfileData}
+								user={this.props.currentUser}
 							/>
 							<div className="profile-actions" data-skilledit={skillEditOpen}>
 								<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>

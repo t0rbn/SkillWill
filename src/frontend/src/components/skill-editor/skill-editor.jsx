@@ -91,7 +91,7 @@ class SkillEditor extends React.Component {
 function mapStateToProps(state) {
 	return {
 		skills: state.skills,
-		user: state.user,
+		user: state.currentUser,
 	}
 }
 

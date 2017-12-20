@@ -5,7 +5,6 @@ import {
 	DELETE_SEARCH_TERM,
 	SET_LOCATION_FILTER,
 	SET_LAST_SORTED_BY,
-	GET_PROFILE_DATA,
 	ADD_SKILL_SEARCH,
 	DELETE_SKILL_SEARCH,
 	TOGGLE_SKILLS_EDIT_MODE,
@@ -17,7 +16,9 @@ import {
 	STOP_ANIMATING,
 	REQUEST_CURRENT_USER,
 	RECEIVE_CURRENT_USER,
-	SET_COMPANY_FILTER
+	SET_COMPANY_FILTER,
+	REQUEST_PROFILE_DATA,
+	RECEIVE_PROFILE_DATA
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -76,17 +77,17 @@ function fetchSkillsBySearchTerm(state = [], action) {
 
 function getUserProfileData(state = {}, action) {
 	switch (action.type) {
-		case GET_PROFILE_DATA:
-			return Object.assign({}, state, action.payload, {
-				userLoaded: true,
-			})
+		case RECEIVE_PROFILE_DATA:
+			return {
+				...state,
+				...action.payload,
+				loaded: true
+			}
 		case CLEAR_USER_DATA:
-			return Object.assign(
-				{},
-				{
-					userLoaded: false,
-				}
-			)
+		case REQUEST_PROFILE_DATA:
+			return {
+				loaded: false
+			}
 		default:
 			return state
 	}

@@ -107,7 +107,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersValid() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", "Hamburg");
+    ResponseEntity<String> res = userController.getUsers("Java", null, "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
@@ -118,7 +118,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersHideHidden() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", "");
+    ResponseEntity<String> res = userController.getUsers("Java", null, "");
     JSONArray skillJson = new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getJSONArray("skills");
     assertEquals(1, skillJson.length());
     assertEquals("Java", skillJson.getJSONObject(0).getString("name"));
@@ -126,7 +126,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillsEmpty() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("", "Hamburg");
+    ResponseEntity<String> res = userController.getUsers("", null, "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
     assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
@@ -138,7 +138,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillsNull() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers(null, "Hamburg");
+    ResponseEntity<String> res = userController.getUsers(null, null, "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(2, new JSONObject(res.getBody()).getJSONArray("results").length());
@@ -148,7 +148,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillUnknownOnly() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Unknown, More unknown", "");
+    ResponseEntity<String> res = userController.getUsers("Unknown, More unknown", null, "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(0, new JSONObject(res.getBody()).getJSONArray("searched").length());
@@ -158,7 +158,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillUnknown() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Unknown,Java", "");
+    ResponseEntity<String> res = userController.getUsers("Unknown,Java", null, "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(1, new JSONObject(res.getBody()).getJSONArray("searched").length());
@@ -170,13 +170,13 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersNoFitnessInEmptySearch() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("", "Hamburg");
+    ResponseEntity<String> res = userController.getUsers("", null, "Hamburg");
     assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersLocationEmpty() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", "");
+    ResponseEntity<String> res = userController.getUsers("Java", null, "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
@@ -187,7 +187,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillsEmptyLocationEmpty() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("", "");
+    ResponseEntity<String> res = userController.getUsers("", null, "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals(2, new JSONObject(res.getBody()).getJSONArray("results").length());
@@ -197,7 +197,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersIgnoreSkillCase() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("JaVa", "Hamburg");
+    ResponseEntity<String> res = userController.getUsers("JaVa", null, "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
@@ -208,7 +208,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersIgnoreNonAlphanumerics() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("j#a)_V®a", "Hamburg");
+    ResponseEntity<String> res = userController.getUsers("j#a)_V®a", null, "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
     assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
@@ -219,7 +219,7 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersLocationUnknown() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", "IAmUnknown");
+    ResponseEntity<String> res = userController.getUsers("Java", null, "IAmUnknown");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(0, new JSONObject(res.getBody()).getJSONArray("results").length());
   }

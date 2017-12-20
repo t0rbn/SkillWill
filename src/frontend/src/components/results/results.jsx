@@ -47,15 +47,19 @@ class Results extends React.Component {
 			animated,
 			setSortFilter,
 			setDirectionFilter,
+			companyFilter
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
 		if (users && users.length > 0) {
-			const sortedUserList = sortAndFilter(
+			let sortedUserList = sortAndFilter(
 				users,
 				sortFilter,
 				directionFilter,
 				locationFilter
 			)
+			sortedUserList = sortedUserList.filter((user) => {
+				return user.company === companyFilter || companyFilter === 'all'
+			})
 			return (
 				<div ref={(ref) => { this.node = ref }} className={`results-container ${animated ? 'animateable' : ''}`}>
 					<div className="counter">
@@ -130,6 +134,7 @@ function mapStateToProps(state) {
 		lastSortedBy: state.lastSortedBy,
 		directionFilter: state.directionFilter,
 		isSkillAnimated: state.isSkillAnimated,
+		companyFilter: state.companyFilter
 	}
 }
 export default connect(mapStateToProps, {

@@ -16,6 +16,7 @@ import {
 	STOP_ANIMATING,
 	REQUEST_CURRENT_USER,
 	RECEIVE_CURRENT_USER,
+	SET_COMPANY_FILTER,
 	REQUEST_PROFILE_DATA,
 	RECEIVE_PROFILE_DATA
 } from '../actions'
@@ -117,6 +118,17 @@ function locationFilter(state = '', action) {
 	switch (action.type) {
 		case SET_LOCATION_FILTER:
 			return action.payload
+		case SET_COMPANY_FILTER:
+			return 'all'
+		default:
+			return state
+	}
+}
+
+function companyFilter(state = 'all', action) {
+	switch (action.type) {
+		case SET_COMPANY_FILTER:
+			return action.filter
 		default:
 			return state
 	}
@@ -202,5 +214,6 @@ export default {
 	directionFilter,
 	isResultsLoaded,
 	isSkillAnimated,
-	currentUser
+	currentUser,
+	companyFilter
 }

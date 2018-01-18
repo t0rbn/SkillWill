@@ -6,6 +6,8 @@ import Icon from '../icon/icon.jsx'
 import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
 import { connect } from 'react-redux'
 import { clearUserData } from '../../actions'
+import md5 from 'md5'
+import config from '../../config.json'
 
 class BasicProfile extends React.Component {
 	constructor(props) {
@@ -16,12 +18,13 @@ class BasicProfile extends React.Component {
 			editLayerAt: null,
 			numberOfSkillsToShow: 10,
 			isSkillEditActive: false,
+			avatarUrl: null
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
-		this.getAvatarColor = this.getAvatarColor.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
+		this.createAvatarUrl = this.createAvatarUrl.bind(this)
 	}
 
 	componentWillMount() {
@@ -31,6 +34,7 @@ class BasicProfile extends React.Component {
 		this.setState({
 			topWills: this.sortSkills('willLevel', 'desc'),
 			sortedSkills: this.sortSkills('skillLevel', 'desc'),
+			avatarUrl: this.createAvatarUrl()
 		})
 	}
 
@@ -54,6 +58,11 @@ class BasicProfile extends React.Component {
 		)
 	}
 
+	createAvatarUrl() {
+		const mailHash = md5(this.props.user.mail);
+		return config.avatarUrl + mailHash + '?s=' + config.avatarSize;
+	}
+
 	showAllSkills(e) {
 		e.preventDefault()
 		const { shouldShowAllSkills, numberOfSkillsToShow } = this.state
@@ -62,16 +71,6 @@ class BasicProfile extends React.Component {
 			numberOfSkillsToShow: numberOfSkillsToShow === 10 ? Infinity : 10,
 		})
 		e.target.classList.toggle('open')
-	}
-
-	getAvatarColor() {
-		const colors = ['blue', 'red', 'green']
-		let index = this.props.user.id
-			.toLowerCase()
-			.split('')
-			.map(c => c.charCodeAt(0))
-			.reduce((a, b) => a + b)
-		return colors[index % colors.length]
 	}
 
 	sortSkills(criterion, order = 'asc') {
@@ -151,11 +150,7 @@ class BasicProfile extends React.Component {
 					? 'animateable'
 					: ''}`}>
 				<li className="info">
-					<div className={`avatar avatar-${this.getAvatarColor()}`}>
-						<span className="fallback-letter">
-							{firstName.charAt(0).toUpperCase()}
-						</span>
-					</div>
+					<div className="avatar" style={{backgroundImage: `url('${this.state.avatarUrl}')`}}></div>
 					<p className="name">
 						{firstName} {lastName}
 					</p>

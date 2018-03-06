@@ -91,12 +91,5 @@ SkillWill creates more transparency about the collective knowledge and needs at 
 * Bachelor's Thesis covering the frontend: ?
 
 
-
 # License
 * [MIT](https://opensource.org/licenses/MIT) (see LICENSE.md)
-
-
-
-# Links
-* [Jira](https://jira.sinnerschrader.com/secure/RapidBoard.jspa?rapidView=425)
-* [Wiki](https://wiki.sinnerschrader.com/display/flowteam/SkillWill+-+Technisches)

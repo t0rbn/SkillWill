@@ -17,8 +17,7 @@ Every employee can define their personal levels of interest and knowledge for ea
 * You want to get better at x? → Show your interest for x and people who need some to do x will find you.
 * ...
 
-SkillWill creates more transparency about the collective knowledge and needs at SinnerSchrader and provides insights about our employees' skills that might not have been revealed. It encourages teamwork and and simplifies team planning as everyone's.
-
+SkillWill creates more transparency about the collective knowledge and needs at SinnerSchrader and provides insights about our employees' skills that might not have been revealed. It encourages teamwork and and simplifies team planning.
 
 
 # Development Setup

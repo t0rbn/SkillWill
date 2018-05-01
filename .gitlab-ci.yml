@@ -34,9 +34,9 @@ deploy-smaland:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - echo 'Copying jar to server'
-    - scp target/skillwill.jar ubuntu@18.184.150.115:/srv/http/skillwill.jar
+    - scp target/skillwill.jar ubuntu@35.157.217.249:/srv/http/skillwill.jar
     - echo 'Restarting smaland application'
-    - ssh ubuntu@18.184.150.115 sudo systemctl restart skillwill.service
+    - ssh ubuntu@35.157.217.249 sudo systemctl restart skillwill.service
   only:
     - master
 
@@ -55,9 +55,9 @@ deploy-live:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - echo 'Copying jar to server'
-    - scp target/skillwill.jar ubuntu@18.196.146.170:/srv/http/skillwill.jar
+    - scp target/skillwill.jar ubuntu@52.57.133.142:/srv/http/skillwill.jar
     - echo 'Restarting live application'
-    - ssh ubuntu@18.196.146.170 sudo systemctl restart skillwill.service
+    - ssh ubuntu@52.57.133.142 sudo systemctl restart skillwill.service
   only:
     - master
   when: manual

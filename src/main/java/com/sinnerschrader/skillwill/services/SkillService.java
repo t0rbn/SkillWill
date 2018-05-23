@@ -60,16 +60,11 @@ public class SkillService {
     if (StringUtils.isEmpty(search)) {
       found = getAllSkills(excludeHidden);
     } else {
-      found = skillRepository.findByNameStemLike(SkillUtils.toStem(search));
-      if (excludeHidden) {
-        found = found.stream()
-          .filter(skill -> !skill.isHidden())
-          .collect(Collectors.toList());
-      }
+      found = skillRepository.findByNameStemLike(SkillUtils.toStem(search)).stream()
+      .filter(skill -> !excludeHidden || !skill.isHidden())
+      .sorted(new SkillAutocompleteComparator(search))
+      .collect(Collectors.toList());
     }
-
-    // sort by match for search
-    found.sort(new SkillAutocompleteComparator(search));
 
     // if count is set, limit number of results...
     if (count > 0) {

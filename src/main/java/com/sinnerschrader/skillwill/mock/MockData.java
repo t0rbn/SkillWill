@@ -93,16 +93,17 @@ public class MockData {
         );
       }
 
-      logger.info("Inserting user " + user.getId());
       userRepo.save(user);
     }
+
+    logger.info("Added {} users", usersJsonArray.length());
   }
 
   private void mockSkills() throws IOException {
-    logger.warn("Deleting all skills in DB");
+    logger.warn("Deleting all skills in DB!");
     skillRepo.deleteAll();
-    var skillsJsonArray = readMockFileToJsonArray(skillsPath);
 
+    var skillsJsonArray = readMockFileToJsonArray(skillsPath);
     for (int i = 0; i < skillsJsonArray.length(); i++) {
       var skillJson = skillsJsonArray.getJSONObject(i);
       var skill = new Skill(skillJson.getString("name"));
@@ -112,10 +113,10 @@ public class MockData {
       for (int j = 0; j < subskillsJsonArray.length(); j++) {
         skill.addSubSkillName(subskillsJsonArray.getString(j));
       }
-
-      logger.info("Inserting skill " + skill.getName());
       skillRepo.save(skill);
     }
+
+    logger.info("Added {} skills", skillsJsonArray.length());
   }
 
   @EventListener(ApplicationStartedEvent.class)

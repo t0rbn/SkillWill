@@ -4,6 +4,7 @@ const loaders = require('./webpack.loaders')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 loaders.push({
 	test: /\.less$/,
@@ -42,14 +43,6 @@ module.exports = {
 				API_SERVER: JSON.stringify(''),
 			},
 		}),
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false,
-				screw_ie8: true,
-				drop_console: true,
-				drop_debugger: true,
-			},
-		}),
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		new ExtractTextPlugin({
 			filename: 'style.css',
@@ -63,4 +56,19 @@ module.exports = {
 			},
 		}),
 	],
+	optimization: {
+		minimizer: [
+			// we specify a custom UglifyJsPlugin here to get source maps in production
+			new UglifyJsPlugin({
+				cache: true,
+				parallel: true,
+				uglifyOptions: {
+					compress: false,
+					ecma: 6,
+					mangle: true
+				},
+				sourceMap: true
+			})
+		]
+	}
 }

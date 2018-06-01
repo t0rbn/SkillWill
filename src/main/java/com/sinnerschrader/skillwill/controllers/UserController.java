@@ -188,43 +188,6 @@ public class UserController {
   }
 
   /**
-   * Add or update user's role
-   */
-  @ApiOperation(value = "update role", nickname = "edit user's role", notes = "edit the role of a user")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 403, message = "Forbidden"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
-    @ApiImplicitParam(name = "role", value = "new role (USER or ADMIN)", paramType = "query", required = true)
-  })
-  @RequestMapping(path = "/users/{user}/role", method = RequestMethod.POST)
-  public ResponseEntity<String> updateRole(@PathVariable String user,
-    @CookieValue("_oauth2_proxy") String oAuthToken,
-    @RequestParam(value = "role") String role) {
-
-    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      logger.debug("Failed to edit {}'s role: forbidden operation for current user", user);
-      return new StatusResponseEntity("user not logged in or not admin", HttpStatus.FORBIDDEN);
-    }
-
-    try {
-      userService.updateRole(user, role);
-      logger.info("Successfully set {}'s role to {}", user, role);
-    } catch (UserNotFoundException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    } catch (IllegalArgumentException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    return new StatusResponseEntity("success", HttpStatus.OK);
-  }
-
-  /**
    * Get users with similar skill sets
    */
   @ApiOperation(value = "get similar", nickname = "get similar", notes = "get users with similar skills sets")

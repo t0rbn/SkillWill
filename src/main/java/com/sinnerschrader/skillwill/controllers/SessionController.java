@@ -35,7 +35,7 @@ public class SessionController {
     this.sessionService = sessionService;
   }
 
-  @ApiOperation(value = "session/user", nickname = "get session user", notes = "get session user")
+  @ApiOperation(value = "session/user", nickname = "create session user", notes = "create session user")
   @ApiResponses({
     @ApiResponse(code = 200, message = "Success"),
     @ApiResponse(code = 401, message = "Unauthorized"),

@@ -47,7 +47,6 @@ public class UserTest {
 
   @Test
   public void testToJson() throws JSONException {
-    user.setRole(Role.ADMIN);
     user.setLdapDetails(
         new UserLdapDetails(
             "Fooberius",
@@ -56,7 +55,8 @@ public class UserTest {
             "+49 666 666",
             "Hamburg",
             "Senior Web Unicorn",
-            "Firma"
+            "Firma",
+            Role.ADMIN
         )
     );
     JSONObject obj = user.toJSON();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,11 +29,14 @@ public class Skill {
 
   private boolean hidden;
 
+  private String description;
+
   @Version
   private Long version;
 
-  public Skill(String name, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
+  public Skill(String name, String description, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
     this.name = name;
+    this.description = description;
     this.nameStem = SkillUtils.toStem(name);
     this.suggestions = suggestions;
     this.subSkillNames = subSkillNames;
@@ -40,11 +44,11 @@ public class Skill {
   }
 
   public Skill(String name) {
-    this(name, new ArrayList<>(), false, new HashSet<>());
+    this(name, "", new ArrayList<>(), false, new HashSet<>());
   }
 
   public Skill() {
-    this("", new ArrayList<>(), false, new HashSet<>());
+    this("", "", new ArrayList<>(), false, new HashSet<>());
   }
 
   public String getName() {
@@ -54,10 +58,6 @@ public class Skill {
   public void setName(String name) {
     this.name = name;
     this.nameStem = SkillUtils.toStem(name);
-  }
-
-  public String getNameStem() {
-    return this.nameStem;
   }
 
   public List<SuggestionSkill> getSuggestions() {
@@ -119,10 +119,6 @@ public class Skill {
     this.subSkillNames.remove(name);
   }
 
-  public void setSubSkillNames(Collection<String> names) {
-    this.subSkillNames = new HashSet<>(names);
-  }
-
   public void renameSubSkill(String oldName, String newName) {
     this.removeSubSkillName(oldName);
     this.addSubSkillName(newName);
@@ -136,11 +132,20 @@ public class Skill {
     this.hidden = value;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public JSONObject toJSON() {
     JSONObject obj = new JSONObject();
     obj.put("name", this.name);
     obj.put("hidden", this.hidden);
     obj.put("subskills", new JSONArray(this.subSkillNames));
+    obj.put("description", this.description);
     return obj;
   }
 
@@ -152,32 +157,19 @@ public class Skill {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
-    Skill that = (Skill) o;
-
-    if (hidden != that.hidden) {
-      return false;
-    }
-    if (!name.equals(that.name)) {
-      return false;
-    }
-    if (!nameStem.equals(that.nameStem)) {
-      return false;
-    }
-    if (suggestions != null ? !suggestions.equals(that.suggestions) : that.suggestions != null) {
-      return false;
-    }
-    return subSkillNames != null ? subSkillNames.equals(that.subSkillNames) : that.subSkillNames == null;
+    Skill skill = (Skill) o;
+    return hidden == skill.hidden &&
+      Objects.equals(name, skill.name) &&
+      Objects.equals(nameStem, skill.nameStem) &&
+      Objects.equals(suggestions, skill.suggestions) &&
+      Objects.equals(subSkillNames, skill.subSkillNames) &&
+      Objects.equals(description, skill.description);
   }
 
   @Override
   public int hashCode() {
-    int result = name.hashCode();
-    result = 31 * result + nameStem.hashCode();
-    result = 31 * result + (suggestions != null ? suggestions.hashCode() : 0);
-    result = 31 * result + (subSkillNames != null ? subSkillNames.hashCode() : 0);
-    result = 31 * result + (hidden ? 1 : 0);
-    return result;
+
+    return Objects.hash(name, nameStem, suggestions, subSkillNames, hidden, description);
   }
 
 }

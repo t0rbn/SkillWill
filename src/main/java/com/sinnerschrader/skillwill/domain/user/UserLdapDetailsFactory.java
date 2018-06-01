@@ -37,7 +37,7 @@ public class UserLdapDetailsFactory {
     return null;
   }
 
-  public UserLdapDetails get(SearchResultEntry entry) {
+  public UserLdapDetails create(SearchResultEntry entry, Role role) {
     String company = "";
     try {
       company = getCompanyByDn(entry.getParentDNString());
@@ -52,7 +52,8 @@ public class UserLdapDetailsFactory {
       entry.getAttributeValue("telephoneNumber"),
       entry.getAttributeValue("l"),
       entry.getAttributeValue("title"),
-      company
+      company,
+      role
     );
   }
 

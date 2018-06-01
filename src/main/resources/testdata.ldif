@@ -9,6 +9,24 @@ objectClass: top
 objectClass: domain
 dc: server
 
+dn: ou=groups,dc=example,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: Groups OU
+dc: example
+
+dn: cn=admins,ou=groups,dc=example,dc=com
+objectClass: top
+objectClass: posixGroup
+objectClass: sambaGroupMapping
+cn: admins
+displayName: admins
+memberUid: isawer
+memberUid: levric
+memberUid: joncon
+memberUid: nikorl
+memberUid: elibec
+
 dn: ou=users,dc=example,dc=com
 objectClass: organizationalUnit
 objectClass: top

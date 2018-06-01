@@ -26,8 +26,6 @@ public class User {
 
   private List<UserSkill> skills;
 
-  private Role role;
-
   private String ldapDN;
 
   @Transient
@@ -44,7 +42,6 @@ public class User {
     this.skills = new ArrayList<>();
     this.ldapDetails = null;
     this.fitnessScore = null;
-    this.role = Role.USER;
     this.ldapDN = null;
   }
 
@@ -110,7 +107,6 @@ public class User {
   public JSONObject toJSON() {
     var json = new JSONObject();
     json.put("id", this.id);
-    json.put("role", this.role.toString());
 
     if (this.ldapDetails != null) {
       json.put("firstName", ldapDetails.getFirstName());
@@ -120,6 +116,7 @@ public class User {
       json.put("location", ldapDetails.getLocation());
       json.put("title", ldapDetails.getTitle());
       json.put("company", ldapDetails.getCompany());
+      json.put("role", ldapDetails.getRole());
     }
 
     if (this.fitnessScore != null) {
@@ -135,14 +132,6 @@ public class User {
 
     json.put("skills", skillsArr);
     return json;
-  }
-
-  public Role getRole() {
-    return role;
-  }
-
-  public void setRole(Role role) {
-    this.role = role;
   }
 
   public String getLdapDN() {

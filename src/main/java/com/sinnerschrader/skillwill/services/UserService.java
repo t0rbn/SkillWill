@@ -207,26 +207,7 @@ public class UserService {
       throw new UserNotFoundException("user not found");
     }
 
-    return user.getRole();
-  }
-
-  public void updateRole(String userId, Role role) {
-    var user = userRepository.findByIdIgnoreCase(userId);
-    if (user == null) {
-      throw new UserNotFoundException("user not found");
-    }
-
-    if (user.getRole() == role) {
-      return;
-    }
-
-    user.setRole(role);
-    userRepository.save(user);
-  }
-
-  public void updateRole(String userId, String roleName) throws IllegalArgumentException {
-    var role = Role.valueOf(roleName.toUpperCase());
-    this.updateRole(userId, role);
+    return user.getLdapDetails().getRole();
   }
 
 }

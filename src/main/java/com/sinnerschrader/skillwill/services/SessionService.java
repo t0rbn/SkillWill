@@ -144,7 +144,7 @@ public class SessionService {
 
   public boolean checkTokenRole(String token, Role role) {
     logger.debug("checking token {} for role {}", token, role.toString());
-    return getSession(token) != null && getUserByToken(token).getRole() == role;
+    return getSession(token) != null && getUserByToken(token).getLdapDetails().getRole() == role;
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

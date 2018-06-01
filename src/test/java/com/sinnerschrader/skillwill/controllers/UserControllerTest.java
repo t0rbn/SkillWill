@@ -63,7 +63,7 @@ public class UserControllerTest {
     sessionRepo.deleteAll();
 
     skillRepo.insert(new Skill("Java"));
-    skillRepo.insert(new Skill("hidden", new ArrayList<>(), true, new HashSet<>()));
+    skillRepo.insert(new Skill("hidden", "", new ArrayList<>(), true, new HashSet<>()));
 
     var userUser = new User("aaaaaa");
     userUser.addUpdateSkill("Java", 2, 3, false, false);
@@ -71,7 +71,6 @@ public class UserControllerTest {
     userRepo.insert(userUser);
 
     var adminUser = new User("bbbbbb");
-    adminUser.setRole(Role.ADMIN);
     userRepo.insert(adminUser);
 
     ldapService.syncUsers(userRepo.findAll(), true);
@@ -384,47 +383,6 @@ public class UserControllerTest {
   public void testGetSimilarUserCountNegative() {
     var response = userController.getSimilar("aaaaaa", -1);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-  @Test
-  public void testSetRoleValid() {
-    var response = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(Role.ADMIN, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
-  }
-
-  @Test
-  public void testSetRoleValidIgnoreCase() {
-    var response = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "aDmiN");
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(Role.ADMIN, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
-  }
-
-  @Test
-  public void testSetRoleInvalid() {
-    var response = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "unicorn");
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals(Role.USER, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
-  }
-
-  @Test
-  public void testSetRoleNotAdmin() {
-    var response = userController.updateRole("aaaaaa", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
-    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-    assertEquals(Role.USER, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
-  }
-
-  @Test
-  public void testSetRoleInvalidSession() {
-    var response = userController.updateRole("aaaaaa", "fleischkremistkeinesession", "ADMIN");
-    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-    assertEquals(Role.USER, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
-  }
-
-  @Test
-  public void testSetRoleUnknonwUser() {
-    var response = userController.updateRole("dermönchmitderpeitsche", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
 }

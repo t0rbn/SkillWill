@@ -164,6 +164,7 @@ public class SkillController {
   @RequestMapping(path = "/skills", method = RequestMethod.POST)
   public ResponseEntity<String> addSkill(
     @RequestParam String name,
+    @RequestParam(required = false) String description,
     @RequestParam(required = false, defaultValue = "false") boolean hidden,
     @RequestParam(required = false, defaultValue = "") String subSkills,
     @CookieValue("_oauth2_proxy") String oAuthToken) {
@@ -173,7 +174,7 @@ public class SkillController {
     }
 
     try {
-      skillService.createSkill(name, hidden, createSubSkillSet(subSkills));
+      skillService.createSkill(name, description, hidden, createSubSkillSet(subSkills));
       logger.info("Successfully created new skill {}", name);
       return new StatusResponseEntity("success", HttpStatus.OK);
     } catch (EmptyArgumentException | DuplicateSkillException e) {
@@ -237,6 +238,7 @@ public class SkillController {
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkill(@PathVariable String skill,
     @RequestParam(required = false) String name,
+    @RequestParam(required = false) String description,
     @RequestParam(required = false) Boolean hidden,
     @RequestParam(required = false) String subskills,
     @CookieValue("_oauth2_proxy") String oAuthToken) {
@@ -246,7 +248,7 @@ public class SkillController {
     }
 
     try {
-      skillService.updateSkill(skill, name, hidden, createSubSkillSet(subskills));
+      skillService.updateSkill(skill, name, description, hidden, createSubSkillSet(subskills));
       return new StatusResponseEntity("success", HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to update skill {}: not found", skill);

@@ -83,7 +83,6 @@ public class UserLdapDetails {
 
   @Override
   public int hashCode() {
-
     return Objects.hash(firstName, lastName, mail, phone, location, title, company, role);
   }
 

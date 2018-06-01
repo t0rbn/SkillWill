@@ -63,7 +63,7 @@ public class UserControllerTest {
     sessionRepo.deleteAll();
 
     skillRepo.insert(new Skill("Java"));
-    skillRepo.insert(new Skill("hidden", new ArrayList<>(), true, new HashSet<>()));
+    skillRepo.insert(new Skill("hidden", "", new ArrayList<>(), true, new HashSet<>()));
 
     var userUser = new User("aaaaaa");
     userUser.addUpdateSkill("Java", 2, 3, false, false);

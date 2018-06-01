@@ -163,7 +163,7 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void createSkill(String name, boolean isHidden, Set<String> subSkills)
+  public void createSkill(String name, String description, boolean isHidden, Set<String> subSkills)
     throws EmptyArgumentException, DuplicateSkillException {
 
     name = SkillUtils.sanitizeName(name);
@@ -185,7 +185,7 @@ public class SkillService {
     }
 
     try {
-      skillRepository.insert(new Skill(name, new ArrayList<>(), isHidden, subSkills));
+      skillRepository.insert(new Skill(name, description, new ArrayList<>(), isHidden, subSkills));
       logger.info("Successfully created skill {}", name);
     } catch (DuplicateKeyException e) {
       logger.debug("Failed to create skill {}: already exists");
@@ -195,8 +195,8 @@ public class SkillService {
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void updateSkill(String name, String newName, Boolean hidden, Set<String> subSkills)
-    throws IllegalArgumentException, DuplicateSkillException, SkillNotFoundException {
+  public void updateSkill(String name, String newName, String description, Boolean hidden, Set<String> subSkills)
+    throws IllegalArgumentException, DuplicateSkillException {
 
     name = SkillUtils.sanitizeName(name);
     newName = SkillUtils.sanitizeName(newName);
@@ -227,6 +227,7 @@ public class SkillService {
     // @formatter:off
     newSkill = new Skill(
       StringUtils.isEmpty(newName) ? oldSkill.getName() : newName,
+      description == null ? oldSkill.getDescription() : description,
       oldSkill.getSuggestions(),
       hidden == null ? oldSkill.isHidden() : hidden,
       CollectionUtils.isEmpty(subSkills) ? oldSkill.getSubSkillNames() : subSkills

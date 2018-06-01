@@ -44,7 +44,7 @@ public class EmbeddedLdap {
     }
 
     logger.warn("Resetting embedded LDAP");
-    var ldifInputStream = getClass().getResourceAsStream("/testuser.ldif");
+    var ldifInputStream = getClass().getResourceAsStream("/testdata.ldif");
     dirServer.importFromLDIF(true, new LDIFReader(ldifInputStream));
   }
 

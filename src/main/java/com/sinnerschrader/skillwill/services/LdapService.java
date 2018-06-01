@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.services;
 
 
+import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
@@ -16,7 +17,9 @@ import com.unboundid.util.ssl.TrustAllTrustManager;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +60,9 @@ public class LdapService {
 
   @Value("${ldapLookupBaseDN}")
   private String ldapLookupBaseDN;
+
+  @Value("${ldapAdminGroupDN}")
+  private String ldapAdminGroupDN;
 
   @Value("${ldapEmbedded}")
   private boolean ldapEmbedded;
@@ -177,7 +183,6 @@ public class LdapService {
         return null;
       }
 
-      var ldapDetails = userLdapDetailsFactory.get(ldapEntry);
       String dn = null;
       try {
         dn = ldapEntry.getParentDNString();
@@ -186,11 +191,31 @@ public class LdapService {
       }
 
       var id = ldapEntry.getAttributeValue("uid");
+      var role = getAdminIds().contains(id) ? Role.ADMIN : Role.USER;
+      var ldapDetails = userLdapDetailsFactory.create(ldapEntry, role);
+
       var newUser = new User(id);
       newUser.setLdapDN(dn);
       newUser.setLdapDetails(ldapDetails);
 
       return newUser;
+  }
+
+  private Set<String> getAdminIds() {
+    ensureConnection();
+    try {
+      bindAsTechnicalUser();
+      var ldapRequest = new SearchRequest(ldapAdminGroupDN, SearchScope.SUB, "(memberUid=*)");
+      var adminGroupResult = ldapConnection.search(ldapRequest).getSearchEntries();
+
+      if (adminGroupResult.size() != 1) {
+        throw new IllegalStateException("Failed to find unique admin ldap group");
+      }
+
+      return Set.of(adminGroupResult.get(0).getAttributeValues("memberUid"));
+    } catch (LDAPException e) {
+      return Collections.emptySet();
+    }
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -209,6 +234,8 @@ public class LdapService {
     }
 
     var updated = new ArrayList<User>();
+    var adminIds = getAdminIds();
+
     for (User user : users) {
       SearchRequest ldapRequest;
       SearchResultEntry ldapEntry;
@@ -237,7 +264,8 @@ public class LdapService {
           userRepo.delete(user);
           isRemoved = true;
         } else {
-          user.setLdapDetails(userLdapDetailsFactory.get(ldapEntry));
+          var role = adminIds.contains(user.getId()) ? Role.ADMIN : Role.USER;
+          user.setLdapDetails(userLdapDetailsFactory.create(ldapEntry, role));
         }
       } catch (LDAPException e) {
         logger.error("Failed to sync user {}: LDAP error", user.getId());

@@ -10,21 +10,16 @@ import java.util.Objects;
 public class UserLdapDetails {
 
   private final String firstName;
-
   private final String lastName;
-
   private final String mail;
-
   private final String phone;
-
   private final String location;
-
   private final String title;
-
   private final String company;
+  private final Role role;
 
   public UserLdapDetails(String firstName, String lastName, String mail, String phone,
-      String location, String title, String company) {
+      String location, String title, String company, Role role) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.mail = mail;
@@ -32,6 +27,7 @@ public class UserLdapDetails {
     this.location = location;
     this.title = title;
     this.company = company;
+    this.role = role;
   }
 
   public String getFirstName() {
@@ -62,6 +58,10 @@ public class UserLdapDetails {
     return this.company;
   }
 
+  public Role getRole() {
+    return this.role;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -77,12 +77,14 @@ public class UserLdapDetails {
       Objects.equals(phone, that.phone) &&
       Objects.equals(location, that.location) &&
       Objects.equals(title, that.title) &&
-      Objects.equals(company, that.company);
+      Objects.equals(company, that.company) &&
+      role == that.role;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstName, lastName, mail, phone, location, title, company);
+
+    return Objects.hash(firstName, lastName, mail, phone, location, title, company, role);
   }
 
 }

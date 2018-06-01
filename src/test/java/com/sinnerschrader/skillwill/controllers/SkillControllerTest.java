@@ -75,20 +75,12 @@ public class SkillControllerTest {
     cobolSkill.incrementSuggestion("Java");
     skillRepo.insert(cobolSkill);
 
-    var userUser = new User("aaaaaa");
-    userRepo.insert(userUser);
-
-    var adminUser = new User("bbbbbb");
-    adminUser.setRole(Role.ADMIN);
-    userRepo.insert(adminUser);
-
+    userRepo.insert(new User("aaaaaa"));
+    userRepo.insert(new User("bbbbbb"));
     ldapService.syncUsers(userRepo.findAll(), true);
 
-    var userSession = new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    sessionRepo.insert(userSession);
-
-    var adminSession = new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    sessionRepo.insert(adminSession);
+    sessionRepo.insert( new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar"));
+    sessionRepo.insert(new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar"));
   }
 
   @Test

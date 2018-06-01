@@ -79,7 +79,6 @@ public class MockData {
     for (int i = 0; i < usersJsonArray.length(); i++) {
       var userJson = usersJsonArray.getJSONObject(i);
       var user = new User(userJson.getString("id"));
-      user.setRole(Role.valueOf(userJson.getString("role")));
 
       var skillsJsonArray = userJson.getJSONArray("skills");
       for (int j = 0; j < skillsJsonArray.length(); j++) {

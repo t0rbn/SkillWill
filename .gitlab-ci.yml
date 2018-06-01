@@ -37,7 +37,8 @@ deploy-smaland:
     - scp target/skillwill.jar ubuntu@35.157.217.249:/srv/http/skillwill.jar
     - echo 'Restarting smaland application'
     - ssh ubuntu@35.157.217.249 sudo systemctl restart skillwill.service
-  when: manual
+  only:
+    - master
 
 deploy-live:
   stage: deploy-live

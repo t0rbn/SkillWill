@@ -1,11 +1,10 @@
 package com.sinnerschrader.skillwill.controllers;
 
 import com.sinnerschrader.skillwill.domain.skills.Skill;
-import com.sinnerschrader.skillwill.domain.user.Role;
+import com.sinnerschrader.skillwill.domain.skills.SuggestionSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import com.sinnerschrader.skillwill.misc.StatusResponseEntity;
 import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import io.swagger.annotations.Api;
@@ -20,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import io.swagger.models.Response;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author torree
  */
-@Api(tags = "Skills", description = "Manage all skills")
+@Api(tags = "Skills")
 @Controller
 @CrossOrigin
 @Scope("prototype")
@@ -51,12 +52,9 @@ public class SkillController {
 
   private final SkillService skillService;
 
-  private final SessionService sessionService;
-
   @Autowired
-  public SkillController(SkillService skillService, SessionService sessionService) {
+  public SkillController(SkillService skillService) {
     this.skillService = skillService;
-    this.sessionService = sessionService;
   }
 
   /**
@@ -70,21 +68,13 @@ public class SkillController {
   })
   @ApiImplicitParams({
     @ApiImplicitParam(name = "search", value = "Name to search", paramType = "query"),
-    @ApiImplicitParam(name = "exclude_hidden", value = "Do not return hidden skills", paramType = "query", defaultValue = "true"),
     @ApiImplicitParam(name = "count", value = "Limit the number of skills to find", paramType = "query"),
   })
   @RequestMapping(path = "/skills", method = RequestMethod.GET)
-  public ResponseEntity<String> getSkills(@RequestParam(required = false) String search,
-    @RequestParam(required = false, defaultValue = "true") boolean exclude_hidden,
+  public ResponseEntity<List<Skill>> getSkills(@RequestParam(required = false) String search,
     @RequestParam(required = false, defaultValue = "-1") int count) {
 
-    var skillsArr = new JSONArray(
-      skillService.findSkill(search, exclude_hidden, count)
-        .stream()
-        .map(Skill::toJSON)
-        .collect(Collectors.toList())
-    );
-    return new ResponseEntity<>(skillsArr.toString(), HttpStatus.OK);
+    return new ResponseEntity<>(skillService.findSkills(search, count), HttpStatus.OK);
   }
 
   /**
@@ -97,15 +87,15 @@ public class SkillController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.GET)
-  public ResponseEntity<String> getSkill(@PathVariable(value = "skill") String name) {
+  public ResponseEntity getSkill(@PathVariable(value = "skill") String name) {
     var skill = skillService.getSkillByName(name);
     if (skill == null) {
       logger.debug("Failed to get skill {}: not found", name);
-      return new StatusResponseEntity("skill not found", HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
 
     logger.debug("Successfully got skill {}", name);
-    return new ResponseEntity<>(skill.toJSON().toString(), HttpStatus.OK);
+    return new ResponseEntity<>(skill, HttpStatus.OK);
   }
 
   /**
@@ -123,26 +113,22 @@ public class SkillController {
     @ApiImplicitParam(name = "count", value = "Count of recommendations to get", paramType = "query", defaultValue = "10")
   })
   @RequestMapping(path = "/skills/next", method = RequestMethod.GET)
-  public ResponseEntity<String> getNext(@RequestParam(required = false) String search,
-    @RequestParam(defaultValue = "10") int count) {
+  public ResponseEntity getNext(@RequestParam(required = false) String search,
+                                                 @RequestParam(defaultValue = "10") int count) {
 
     if (count < 1) {
-      logger.debug("Failed to get suggestions for skills {}: count less than zero", search);
-      return new StatusResponseEntity("count must be a positive integer (or zero)", HttpStatus.BAD_REQUEST);
+      logger.debug("Failed to get suggestions for skills {}: count less than one", search);
+      return ResponseEntity.badRequest().build();
     }
 
     try {
       List<String> searchItems = StringUtils.isEmpty(search) ? Collections.emptyList() : List.of(search.split("\\s*,\\s*"));
       var suggestionSkills = skillService.getSuggestionSkills(searchItems, count);
-      var suggestionJsons = suggestionSkills.stream()
-        .map(Skill::toJSON)
-        .collect(Collectors.toList());
-
-      logger.debug("Successfully got {} suggestions for search [{}]", suggestionJsons.size(), search);
-      return new ResponseEntity<>(new JSONArray(suggestionJsons).toString(), HttpStatus.OK);
+      logger.debug("Successfully got {} suggestions for search [{}]", suggestionSkills.size(), search);
+      return new ResponseEntity<>(suggestionSkills, HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to get suggestions for skills {}: serach contains inkown skill", search);
-      return new StatusResponseEntity("search contains unknown skill", HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().build();
     }
   }
 
@@ -157,32 +143,18 @@ public class SkillController {
   })
   @ApiImplicitParams({
     @ApiImplicitParam(name = "name", value = "new skill's name", paramType = "form", required = true),
-    @ApiImplicitParam(name = "hidden", value = "hide skill in search/suggestions", paramType = "form", defaultValue = "false"),
-    @ApiImplicitParam(name = "subskills", value = "list of subskills (separated with comma)", paramType = "form"),
-    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true)
   })
   @RequestMapping(path = "/skills", method = RequestMethod.POST)
   public ResponseEntity<String> addSkill(
-    @RequestParam String name,
-    @RequestParam(required = false) String description,
-    @RequestParam(required = false, defaultValue = "false") boolean hidden,
-    @RequestParam(required = false, defaultValue = "") String subSkills,
-    @CookieValue("_oauth2_proxy") String oAuthToken) {
-
-    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      return new StatusResponseEntity("invalid session token or user is not admin", HttpStatus.FORBIDDEN);
-    }
+    @RequestParam String name) {
 
     try {
-      skillService.createSkill(name, description, hidden, createSubSkillSet(subSkills));
+      skillService.createSkill(name);
       logger.info("Successfully created new skill {}", name);
-      return new StatusResponseEntity("success", HttpStatus.OK);
-    } catch (EmptyArgumentException | DuplicateSkillException e) {
+      return new ResponseEntity<>("success", HttpStatus.OK);
+    } catch (EmptyArgumentException | DuplicateSkillException | SkillNotFoundException e) {
       logger.debug("Failed to create skill {}: argument empty or skill already exists", name);
-      return new StatusResponseEntity("argument empty or skill already existing", HttpStatus.BAD_REQUEST);
-    } catch (SkillNotFoundException e) {
-      logger.debug("Failed to add skill {}, subskill not found", name);
-      return new StatusResponseEntity("subskill not found", HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().build();
     }
   }
 
@@ -191,7 +163,6 @@ public class SkillController {
    */
   @ApiOperation(value = "delete skill", nickname = "delete skill", notes = "parameter must be a valid skill Id")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
     @ApiImplicitParam(name = "migrateTo", value = "skill to which old levels will be migrated", paramType = "form")
   })
   @ApiResponses({
@@ -201,21 +172,18 @@ public class SkillController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deleteSkill(@PathVariable String skill, @CookieValue("_oauth2_proxy") String oAuthToken, @RequestParam(required = false) String migrateTo) {
-    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      return new StatusResponseEntity("invalid session token or user is not admin", HttpStatus.FORBIDDEN);
-    }
+  public ResponseEntity<Void> deleteSkill(@PathVariable String skill, @RequestParam(required = false) String migrateTo) {
 
     try {
       skillService.deleteSkill(skill, migrateTo);
       logger.info("Successfully deleted skill {}", skill);
-      return new StatusResponseEntity("success", HttpStatus.OK);
+      return ResponseEntity.ok().build();
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to delete skill {}: not found", skill);
-      return new StatusResponseEntity("skill not found", HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     } catch (IllegalArgumentException e) {
-      logger.debug("Failed to delete skill {}: illegal argument");
-      return new StatusResponseEntity("illegal argument", HttpStatus.BAD_REQUEST);
+      logger.debug("Failed to delete skill {}: illegal argument", skill);
+      return ResponseEntity.badRequest().build();
     }
   }
 
@@ -231,36 +199,21 @@ public class SkillController {
   })
   @ApiImplicitParams({
     @ApiImplicitParam(name = "name", value = "skill's new name", paramType = "form", required = false),
-    @ApiImplicitParam(name = "hidden", value = "hide skill", paramType = "form", required = false),
-    @ApiImplicitParam(name = "subskills", value = "skill's new subskills", paramType = "form", required = false),
-    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.POST)
-  public ResponseEntity<String> updateSkill(@PathVariable String skill,
-    @RequestParam(required = false) String name,
-    @RequestParam(required = false) String description,
-    @RequestParam(required = false) Boolean hidden,
-    @RequestParam(required = false) String subskills,
-    @CookieValue("_oauth2_proxy") String oAuthToken) {
-
-    if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      return new StatusResponseEntity("invalid session or not admin", HttpStatus.FORBIDDEN);
-    }
+  public ResponseEntity<Void> updateSkill(@PathVariable String skill,
+    @RequestParam(required = false) String name) {
 
     try {
-      skillService.updateSkill(skill, name, description, hidden, createSubSkillSet(subskills));
-      return new StatusResponseEntity("success", HttpStatus.OK);
+      skillService.updateSkill(skill, name);
+      return ResponseEntity.ok().build();
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to update skill {}: not found", skill);
-      return new StatusResponseEntity("skill not found", HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     } catch (DuplicateSkillException | IllegalArgumentException e) {
       logger.debug("Failed to update skill {}: illegal argument or skill already exists", skill);
-      return new StatusResponseEntity("skill already existing or invalid", HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().build();
     }
-  }
-
-  private Set<String> createSubSkillSet(String s) {
-    return new HashSet<>(Arrays.asList(StringUtils.tokenizeToStringArray(s, ",")));
   }
 
 }

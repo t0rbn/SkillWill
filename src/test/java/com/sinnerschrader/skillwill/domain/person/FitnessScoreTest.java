@@ -30,8 +30,8 @@ public class FitnessScoreTest {
   @Test
   public void testSearchedSkillsOnly() {
     var user = new User("foobar");
-    user.addUpdateSkill("Java", 3, 3, false, false);
-    user.addUpdateSkill("AEM", 3, 3, false, false);
+    user.addUpdateSkill("Java", 3, 3, false);
+    user.addUpdateSkill("AEM", 3, 3, false);
 
     Collection<Skill> searchItems = new ArrayList<>();
     searchItems.add(new Skill("Java"));
@@ -42,8 +42,8 @@ public class FitnessScoreTest {
   @Test
   public void testNoSearchedSkills() {
     var user = new User("foobar");
-    user.addUpdateSkill("Java", 3, 3, false, false);
-    user.addUpdateSkill("AEM", 3, 3, false, false);
+    user.addUpdateSkill("Java", 3, 3, false);
+    user.addUpdateSkill("AEM", 3, 3, false);
 
     Collection<Skill> searchItems = new ArrayList<>();
     searchItems.add(new Skill("Ruby"));
@@ -53,10 +53,10 @@ public class FitnessScoreTest {
   @Test
   public void testMaximumScore() {
     var user = new User("foobar");
-    user.addUpdateSkill("Java", 3, 3, false, false);
-    user.addUpdateSkill("AEM", 3, 3, false, false);
-    user.addUpdateSkill("Foo", 0, 0, false, false);
-    user.addUpdateSkill("Bar", 0, 0, false, false);
+    user.addUpdateSkill("Java", 3, 3, false);
+    user.addUpdateSkill("AEM", 3, 3, false);
+    user.addUpdateSkill("Foo", 0, 0, false);
+    user.addUpdateSkill("Bar", 0, 0, false);
 
     Collection<Skill> searchItems = new ArrayList<>();
     searchItems.add(new Skill("Java"));
@@ -67,10 +67,10 @@ public class FitnessScoreTest {
   @Test
   public void testMinimalScore() {
     var user = new User("foobar");
-    user.addUpdateSkill("Java", 0, 0, false, false);
-    user.addUpdateSkill("AEM", 0, 0, false, false);
-    user.addUpdateSkill("Foo", 3, 3, false, false);
-    user.addUpdateSkill("Bar", 3, 3, false, false);
+    user.addUpdateSkill("Java", 0, 0, false);
+    user.addUpdateSkill("AEM", 0, 0, false);
+    user.addUpdateSkill("Foo", 3, 3, false);
+    user.addUpdateSkill("Bar", 3, 3, false);
 
     Collection<Skill> searchItems = new ArrayList<>();
     searchItems.add(new Skill("Java"));
@@ -81,10 +81,10 @@ public class FitnessScoreTest {
   @Test
   public void testRealisticScore() {
     var user = new User("foobar");
-    user.addUpdateSkill("Java", 2, 3, false, false);
-    user.addUpdateSkill("AEM", 2, 2, false, false);
-    user.addUpdateSkill("Foo", 1, 3, false, false);
-    user.addUpdateSkill("Bar", 1, 0, false, false);
+    user.addUpdateSkill("Java", 2, 3, false);
+    user.addUpdateSkill("AEM", 2, 2, false);
+    user.addUpdateSkill("Foo", 1, 3, false);
+    user.addUpdateSkill("Bar", 1, 0, false);
 
     Collection<Skill> searchItems = new ArrayList<>();
     searchItems.add(new Skill("Java"));

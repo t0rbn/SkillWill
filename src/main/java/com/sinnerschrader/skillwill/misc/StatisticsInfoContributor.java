@@ -37,23 +37,17 @@ public class StatisticsInfoContributor implements InfoContributor {
 
   private void contributeUsedSkillCount(List<User> users, Info.Builder builder) {
     var usedSkillCount = (int) users.stream()
-      .flatMap(user -> user.getSkills(true).stream())
+      .flatMap(user -> user.getSkills().stream())
       .map(UserSkill::getName)
       .distinct()
       .count();
     builder.withDetail("skills_used", usedSkillCount);
   }
 
-  private void contributeHiddenSkillCount(Info.Builder builder) {
-    builder.withDetail(
-      "skills_hidden",
-      skillRepository.findAll().stream().filter(Skill::isHidden).count()
-    );
-  }
 
   private void contributeUserSkills(List<User> users, Info.Builder builder) {
     var stats = users.stream()
-      .mapToInt(user -> user.getSkills(true).size())
+      .mapToInt(user -> user.getSkills().size())
       .summaryStatistics();
     var details = new HashMap<String, Double>();
 
@@ -72,7 +66,6 @@ public class StatisticsInfoContributor implements InfoContributor {
     contributeUserCount(builder);
     contributeSkillCount(builder);
     contributeUsedSkillCount(users, builder);
-    contributeHiddenSkillCount(builder);
     contributeUserSkills(users, builder);
   }
 

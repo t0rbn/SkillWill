@@ -54,14 +54,4 @@ public class SkillTest {
     assertTrue(skill.getSuggestions().isEmpty());
   }
 
-  @Test
-  public void testToJSON() throws JSONException {
-    JSONObject obj = skill.toJSON();
-    assertEquals(4, obj.length());
-    assertEquals("Java", obj.getString("name"));
-    assertFalse(obj.getBoolean("hidden"));
-    assertEquals(new JSONArray(), obj.getJSONArray("subskills"));
-    assertEquals("", obj.getString("description"));
-  }
-
 }

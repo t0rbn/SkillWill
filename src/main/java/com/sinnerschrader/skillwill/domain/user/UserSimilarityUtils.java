@@ -21,15 +21,15 @@ public class UserSimilarityUtils {
     }
 
     return candidates.stream()
-      .filter(candidate -> !candidate.getId().equals(user.getId()))
+      .filter(candidate -> !candidate.getEmail().equals(user.getEmail()))
       .sorted(new JaccardDistanceComparator(user))
       .limit(count != null ? count : Long.MAX_VALUE)
       .collect(Collectors.toList());
   }
 
   private static double jaccardDistance(User userA, User userB) {
-    var skillsNamesA = userA.getSkills(true).stream().map(UserSkill::getName).collect(Collectors.toSet());
-    var skillsNamesB = userB.getSkills(true).stream().map(UserSkill::getName).collect(Collectors.toSet());
+    var skillsNamesA = userA.getSkills().stream().map(UserSkill::getName).collect(Collectors.toSet());
+    var skillsNamesB = userB.getSkills().stream().map(UserSkill::getName).collect(Collectors.toSet());
 
     double intersectionSize = skillsNamesA.stream().filter(skillsNamesB::contains).count();
     double unionSize = skillsNamesA.size() + skillsNamesB.size() - intersectionSize;

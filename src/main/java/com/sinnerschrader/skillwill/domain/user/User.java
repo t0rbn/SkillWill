@@ -14,6 +14,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 
+import javax.annotation.Generated;
+
 /**
  * Class holding all information about a person
  *
@@ -22,66 +24,67 @@ import org.springframework.data.annotation.Version;
 public class User {
 
   @Id
-  private String id;
+  private String email;
+
+  private String displayName;
 
   private List<UserSkill> skills;
 
-  private String ldapDN;
-
+  // Der Name ist scheiße, aber dies das wissenschaftlicher Anspruch DAS MUSS SO HEISSEN my ass
   @Transient
   private FitnessScore fitnessScore;
 
   @Version
   private Long version;
 
-  // LDAP Details will be updated regularly
-  private UserLdapDetails ldapDetails;
-
-  public User(String id) {
-    this.id = id;
+  public User(String email) {
+    this.email = email;
+    this.displayName = email;
     this.skills = new ArrayList<>();
-    this.ldapDetails = null;
-    this.fitnessScore = null;
-    this.ldapDN = null;
   }
 
-  public String getId() {
-    return this.id;
+  public String getEmail() {
+    return email;
   }
 
-  public List<UserSkill>  getSkills(boolean excludeHidden) {
-    return this.skills.stream()
-      .filter(skill -> !excludeHidden || !skill.isHidden())
-      .collect(Collectors.toList());
+  public void setEmail(String email) {
+    this.email = email;
   }
 
-  public UserSkill getSkill(String name, boolean excludeHidden) {
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
+  public List<UserSkill> getSkills() {
+    return new ArrayList<>(this.skills);
+  }
+
+  public void setSkills(List<UserSkill> skills) {
+    this.skills = skills;
+  }
+
+  public UserSkill getSkill(String name) {
     return this.skills.stream()
         .filter(s -> s.getName().equals(name))
-        .filter(s -> !excludeHidden || !s.isHidden())
         .findFirst()
         .orElse(null);
   }
 
   public boolean hasSkill(String skill) {
-    return this.getSkill(skill, true) != null;
+    return this.getSkill(skill) != null;
   }
 
-  public UserLdapDetails getLdapDetails() {
-    return this.ldapDetails;
-  }
-
-  public void setLdapDetails(UserLdapDetails ldapDetails) {
-    this.ldapDetails = ldapDetails;
-  }
-
-  public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
+  public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean mentor) {
     try {
       removeSkill(name);
     } catch (SkillNotFoundException e) {
       // user doesn't have skill yet -> add new skill
     }
-    this.skills.add(new UserSkill(name, skillLevel, willLevel, hidden, mentor));
+    this.skills.add(new UserSkill(name, skillLevel, willLevel, mentor));
   }
 
   public void removeSkill(String name) throws SkillNotFoundException {
@@ -102,44 +105,6 @@ public class User {
     }
 
     return this.fitnessScore.getValue();
-  }
-
-  public JSONObject toJSON() {
-    var json = new JSONObject();
-    json.put("id", this.id);
-
-    if (this.ldapDetails != null) {
-      json.put("firstName", ldapDetails.getFirstName());
-      json.put("lastName", ldapDetails.getLastName());
-      json.put("mail", ldapDetails.getMail());
-      json.put("phone", ldapDetails.getPhone());
-      json.put("location", ldapDetails.getLocation());
-      json.put("title", ldapDetails.getTitle());
-      json.put("company", ldapDetails.getCompany());
-      json.put("role", ldapDetails.getRole());
-    }
-
-    if (this.fitnessScore != null) {
-      json.put("fitness", this.fitnessScore.getValue());
-    }
-
-    var skillsArr = new JSONArray();
-    this.skills.stream()
-      .filter(s -> !s.isHidden())
-      .sorted(Comparator.comparing(UserSkill::getName))
-      .map(UserSkill::toJSON)
-      .forEach(skillsArr::put);
-
-    json.put("skills", skillsArr);
-    return json;
-  }
-
-  public String getLdapDN() {
-    return this.ldapDN;
-  }
-
-  public void setLdapDN(String ldapDN) {
-    this.ldapDN = ldapDN;
   }
 
 }

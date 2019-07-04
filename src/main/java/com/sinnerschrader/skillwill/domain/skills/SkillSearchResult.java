@@ -1,14 +1,11 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
-import com.sinnerschrader.skillwill.SkillwillApplication;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Map;
+import java.util.Set;
 
 public class SkillSearchResult {
 

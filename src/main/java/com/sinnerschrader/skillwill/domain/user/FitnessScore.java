@@ -39,13 +39,13 @@ public class FitnessScore {
   }
 
   private Set<UserSkill> getSearchedPersonalSkills() {
-    return this.user.getSkills(true).stream()
+    return this.user.getSkills().stream()
         .filter(s -> getSearchedSkillNames(this.searchedSkills).contains(s.getName()))
         .collect(Collectors.toSet());
   }
 
   private Set<UserSkill> getUnsearchedPersonalSkills() {
-    var skillset = new HashSet<>(this.user.getSkills(true));
+    var skillset = new HashSet<>(this.user.getSkills());
     skillset.removeAll(getSearchedPersonalSkills());
     return skillset;
   }

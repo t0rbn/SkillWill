@@ -1,13 +1,7 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.misc.StatusResponseEntity;
 import com.sinnerschrader.skillwill.services.SessionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +41,13 @@ public class SessionController {
     @ApiImplicitParam(name = "count", value = "Limit the number of skills to find", paramType = "query"),
   })
   @RequestMapping(path = "/session/user", method = RequestMethod.GET)
-  public ResponseEntity<String> getCurrentUser(@CookieValue("_oauth2_proxy") String oAuthToken) {
+  public ResponseEntity getCurrentUser(@CookieValue("_oauth2_proxy") String oAuthToken) {
     logger.debug("Getting user from session {}", oAuthToken);
     var user = sessionService.getUserByToken(oAuthToken);
     if (user == null) {
-      return new StatusResponseEntity("no current session", HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>("no current session", HttpStatus.UNAUTHORIZED);
     }
-    return new ResponseEntity<>(user.toJSON().toString(), HttpStatus.OK);
+    return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
 }

@@ -1,6 +1,5 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
-import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -18,15 +17,12 @@ public class UserSkill {
 
   private int willLevel;
 
-  private boolean hidden;
-
   private boolean mentor;
 
-  public UserSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
+  public UserSkill(String name, int skillLevel, int willLevel, boolean mentor) {
     this.name = name;
     this.skillLevel = skillLevel;
     this.willLevel = willLevel;
-    this.hidden = hidden;
     this.mentor = mentor;
   }
 
@@ -50,29 +46,12 @@ public class UserSkill {
     this.willLevel = willLevel;
   }
 
-  public void setHidden(boolean hidden) {
-    this.hidden = hidden;
-  }
-
-  public boolean isHidden() {
-    return this.hidden;
-  }
-
   public void setMentor(boolean mentor) {
     this.mentor = mentor;
   }
 
   public boolean isMentor() {
     return this.mentor;
-  }
-
-  public JSONObject toJSON() {
-    var json = new JSONObject();
-    json.put("name", this.name);
-    json.put("skillLevel", this.skillLevel);
-    json.put("willLevel", this.willLevel);
-    json.put("mentor", this.mentor);
-    return json;
   }
 
 }

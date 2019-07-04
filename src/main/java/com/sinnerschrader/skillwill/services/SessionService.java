@@ -1,7 +1,6 @@
 package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.session.Session;
@@ -9,7 +8,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,13 +43,10 @@ public class SessionService {
 
   private final UserRepository UserRepository;
 
-  private final LdapService ldapService;
-
   @Autowired
-  public SessionService(SessionRepository sessionRepo, UserRepository UserRepository, LdapService ldapService) {
+  public SessionService(SessionRepository sessionRepo, UserRepository UserRepository) {
     this.sessionRepo = sessionRepo;
     this.UserRepository = UserRepository;
-    this.ldapService = ldapService;
   }
 
   private boolean isTokenInProxy(String token) {
@@ -88,12 +83,7 @@ public class SessionService {
       return null;
     }
 
-    var user = UserRepository.findByMail(session.getMail());
-    if (user == null) {
-      user = ldapService.createUserByMail(extractMail(token));
-    }
-
-    return user;
+    return UserRepository.findByEmailIgnoreCase(session.getEmail());
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -107,11 +97,11 @@ public class SessionService {
 
     if (isTokenInProxy(token)) {
       logger.debug("Successfully validated token {} with proxy", token);
-      if (UserRepository.findByMail(extractMail(token)) == null) {
+      if (UserRepository.findByEmailIgnoreCase(extractMail(token)) == null) {
         // user not in db yet, will create
-        var newUser = ldapService.createUserByMail(extractMail(token));
+        var newUser = new User(extractMail(token));
         UserRepository.insert(newUser);
-        logger.info("Successfully created new user {}", newUser.getId());
+        logger.info("Successfully created new user {}", newUser.getEmail());
       }
 
       // session not in DB, but in proxy -> create new session and revalidate old ones
@@ -127,7 +117,7 @@ public class SessionService {
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   private void refreshUserSessions(String mail) {
-    var cleanables = sessionRepo.findByMail(mail).stream()
+    var cleanables = sessionRepo.findByEmail(mail).stream()
       .filter(session -> !isTokenInProxy(session.getToken()))
       .collect(Collectors.toList());
 
@@ -137,21 +127,16 @@ public class SessionService {
 
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public boolean checkToken(String token, String userId) {
-    logger.debug("checking token {} for user {}", token, userId);
-    return getSession(token) != null && getUserByToken(token) != null && getUserByToken(token).getId().equals(userId);
-  }
-
-  public boolean checkTokenRole(String token, Role role) {
-    logger.debug("checking token {} for role {}", token, role.toString());
-    return getSession(token) != null && getUserByToken(token).getLdapDetails().getRole() == role;
+  public boolean checkToken(String token, String email) {
+    logger.debug("checking token {} for user {}", token, email);
+    return getSession(token) != null && getUserByToken(token) != null && getUserByToken(token).getEmail().equals(email);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public void cleanUp() {
     var cleanables = sessionRepo.findAll()
       .stream()
-      .filter(session -> !isTokenInProxy(session.getToken()) || UserRepository.findByMail(session.getMail()) == null)
+      .filter(session -> !isTokenInProxy(session.getToken()) || UserRepository.findByEmailIgnoreCase(session.getEmail()) == null)
       .collect(Collectors.toList());
 
     logger.info("Starting session cleanup, will remove {} sessions", cleanables.size());

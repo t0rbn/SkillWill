@@ -14,18 +14,10 @@ import org.springframework.data.mongodb.repository.Query;
  */
 public interface SkillRepository extends MongoRepository<Skill, String> {
 
-  @Query("{ 'hidden' : false }")
-  List<Skill> findAllExcludeHidden();
-
   Skill findByName(String name);
-
-  List<Skill> findByNameIn(Collection<String> names);
 
   @Query("{ 'suggestions.name' : '?0' }")
   List<Skill> findBySuggestion(String suggestion);
-
-  @Query("{ 'subSkillNames' : '?0' }")
-  List<Skill> findBySubskillName(String subskillName);
 
   Skill findByNameStem(String name);
 

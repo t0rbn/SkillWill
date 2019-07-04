@@ -1,10 +1,7 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.domain.skills.SkillSearchResult;
-import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
-import com.sinnerschrader.skillwill.misc.StatusResponseEntity;
 import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import com.sinnerschrader.skillwill.services.UserService;
@@ -16,9 +13,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import io.swagger.models.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -72,23 +70,19 @@ public class UserController {
   })
   @ApiImplicitParams({
     @ApiImplicitParam(name = "skills", value = "Names of skills to search, separated by ','", paramType = "query", required = false),
-    @ApiImplicitParam(name = "location", value = "Location to filter results by", paramType = "query", required = false),
-    @ApiImplicitParam(name = "company", value = "Company to filter results by", paramType = "query", required = false),
   })
   @RequestMapping(path = "/users", method = RequestMethod.GET)
-  public ResponseEntity<String> getUsers(@RequestParam(required = false) String skills,
-    @RequestParam(required = false) String company,
-    @RequestParam(required = false) String location) {
+  public ResponseEntity getUsers(@RequestParam(required = false) String skills) {
 
     var skillSearchNames = StringUtils.isEmpty(skills)
       ? new ArrayList<String>()
       : Arrays.asList(skills.split(","));
-    var searchResult = skillService.searchSkillsByNames(skillSearchNames, true);
-    var foundUsers = userService.getUsers(searchResult, company, location);
+    var searchResult = skillService.searchSkillsByNames(skillSearchNames);
+    var foundUsers = userService.getUsers(searchResult);
 
     var json = new JSONObject();
-    json.put("results", new JSONArray(foundUsers.stream().map(User::toJSON).collect(Collectors.toList())));
-    json.put("searched", searchResult == null ? new JSONArray() : searchResult.mappingJson());
+    json.put("results", new JSONArray(foundUsers));
+    json.put("searched", searchResult.mappingJson());
 
     skillService.registerSkillSearch(searchResult.mappedSkills());
     return new ResponseEntity<>(json.toString(), HttpStatus.OK);
@@ -105,12 +99,11 @@ public class UserController {
     @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/users/{username}", method = RequestMethod.GET)
-  public ResponseEntity<String> getUser(@PathVariable String username) {
+  public ResponseEntity<User> getUser(@PathVariable String username) {
     try {
-      var user = userService.getUser(username);
-      return new ResponseEntity<>(user.toJSON().toString(), HttpStatus.OK);
+      return new ResponseEntity<>(userService.getUser(username), HttpStatus.OK);
     } catch (UserNotFoundException e) {
-      return new StatusResponseEntity("user not found", HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
   }
 
@@ -139,16 +132,16 @@ public class UserController {
 
     if (!sessionService.checkToken(oAuthToken, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
-      return new StatusResponseEntity("user not logged in", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     try {
       userService.updateSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level), mentor);
-      return new StatusResponseEntity("success", HttpStatus.OK);
+      return ResponseEntity.ok().build();
     } catch (UserNotFoundException e) {
-      return new StatusResponseEntity("user not found", HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     } catch (IllegalArgumentException e) {
-      return new StatusResponseEntity("invalid request", HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().build();
     }
   }
 
@@ -168,22 +161,22 @@ public class UserController {
     @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
   })
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
-  public ResponseEntity<String> removeSkill(@PathVariable String user,
+  public ResponseEntity removeSkill(@PathVariable String user,
     @RequestParam("skill") String skill, @CookieValue("_oauth2_proxy") String oAuthToken) {
 
     if (!sessionService.checkToken(oAuthToken, user)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
-      return new StatusResponseEntity("user not logged in", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     try {
       userService.removeSkills(user, skill);
       logger.info("Successfully deleted {}'s skill {}", user, skill);
-      return new StatusResponseEntity("success", HttpStatus.OK);
+      return ResponseEntity.ok().build();
     } catch (UserNotFoundException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     } catch (IllegalArgumentException e) {
-      return new StatusResponseEntity("invalid request", HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().build();
     }
   }
 
@@ -201,24 +194,22 @@ public class UserController {
     @ApiImplicitParam(name = "count", value = "number of users to find (max)", paramType = "query", defaultValue = "10"),
   })
   @RequestMapping(path = "/users/{user}/similar", method = RequestMethod.GET)
-  public ResponseEntity<String> getSimilar(@PathVariable String user,
+  public ResponseEntity<List<User>> getSimilar(@PathVariable String user,
     @RequestParam(value = "count", required = false) Integer count) {
 
     List<User> similar;
-
     try {
       similar = userService.getSimilar(user, count);
     } catch (UserNotFoundException e) {
       logger.debug("Failed to get users similar to {}: user not found", user);
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     } catch (IllegalArgumentException e) {
       logger.debug("Failed to get users similar to {}: illegal parameter", user);
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().build();
     }
 
-    JSONArray arr = new JSONArray(similar.stream().map(User::toJSON).collect(Collectors.toList()));
-    logger.debug("Successfully found {} users similar to {}", arr.length(), user);
-    return new ResponseEntity<>(arr.toString(), HttpStatus.OK);
+    logger.debug("Successfully found {} users similar to {}", similar.size(), user);
+    return new ResponseEntity<>(similar, HttpStatus.OK);
   }
 
 }

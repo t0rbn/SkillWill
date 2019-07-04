@@ -14,6 +14,6 @@ public interface SessionRepository extends MongoRepository<Session, String> {
 
   Session findByToken(String token);
 
-  List<Session> findByMail(String mail);
+  List<Session> findByEmail(String mail);
 
 }

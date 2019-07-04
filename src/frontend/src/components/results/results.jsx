@@ -5,7 +5,6 @@ import Dropdown from '../dropdown/dropdown.jsx'
 import TicketNotice from '../search/ticket-notice/ticket-notice'
 import { connect } from 'react-redux'
 import {
-	setLocationFilter,
 	setSortFilter,
 	setDirectionFilter,
 	stopAnimating,
@@ -18,7 +17,6 @@ class Results extends React.Component {
 		this.state = {
 			lastSortedBy: 'fitness',
 		}
-		this.filterUserByLocation = this.filterUserByLocation.bind(this)
 	}
 
 	componentDidMount() {
@@ -29,25 +27,14 @@ class Results extends React.Component {
 		})
 	}
 
-	filterUserByLocation(user) {
-		const { locationFilter } = this.props
-		if (locationFilter === 'all') {
-			return true
-		} else {
-			return user.location === locationFilter
-		}
-	}
-
 	render() {
 		const {
 			directionFilter,
-			locationFilter,
 			lastSortedBy: { sortFilter },
 			results: { searched, users },
 			animated,
 			setSortFilter,
 			setDirectionFilter,
-			companyFilter
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
 		if (users && users.length > 0) {
@@ -55,11 +42,7 @@ class Results extends React.Component {
 				users,
 				sortFilter,
 				directionFilter,
-				locationFilter
 			)
-			sortedUserList = sortedUserList.filter((user) => {
-				return user.company === companyFilter || companyFilter === 'all'
-			})
 			return (
 				<div ref={(ref) => { this.node = ref }} className={`results-container ${animated ? 'animateable' : ''}`}>
 					<div className="counter">
@@ -130,15 +113,12 @@ function mapStateToProps(state) {
 	return {
 		results: state.results,
 		searchTerms: state.searchTerms,
-		locationFilter: state.locationFilter,
 		lastSortedBy: state.lastSortedBy,
 		directionFilter: state.directionFilter,
 		isSkillAnimated: state.isSkillAnimated,
-		companyFilter: state.companyFilter
 	}
 }
 export default connect(mapStateToProps, {
-	setLocationFilter,
 	setSortFilter,
 	setDirectionFilter,
 	stopAnimating,

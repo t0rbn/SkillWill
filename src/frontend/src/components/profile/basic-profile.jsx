@@ -34,7 +34,6 @@ class BasicProfile extends React.Component {
 		this.setState({
 			topWills: this.sortSkills('willLevel', 'desc'),
 			sortedSkills: this.sortSkills('skillLevel', 'desc'),
-			avatarUrl: this.createAvatarUrl()
 		})
 	}
 
@@ -130,7 +129,7 @@ class BasicProfile extends React.Component {
 
 	render() {
 		const {
-			user: { id, firstName, lastName, title, location, mail, phone, company },
+			user: { displayName, email },
 		} = this.props
 
 		const {
@@ -140,9 +139,6 @@ class BasicProfile extends React.Component {
 			shouldShowAllSkills,
 		} = this.state
 
-		const regex = /.*(?=@)/i // matches everything from the email address before the @
-		const slackName = mail.match(regex)
-
 		return (
 			<ul
 				ref={(ref) => { this.node = ref }}
@@ -150,32 +146,11 @@ class BasicProfile extends React.Component {
 					? 'animateable'
 					: ''}`}>
 				<li className="info">
-					<div className="avatar" style={{backgroundImage: `url('${this.state.avatarUrl}')`}}></div>
+					<div className="avatar"></div>
 					<p className="name">
-						{firstName} {lastName}
+						{displayName}
 					</p>
-					<p className="id">{id}</p>
-					<p className="department">{title}</p>
-					<p className="location phone">
-						{company} - {location} / TEL. {phone}
-					</p>
-					<div className="social">
-						<Link className="mail" href={`mailto:${mail}`} target="_blank">
-							<Icon name="mail" size={30} />
-						</Link>
-						<Link
-							className="slack"
-							href={`https://sinnerschrader.slack.com/messages/@${slackName}`}
-							target="_blank">
-							<Icon name="slack" size={30} />
-						</Link>
-						<Link
-							className="move"
-							href={`https://move.sinnerschrader.com/?id=${id}`}
-							target="_blank">
-							<Icon name="location" size={30} />
-						</Link>
-					</div>
+					<p className="email">{email}</p>
 				</li>
 
 				{this.renderSearchedSkills()}

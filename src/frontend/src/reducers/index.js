@@ -3,7 +3,6 @@ import {
 	FETCH_SKILLS,
 	ADD_SEARCH_TERMS,
 	DELETE_SEARCH_TERM,
-	SET_LOCATION_FILTER,
 	SET_LAST_SORTED_BY,
 	ADD_SKILL_SEARCH,
 	DELETE_SKILL_SEARCH,
@@ -19,7 +18,6 @@ import {
 	SORT_USER_SKILLS_BY_NAME,
 	REQUEST_CURRENT_USER,
 	RECEIVE_CURRENT_USER,
-	SET_COMPANY_FILTER,
 	REQUEST_PROFILE_DATA,
 	RECEIVE_PROFILE_DATA
 } from '../actions'
@@ -160,26 +158,6 @@ function lastSortedBy(state = {}, action) {
 	}
 }
 
-function locationFilter(state = '', action) {
-	switch (action.type) {
-		case SET_LOCATION_FILTER:
-			return action.payload
-		case SET_COMPANY_FILTER:
-			return 'all'
-		default:
-			return state
-	}
-}
-
-function companyFilter(state = 'all', action) {
-	switch (action.type) {
-		case SET_COMPANY_FILTER:
-			return action.filter
-		default:
-			return state
-	}
-}
-
 function directionFilter(state = '', action) {
 	switch (action.type) {
 		case SET_DIRECTION_FILTER:
@@ -256,10 +234,8 @@ export default {
 	editSkill,
 	shouldSkillsAnimate,
 	lastSortedBy,
-	locationFilter,
 	directionFilter,
 	isResultsLoaded,
 	isSkillAnimated,
 	currentUser,
-	companyFilter
 }

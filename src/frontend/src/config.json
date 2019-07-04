@@ -1,9 +1,6 @@
 {
   "skillLegend": ["n/a", "Basic", "Intermediate", "Expert"],
   "willLegend": ["None whatsoever", "ok", "High", "Super high"],
-  "slackChannelUrl": "slack://channel?team=T02T629VC&id=C75606LMR",
-  "avatarUrl": "https://wiki.sinnerschrader.com/rest/cas/1.0/avatar/server/",
-  "avatarSize": 100,
   "directionFilterOptions": [{
       "value": "ascending",
       "display": "ascending"
@@ -18,33 +15,8 @@
       "display": "match"
     },
     {
-      "value": "lastName",
+      "value": "displayName",
       "display": "name"
-    },
-    {
-      "value": "location",
-      "display": "location"
-    }
-  ],
-  "locationFilterOptions": [{
-      "value": "all",
-      "display": "All locations"
-    },
-    {
-      "value": "Hamburg",
-      "display": "Hamburg"
-    },
-    {
-      "value": "Frankfurt",
-      "display": "Frankfurt"
-    },
-    {
-      "value": "München",
-      "display": "München"
-    },
-    {
-      "value": "Prag",
-      "display": "Prag"
     }
   ],
   "suggestions": {

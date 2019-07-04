@@ -41,12 +41,12 @@ public class SessionService {
 
   private final SessionRepository sessionRepo;
 
-  private final UserRepository UserRepository;
+  private final UserRepository userRepository;
 
   @Autowired
   public SessionService(SessionRepository sessionRepo, UserRepository UserRepository) {
     this.sessionRepo = sessionRepo;
-    this.UserRepository = UserRepository;
+    this.userRepository = UserRepository;
   }
 
   private boolean isTokenInProxy(String token) {
@@ -82,8 +82,7 @@ public class SessionService {
     if (session == null) {
       return null;
     }
-
-    return UserRepository.findByEmailIgnoreCase(session.getEmail());
+    return userRepository.findByEmailIgnoreCase(session.getEmail());
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -97,10 +96,10 @@ public class SessionService {
 
     if (isTokenInProxy(token)) {
       logger.debug("Successfully validated token {} with proxy", token);
-      if (UserRepository.findByEmailIgnoreCase(extractMail(token)) == null) {
+      if (userRepository.findByEmailIgnoreCase(extractMail(token)) == null) {
         // user not in db yet, will create
         var newUser = new User(extractMail(token));
-        UserRepository.insert(newUser);
+        userRepository.insert(newUser);
         logger.info("Successfully created new user {}", newUser.getEmail());
       }
 
@@ -136,7 +135,7 @@ public class SessionService {
   public void cleanUp() {
     var cleanables = sessionRepo.findAll()
       .stream()
-      .filter(session -> !isTokenInProxy(session.getToken()) || UserRepository.findByEmailIgnoreCase(session.getEmail()) == null)
+      .filter(session -> !isTokenInProxy(session.getToken()) || userRepository.findByEmailIgnoreCase(session.getEmail()) == null)
       .collect(Collectors.toList());
 
     logger.info("Starting session cleanup, will remove {} sessions", cleanables.size());

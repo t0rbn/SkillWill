@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.UserSkill;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
@@ -99,11 +100,10 @@ public class User {
     this.fitnessScore = new FitnessScore(this, searchedSkills, props);
   }
 
-  public double getFitnessScoreValue() {
+  public Double getFitnessScoreValue() {
     if (this.fitnessScore == null) {
-      throw new IllegalStateException("no fitness score set");
+      return null;
     }
-
     return this.fitnessScore.getValue();
   }
 

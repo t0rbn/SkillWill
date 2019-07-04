@@ -33,21 +33,19 @@ export default class User extends React.Component {
 	}
 
 	render() {
-		const { id, firstName, lastName, title, location } = this.props.user
+		const { email, displayName } = this.props.user
 
 		return (
 			<Link
-				to={`/profile/${id}`}
+				to={`/profile/${email}`}
 				activeClassName="active"
-				id={id}
+				id={email}
 				onClick={this.handleClick}>
 				<ul className="user">
 					<li className="info">
-						<span className="name">{`${firstName} ${lastName}`}</span>
-						<span className="id">{id}</span>
-						<span className="department">{title}</span>
+						<span className="name">{`${displayName}`}</span>
+						<span className="email">{email}</span>
 					</li>
-					<li className="location">{location}</li>
 					<li className="skills">
 						<ul className="skills-list">
 							{this.state.skillsToShow.map(skill => {

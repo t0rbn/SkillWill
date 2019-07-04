@@ -16,14 +16,6 @@ export function deleteSearchTerms(searchTerm) {
 	}
 }
 
-export const SET_LOCATION_FILTER = 'SET_LOCATION_FILTER'
-export function setLocationFilter(locationFilter) {
-	return {
-		type: SET_LOCATION_FILTER,
-		payload: locationFilter,
-	}
-}
-
 export const SET_DIRECTION_FILTER = 'SET_DIRECTION_FILTER'
 export function setDirectionFilter(directionFilter) {
 	return {
@@ -234,14 +226,6 @@ export function receiveCurrentUser(payload) {
 	return {
 		type: RECEIVE_CURRENT_USER,
 		payload
-	}
-}
-
-export const SET_COMPANY_FILTER = 'SET_COMPANY_FILTER'
-export function setCompanyFilter(filter) {
-	return {
-		type: SET_COMPANY_FILTER,
-		filter
 	}
 }
 

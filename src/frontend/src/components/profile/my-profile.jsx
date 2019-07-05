@@ -4,7 +4,7 @@ import SkillSearch from '../search/skill-search.jsx'
 import Icon from '../icon/icon.jsx'
 import Layer from "../layer/layer"
 import {apiServer} from '../../env.js'
-import {editSkill, exitSkillsEditMode, fetchCurrentUser, setLastSortedBy, toggleSkillsEditMode, updateUserSkills} from '../../actions'
+import {editSkill, editDisplayName, exitSkillsEditMode, fetchCurrentUser, setLastSortedBy, toggleSkillsEditMode, updateUserSkills} from '../../actions'
 import {connect} from 'react-redux'
 
 class MyProfile extends React.Component {
@@ -23,6 +23,7 @@ class MyProfile extends React.Component {
 		this.toggleSkillsEdit = this.toggleSkillsEdit.bind(this)
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
+		this.editDisplayName = this.editDisplayName.bind(this)
 	}
 
 	componentWillMount() {
@@ -51,9 +52,9 @@ class MyProfile extends React.Component {
 		document.body.classList.toggle('is-edit-mode')
 	}
 
-	getCurrentUserEmail() {
+	getCurrentUserId() {
 		const { currentUser } = this.props
-		return currentUser.email
+		return currentUser.id
 	}
 
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
@@ -71,12 +72,27 @@ class MyProfile extends React.Component {
 			body: postData,
 			credentials: 'same-origin',
 		}
-		this.props.updateUserSkills(options, this.getCurrentUserEmail())
+		this.props.updateUserSkills(options, this.getCurrentUserId())
+	}
+
+	editDisplayName(displayName) {
+		const postData = { displayName }
+		const options = {
+			method: 'PUT',
+			body: JSON.stringify(postData),
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			credentials: 'same-origin',
+		}
+		const requestURL = `${apiServer}/users/${this.getCurrentUserId()}`
+		this.props.editDisplayName(requestURL, options)
 	}
 
 	deleteSkill(skill) {
 		const options = { method: 'DELETE', credentials: 'same-origin' }
-		const requestURL = `${apiServer}/users/${this.getCurrentUserEmail()}/skills?skill=${encodeURIComponent(
+		const requestURL = `${apiServer}/users/${this.getCurrentUserId()}/skills?skill=${encodeURIComponent(
 			skill
 		)}`
 		fetch(requestURL, options)
@@ -142,11 +158,12 @@ class MyProfile extends React.Component {
 								shouldShowAllSkills={shouldShowAllSkills}
 								editSkill={this.editSkill}
 								deleteSkill={this.deleteSkill}
+								editDisplayName={this.editDisplayName}
 								setLastSortedBy={this.props.setLastSortedBy}
 								lastSortedBy={this.props.lastSortedBy}
 								getUserProfileData={this.props.getUserProfileData}
 								user={this.props.currentUser}
-								allowEditBasicData={true}
+								allowEditDisplayName={true}
 							/>
 							<div className="profile-actions" data-skilledit={skillEditOpen}>
 								<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
@@ -181,6 +198,7 @@ export default connect(mapStateToProps, {
 	toggleSkillsEditMode,
 	exitSkillsEditMode,
 	editSkill,
+	editDisplayName,
 	setLastSortedBy,
 	updateUserSkills,
 	fetchCurrentUser

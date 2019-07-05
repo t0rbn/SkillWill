@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import com.sinnerschrader.skillwill.domain.user.BasicInfoResource;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
@@ -99,8 +100,8 @@ public class UserController {
   }
 
   @RequestMapping(path = "/users/{id}", method = RequestMethod.PUT)
-  public ResponseEntity<Void> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
-    userService.updateUserData(id, updatedUser);
+  public ResponseEntity<Void> upadteUser(@PathVariable String id, @RequestBody BasicInfoResource updatedInfo) {
+    userService.updateBasicUserInfo(id, updatedInfo);
     return ResponseEntity.ok().build();
   }
 

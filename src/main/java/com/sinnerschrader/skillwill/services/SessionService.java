@@ -55,7 +55,7 @@ public class SessionService {
   }
 
   public void validateForUserId(String token, String userId) {
-    if (getCurrentUser(token).getId().equals(userId)) {
+    if (!getCurrentUser(token).getId().equals(userId)) {
       throw new CredentialsException("validation against session failed");
     }
   }

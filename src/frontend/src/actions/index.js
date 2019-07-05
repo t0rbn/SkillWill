@@ -191,6 +191,21 @@ export function editSkill(requestURL, options) {
 	}
 }
 
+export const EDIT_BASIC_INFO = 'EDIT_BASIC_INFO'
+export function editDisplayName(requestURL, options) {
+	function inner(requestUrl, options) {
+		const request = fetch(requestURL, options).then(response => response.json())
+		return {
+			type: EDIT_BASIC_INFO,
+			payload: request,
+		}
+	}
+
+	return function(dispatch) {
+		dispatch(inner(requestURL, options)).then(() => dispatch(fetchCurrentUser()))
+	}
+}
+
 export function updateUserSkills(options, user) {
 	const requestURL = `${apiServer}/users/${user}/skills`
 	return function(dispatch) {

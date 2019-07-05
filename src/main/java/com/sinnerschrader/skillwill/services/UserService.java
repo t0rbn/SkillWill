@@ -2,6 +2,7 @@ package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.SkillSearchResult;
+import com.sinnerschrader.skillwill.domain.user.BasicInfoResource;
 import com.sinnerschrader.skillwill.domain.user.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.user.UserSimilarityUtils;
 import com.sinnerschrader.skillwill.domain.user.User;
@@ -79,14 +80,10 @@ public class UserService {
     return user.get();
   }
 
-  public void updateUserData(String id, User updatedUser) throws UserNotFoundException {
+  public void updateBasicUserInfo(String id, BasicInfoResource updatedInfo) throws UserNotFoundException {
     var existingUser = getUser(id);
-    if (!StringUtils.isEmpty(updatedUser.getEmail())) {
-      existingUser.setEmail(updatedUser.getEmail());
-    }
-
-    if (!StringUtils.isEmpty(updatedUser.getDisplayName())) {
-      existingUser.setDisplayName(updatedUser.getDisplayName());
+    if (!StringUtils.isEmpty(updatedInfo.getDisplayName())) {
+      existingUser.setDisplayName(updatedInfo.getDisplayName());
     }
     userRepository.save(existingUser);
   }

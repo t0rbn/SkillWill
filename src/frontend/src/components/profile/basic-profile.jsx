@@ -15,14 +15,15 @@ class BasicProfile extends React.Component {
 			editLayerAt: null,
 			numberOfSkillsToShow: 10,
 			isSkillEditActive: false,
-			isBasicDataEditActive: false,
+			isDisplayNameEditActive: false,
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
-		this.startEditBasicData = this.startEditBasicData.bind(this)
-		this.exitEditBasicData = this.exitEditBasicData.bind(this)
+		this.startEditDisplayName = this.startEditDisplayName.bind(this)
+		this.exitEditDisplayName = this.exitEditDisplayName.bind(this)
+		this.changeDisplayName = this.changeDisplayName.bind(this)
 	}
 
 	componentWillMount() {
@@ -49,15 +50,20 @@ class BasicProfile extends React.Component {
 		this.node.removeEventListener('animationend', this.removeAnimationClass)
 	}
 
-	startEditBasicData() {
+	startEditDisplayName() {
 		this.setState({
-			isBasicDataEditActive: true
+			isDisplayNameEditActive: true,
 		})
 	}
 
-	exitEditBasicData() {
+	changeDisplayName(event) {
+		this.displayName = event.target.value;
+	}
+	
+	exitEditDisplayName() {
+		this.props.editDisplayName(this.displayName, this.email);
 		this.setState({
-			isBasicDataEditActive: false
+			isDisplayNameEditActive: false,
 		})
 	}
 
@@ -127,7 +133,7 @@ class BasicProfile extends React.Component {
 	}
 
 	render() {
-		const {
+		let {
 			user: { displayName, email, id },
 		} = this.props
 
@@ -146,21 +152,25 @@ class BasicProfile extends React.Component {
 				className={`basic-profile ${
 					this.props.shouldSkillsAnimate ? 'animateable' : ''
 				}`}>
-				{this.state.isBasicDataEditActive ? (
+				{this.state.isDisplayNameEditActive ? (
 					<li className="info">
 						<p className="name">
-							<input type="text" value={displayName} />
+							Displayed Name:
+							<input
+								type="text"
+								defaultValue={displayName}
+								onChange={this.changeDisplayName}
+							/>
 						</p>
-						<p className="email">
-							<input type="text" value={email} />
-						</p>
-						<button onClick={this.exitEditBasicData}>Save</button>
+						<button onClick={this.exitEditDisplayName}>Save</button>
 					</li>
 				) : (
 					<li className="info">
 						<p className="name">{displayName}</p>
 						<p className="email">{email}</p>
-						{this.props.allowEditBasicData && <button onClick={this.startEditBasicData}>Edit Info</button>}
+						{this.props.allowEditDisplayName && (
+							<button onClick={this.startEditDisplayName}>Edit Info</button>
+						)}
 					</li>
 				)}
 

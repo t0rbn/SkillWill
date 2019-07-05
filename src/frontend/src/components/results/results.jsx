@@ -2,13 +2,8 @@ import React from 'react'
 import config from '../../config.json'
 import User from '../user/user'
 import Dropdown from '../dropdown/dropdown.jsx'
-import TicketNotice from '../search/ticket-notice/ticket-notice'
-import { connect } from 'react-redux'
-import {
-	setSortFilter,
-	setDirectionFilter,
-	stopAnimating,
-} from '../../actions'
+import {connect} from 'react-redux'
+import {setDirectionFilter, setSortFilter, stopAnimating,} from '../../actions'
 import sortAndFilter from '../../utils/sortAndFilter.js'
 
 class Results extends React.Component {
@@ -62,7 +57,6 @@ class Results extends React.Component {
 					<div className="results-legend-wrapper">
 						<div className="results-legend container">
 							<div className="results-legend-item name">Name</div>
-							<div className="results-legend-item location">Location</div>
 							<div className="results-legend-item skills">
 								<div className="skill-label">Skill</div>
 								<div className="skill-level">Skill level</div>
@@ -97,12 +91,6 @@ class Results extends React.Component {
 					ref={(ref) => { this.node = ref }}
 					className="no-results-container"
 					data-isEmptyLabel={this.props.noResultsLabel}>
-					<div className="container">
-						<TicketNotice
-							title={`Sorry, we haven't found a matching colleague.`}
-							subtitle="Submit a suggestion!"
-						/>
-					</div>
 				</div>
 			)
 		}

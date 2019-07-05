@@ -1,8 +1,7 @@
 import React from 'react'
-import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
+import {SkillLegend, SkillLegendItem} from '../skill-legend/skill-legend'
 import SkillItem from '../skill-item/skill-item'
-import TicketNotice from '../search/ticket-notice/ticket-notice'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 
 class SkillEditor extends React.Component {
 	constructor(props) {
@@ -43,7 +42,7 @@ class SkillEditor extends React.Component {
 	}
 
 	render() {
-		const { handleEdit, handleDelete, searchTerms } = this.props
+		const { handleEdit, handleDelete } = this.props
 		const { noUserSkills } = this.state
 		const noUserSkillsSorted = noUserSkills.sort((skillA, skillB) =>
 			skillA.name.localeCompare(skillB.name)
@@ -76,13 +75,6 @@ class SkillEditor extends React.Component {
 						})}
 					</ul>
 				</div>
-				{searchTerms.length > 0 &&
-					noUserSkills.length === 0 && (
-						<TicketNotice
-							title={`Sorry, there isn't any "${searchTerms}" skill you can add...`}
-							subtitle="Submit your suggestion!"
-						/>
-					)}
 			</div>
 		)
 	}

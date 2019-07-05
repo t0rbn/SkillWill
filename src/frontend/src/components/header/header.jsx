@@ -6,7 +6,6 @@ import NavigationList from '../navigation/navigation-list'
 import NavigationListItem from '../navigation/navigation-list-item'
 import Logo from '../logo/logo'
 import Icon from '../icon/icon.jsx'
-import config from '../../config.json'
 
 export default class Header extends React.Component {
 
@@ -26,9 +25,6 @@ export default class Header extends React.Component {
 					</NavigationItem>
 					<NavigationItem>
 						<NavigationList>
-							<NavigationListItem target={config.slackChannelUrl}>
-								<Icon name="slack" width={20} height={20} />
-							</NavigationListItem>
 							<NavigationListItem
 								target={'/my-profile'}>
 								<Icon name="user" width={20} height={20} />

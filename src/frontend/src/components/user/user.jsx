@@ -33,11 +33,11 @@ export default class User extends React.Component {
 	}
 
 	render() {
-		const { email, displayName } = this.props.user
+		const { email, displayName, id } = this.props.user
 
 		return (
 			<Link
-				to={`/profile/${email}`}
+				to={`/profile/${id}`}
 				activeClassName="active"
 				id={email}
 				onClick={this.handleClick}>

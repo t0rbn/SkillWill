@@ -1,13 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
 import TopWills from '../profile/top-wills'
 import Icon from '../icon/icon.jsx'
-import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
-import { connect } from 'react-redux'
-import { clearUserData } from '../../actions'
-import md5 from 'md5'
-import config from '../../config.json'
+import {SkillLegend, SkillLegendItem} from '../skill-legend/skill-legend'
+import {connect} from 'react-redux'
+import {clearUserData} from '../../actions'
 
 class BasicProfile extends React.Component {
 	constructor(props) {
@@ -24,7 +21,6 @@ class BasicProfile extends React.Component {
 		this.sortSkills = this.sortSkills.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
-		this.createAvatarUrl = this.createAvatarUrl.bind(this)
 	}
 
 	componentWillMount() {
@@ -55,11 +51,6 @@ class BasicProfile extends React.Component {
 			'animationend',
 			this.removeAnimationClass
 		)
-	}
-
-	createAvatarUrl() {
-		const mailHash = md5(this.props.user.mail);
-		return config.avatarUrl + mailHash + '?s=' + config.avatarSize;
 	}
 
 	showAllSkills(e) {
@@ -129,7 +120,7 @@ class BasicProfile extends React.Component {
 
 	render() {
 		const {
-			user: { displayName, email },
+			user: { displayName, email, id },
 		} = this.props
 
 		const {

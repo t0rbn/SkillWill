@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.repository.Query;
  */
 public interface UserRepository extends MongoRepository<User, String> {
 
-  User findByEmailIgnoreCase(String id);
+  User findByEmailIgnoreCase(String email);
 
   @Query("{ 'skills._id' : '?0' }")
   List<User> findBySkill(String skillName);

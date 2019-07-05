@@ -1,12 +1,8 @@
 import React from 'react'
 import SearchBar from './search-bar.jsx'
 import SkillEditor from '../skill-editor/skill-editor.jsx'
-import {
-	getSkillsBySearchTerm,
-	getUserProfileData,
-	exitSkillsEditMode,
-} from '../../actions'
-import { connect } from 'react-redux'
+import {exitSkillsEditMode, getSkillsBySearchTerm, getUserProfileData,} from '../../actions'
+import {connect} from 'react-redux'
 
 class SkillSearch extends React.Component {
 	constructor(props) {

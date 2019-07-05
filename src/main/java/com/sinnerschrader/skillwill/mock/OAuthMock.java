@@ -38,7 +38,7 @@ public class OAuthMock {
       return new ResponseEntity<>("oauth mock disabled", HttpStatus.LOCKED);
     }
 
-    if (userRepository.findByEmailIgnoreCase(sessionService.extractMail(oAuthToken)) != null) {
+    if (sessionService.extractMail(oAuthToken) != null) {
       return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
     }
 

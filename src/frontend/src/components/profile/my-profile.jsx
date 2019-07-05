@@ -58,9 +58,9 @@ class MyProfile extends React.Component {
 		document.body.classList.toggle('is-edit-mode')
 	}
 
-	getCurrentUserId() {
+	getCurrentUserEmail() {
 		const { currentUser } = this.props
-		return currentUser.id
+		return currentUser.email
 	}
 
 	editSkill(skill, skillLevel, willLevel, isMentor = false) {
@@ -78,12 +78,12 @@ class MyProfile extends React.Component {
 			body: postData,
 			credentials: 'same-origin',
 		}
-		this.props.updateUserSkills(options, this.getCurrentUserId())
+		this.props.updateUserSkills(options, this.getCurrentUserEmail())
 	}
 
 	deleteSkill(skill) {
 		const options = { method: 'DELETE', credentials: 'same-origin' }
-		const requestURL = `${apiServer}/users/${this.getCurrentUserId()}/skills?skill=${encodeURIComponent(
+		const requestURL = `${apiServer}/users/${this.getCurrentUserEmail()}/skills?skill=${encodeURIComponent(
 			skill
 		)}`
 		fetch(requestURL, options)
@@ -111,7 +111,7 @@ class MyProfile extends React.Component {
 			openLayerAt,
 			shouldShowAllSkills,
 			skillEditOpen,
-			userId,
+			userEmail,
 		} = this.state
 		const {
 			currentUser: {
@@ -126,7 +126,7 @@ class MyProfile extends React.Component {
 							<SkillSearch
 								handleEdit={this.editSkill}
 								handleDelete={this.deleteSkill}
-								userId={userId}
+								userEmail={userEmail}
 							/>
 							<div className="profile-actions" data-skillsearch={skillSearchOpen}>
 								<button

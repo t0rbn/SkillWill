@@ -1,7 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
 import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import com.sinnerschrader.skillwill.services.UserService;
@@ -14,9 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import io.swagger.models.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -49,15 +46,15 @@ public class UserController {
 
   private final UserService userService;
 
-  private final SkillService skillService;
-
   private final SessionService sessionService;
 
+  private final SkillService skillService;
+
   @Autowired
-  public UserController(UserService userService, SkillService skillService, SessionService sessionService) {
+  public UserController(UserService userService, SessionService sessionService, SkillService skillService) {
     this.userService = userService;
-    this.skillService = skillService;
     this.sessionService = sessionService;
+    this.skillService = skillService;
   }
 
   /**
@@ -98,13 +95,9 @@ public class UserController {
     @ApiResponse(code = 404, message = "Not Found"),
     @ApiResponse(code = 500, message = "Failure")
   })
-  @RequestMapping(path = "/users/{username}", method = RequestMethod.GET)
-  public ResponseEntity<User> getUser(@PathVariable String username) {
-    try {
-      return new ResponseEntity<>(userService.getUser(username), HttpStatus.OK);
-    } catch (UserNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    }
+  @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
+  public ResponseEntity<User> getUser(@PathVariable String id) {
+    return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
   }
 
   /**
@@ -125,24 +118,13 @@ public class UserController {
     @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true),
     @ApiImplicitParam(name = "mentor", value = "Mentor flag", paramType = "form", required = true, dataType = "Boolean")
   })
-  @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
-  public ResponseEntity<String> updateSkills(@PathVariable String user,
+  @RequestMapping(path = "/users/{id}/skills", method = RequestMethod.POST)
+  public ResponseEntity<String> updateSkills(@PathVariable String id,
     @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
     @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, @CookieValue("_oauth2_proxy") String oAuthToken) {
-
-    if (!sessionService.checkToken(oAuthToken, user)) {
-      logger.debug("Failed to modify {}'s skills: not logged in", user);
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-
-    try {
-      userService.updateSkills(user, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level), mentor);
-      return ResponseEntity.ok().build();
-    } catch (UserNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build();
-    }
+    sessionService.validateForUserId(oAuthToken, id);
+    userService.updateSkills(id, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level), mentor);
+    return ResponseEntity.ok().build();
   }
 
   /**
@@ -160,24 +142,13 @@ public class UserController {
     @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
     @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
   })
-  @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
-  public ResponseEntity removeSkill(@PathVariable String user,
+  @RequestMapping(path = "/users/{id}/skills", method = RequestMethod.DELETE)
+  public ResponseEntity removeSkill(@PathVariable String id,
     @RequestParam("skill") String skill, @CookieValue("_oauth2_proxy") String oAuthToken) {
-
-    if (!sessionService.checkToken(oAuthToken, user)) {
-      logger.debug("Failed to modify {}'s skills: not logged in", user);
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-
-    try {
-      userService.removeSkills(user, skill);
-      logger.info("Successfully deleted {}'s skill {}", user, skill);
-      return ResponseEntity.ok().build();
-    } catch (UserNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build();
-    }
+    sessionService.validateForUserId(oAuthToken, id);
+    userService.removeSkills(id, skill);
+    logger.info("Successfully deleted {}'s skill {}", id, skill);
+    return ResponseEntity.ok().build();
   }
 
   /**
@@ -193,22 +164,12 @@ public class UserController {
   @ApiImplicitParams({
     @ApiImplicitParam(name = "count", value = "number of users to find (max)", paramType = "query", defaultValue = "10"),
   })
-  @RequestMapping(path = "/users/{user}/similar", method = RequestMethod.GET)
-  public ResponseEntity<List<User>> getSimilar(@PathVariable String user,
+  @RequestMapping(path = "/users/{id}/similar", method = RequestMethod.GET)
+  public ResponseEntity<List<User>> getSimilar(@PathVariable String id,
     @RequestParam(value = "count", required = false) Integer count) {
 
-    List<User> similar;
-    try {
-      similar = userService.getSimilar(user, count);
-    } catch (UserNotFoundException e) {
-      logger.debug("Failed to get users similar to {}: user not found", user);
-      return ResponseEntity.notFound().build();
-    } catch (IllegalArgumentException e) {
-      logger.debug("Failed to get users similar to {}: illegal parameter", user);
-      return ResponseEntity.badRequest().build();
-    }
-
-    logger.debug("Successfully found {} users similar to {}", similar.size(), user);
+    List<User> similar = userService.getSimilar(id, count);
+    logger.debug("Successfully found {} users similar to {}", similar.size(), id);
     return new ResponseEntity<>(similar, HttpStatus.OK);
   }
 

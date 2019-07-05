@@ -24,6 +24,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+
+
 /**
  * Service handling user management
  *
@@ -65,35 +67,30 @@ public class UserService {
     }
   }
 
-  public User getUser(String email) {
-    var user = userRepository.findByEmailIgnoreCase(email);
+  public User getUser(String id) {
+    var user = userRepository.findById(id);
 
-    if (user == null) {
-      logger.debug("Failed to find user {}: not found", email);
+    if (user.isEmpty()) {
+      logger.debug("Failed to find user {}: not found", id);
       throw new UserNotFoundException("user not found");
     }
 
-    logger.debug("Successfully found user {}", email);
-    return user;
+    logger.debug("Successfully found user {}", id);
+    return user.get();
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void updateSkills(String email, String skillName, int skillLevel, int willLevel, boolean mentor)
+  public void updateSkills(String userid, String skillName, int skillLevel, int willLevel, boolean mentor)
       throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 
-    if (StringUtils.isEmpty(email) || StringUtils.isEmpty(skillName)) {
+    if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(skillName)) {
       logger.debug("Failed to modify skills: username or skillName empty");
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    var user = userRepository.findByEmailIgnoreCase(email);
-    if (user == null) {
-      logger.debug("Failed to add/modify {}'s skills: user not found", email);
-      throw new UserNotFoundException("user not found");
-    }
-
+    var user = userRepository.findById(userid).orElseThrow(() -> new UserNotFoundException(""));
     if (!isValidLevelConfiguration(skillLevel, willLevel)) {
-      logger.debug("Failed to add/modify {}'s skill {}: illegal levels {}/{}", email, skillName,
+      logger.debug("Failed to add/modify {}'s skill {}: illegal levels {}/{}", userid, skillName,
           skillLevel, willLevel);
       throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
     }
@@ -101,26 +98,21 @@ public class UserService {
     user.addUpdateSkill(skillName, skillLevel, willLevel, mentor);
     userRepository.save(user);
 
-    logger.info("Successfully updated {}'s skill {}", email, skillName);
+    logger.info("Successfully updated {}'s skill {}", userid, skillName);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public void removeSkills(String email, String skillName)
+  public void removeSkills(String userId, String skillName)
       throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {
 
-    if (StringUtils.isEmpty(email) || StringUtils.isEmpty(skillName)) {
+    if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(skillName)) {
       logger.debug("Failed to modify skills: username or skillName empty");
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    var user = userRepository.findByEmailIgnoreCase(email);
-    if (user == null) {
-      logger.debug("Failed to remove {}'s skills: user not found", email);
-      throw new UserNotFoundException("user not found");
-    }
-
+    var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(""));
     if (skillRepository.findByName(skillName) == null) {
-      logger.debug("Failed to remove {}'s skill {}: skill not found", email, skillName);
+      logger.debug("Failed to remove {}'s skill {}: skill not found", userId, skillName);
       throw new SkillNotFoundException("skill not found");
     }
 
@@ -137,15 +129,14 @@ public class UserService {
     return isValidSkillLevel && isValidWillLevel && isOneGreaterZero;
   }
 
-  public List<User> getSimilar(String email, Integer count) throws UserNotFoundException {
+  public List<User> getSimilar(String userId, Integer count) throws UserNotFoundException {
     var toSearch = userRepository.findAll();
-    var user = toSearch.stream().filter(p -> p.getEmail().equals(email)).findAny();
-
-    if (!user.isPresent()) {
-      logger.debug("Failed to get users similar to {}: user not found", email);
-      throw new UserNotFoundException("user not found");
-    }
-    return UserSimilarityUtils.findSimilar(user.get(), toSearch, count);
+    var user = toSearch
+      .stream()
+      .filter(p -> p.getId().equals(userId))
+      .findAny()
+      .orElseThrow(() -> new UserNotFoundException(""));
+    return UserSimilarityUtils.findSimilar(user, toSearch, count);
   }
 
 }

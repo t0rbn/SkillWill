@@ -1,21 +1,18 @@
 package com.sinnerschrader.skillwill.domain.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.UserSkill;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 
-import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+
 
 /**
  * Class holding all information about a person
@@ -25,6 +22,8 @@ import javax.annotation.Generated;
 public class User {
 
   @Id
+  private String id;
+
   private String email;
 
   private String displayName;
@@ -39,6 +38,7 @@ public class User {
   private Long version;
 
   public User(String email) {
+    this.id = UUID.randomUUID().toString();
     this.email = email;
     this.displayName = email;
     this.skills = new ArrayList<>();
@@ -105,6 +105,10 @@ public class User {
       return null;
     }
     return this.fitnessScore.getValue();
+  }
+
+  public String getId() {
+    return this.id;
   }
 
 }

@@ -43,7 +43,7 @@ public class SessionController {
   @RequestMapping(path = "/session/user", method = RequestMethod.GET)
   public ResponseEntity getCurrentUser(@CookieValue("_oauth2_proxy") String oAuthToken) {
     logger.debug("Getting user from session {}", oAuthToken);
-    var user = sessionService.getUserByToken(oAuthToken);
+    var user = sessionService.getCurrentUser(oAuthToken);
     if (user == null) {
       return new ResponseEntity<>("no current session", HttpStatus.UNAUTHORIZED);
     }

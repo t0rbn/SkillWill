@@ -26,13 +26,13 @@ class Layer extends React.Component {
 		this.props.exitSkillsEditMode()
 	}
 
-	getUserIdByOffsetFromCurrent(users, offset) {
+	getuserEmailByOffsetFromCurrent(users, offset) {
 		if (!users || users.length < 1) {
 			return null;
 		}
 
-		const userIds = users.map(user => user.id)
-		const currentIndex = userIds.indexOf(this.props.params.id)
+		const userEmails = users.map(user => user.id)
+		const currentIndex = userEmails.indexOf(this.props.params.id)
 		const nextIndex = currentIndex + offset
 
 		// current user not found in list, that's an error
@@ -41,28 +41,28 @@ class Layer extends React.Component {
 		}
 
 		// next user for last user in list -> first user in list
-		if (nextIndex >= userIds.length) {
-			return userIds[0]
+		if (nextIndex >= userEmails.length) {
+			return userEmails[0]
 		}
 
 		// prev user for first user in list -> last user in list
 		if (nextIndex < 0) {
-			return userIds[userIds.length -1]
+			return userEmails[userEmails.length -1]
 		}
 
-		const returnId = userIds[currentIndex + offset]
+		const returnId = userEmails[currentIndex + offset]
 		if (!returnId) {
 			return null
 		}
 		return returnId
 	}
 
-	getNextUserId(users) {
-		return this.getUserIdByOffsetFromCurrent(users, 1)
+	getNextuserEmail(users) {
+		return this.getuserEmailByOffsetFromCurrent(users, 1)
 	}
 
-	getPrevUserId(users) {
-		return this.getUserIdByOffsetFromCurrent(users, -1)
+	getPrevuserEmail(users) {
+		return this.getuserEmailByOffsetFromCurrent(users, -1)
 	}
 
 	shouldArrowsBeShown(users) {
@@ -73,8 +73,8 @@ class Layer extends React.Component {
 	render() {
 		const { results: { users }} = this.props
 		const showArrows = this.shouldArrowsBeShown(users)
-		const prevUserId = showArrows ? this.getPrevUserId(users) : ''
-		const nextUserId = showArrows ? this.getNextUserId(users) : ''
+		const prevuserEmail = showArrows ? this.getPrevuserEmail(users) : ''
+		const nextuserEmail = showArrows ? this.getNextuserEmail(users) : ''
 
 		return (
 			<div className="layer-container" name="containerid">
@@ -82,8 +82,8 @@ class Layer extends React.Component {
 
 				<div className="btn-wrapper">
 					<div className={showArrows ? "layer-btns" : "no-btns"}>
-						<Link className="previous-arrow" to={`/profile/${prevUserId}`} />
-						<Link className="next-arrow" to={`/profile/${nextUserId}`} />
+						<Link className="previous-arrow" to={`/profile/${prevuserEmail}`} />
+						<Link className="next-arrow" to={`/profile/${nextuserEmail}`} />
 					</div>
 
 				<div className="layer">

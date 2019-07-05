@@ -69,7 +69,7 @@ public class MockData {
     var usersJsonArray = readMockFileToJsonArray(personsPath);
     for (int i = 0; i < usersJsonArray.length(); i++) {
       var userJson = usersJsonArray.getJSONObject(i);
-      var user = new User(userJson.getString("id"));
+      var user = new User(userJson.getString("email"));
 
       var skillsJsonArray = userJson.getJSONArray("skills");
       for (int j = 0; j < skillsJsonArray.length(); j++) {

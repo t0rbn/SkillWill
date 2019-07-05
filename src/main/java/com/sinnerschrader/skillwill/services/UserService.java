@@ -79,6 +79,18 @@ public class UserService {
     return user.get();
   }
 
+  public void updateUserData(String id, User updatedUser) throws UserNotFoundException {
+    var existingUser = getUser(id);
+    if (!StringUtils.isEmpty(updatedUser.getEmail())) {
+      existingUser.setEmail(updatedUser.getEmail());
+    }
+
+    if (!StringUtils.isEmpty(updatedUser.getDisplayName())) {
+      existingUser.setDisplayName(updatedUser.getDisplayName());
+    }
+    userRepository.save(existingUser);
+  }
+
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public void updateSkills(String userid, String skillName, int skillLevel, int willLevel, boolean mentor)
       throws UserNotFoundException, SkillNotFoundException, EmptyArgumentException {

@@ -2,9 +2,9 @@ import React from 'react'
 import SkillItem from '../skill-item/skill-item.jsx'
 import TopWills from '../profile/top-wills'
 import Icon from '../icon/icon.jsx'
-import {SkillLegend, SkillLegendItem} from '../skill-legend/skill-legend'
-import {connect} from 'react-redux'
-import {clearUserData} from '../../actions'
+import { SkillLegend, SkillLegendItem } from '../skill-legend/skill-legend'
+import { connect } from 'react-redux'
+import { clearUserData } from '../../actions'
 
 class BasicProfile extends React.Component {
 	constructor(props) {
@@ -15,12 +15,14 @@ class BasicProfile extends React.Component {
 			editLayerAt: null,
 			numberOfSkillsToShow: 10,
 			isSkillEditActive: false,
-			avatarUrl: null
+			isBasicDataEditActive: false,
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
+		this.startEditBasicData = this.startEditBasicData.bind(this)
+		this.exitEditBasicData = this.exitEditBasicData.bind(this)
 	}
 
 	componentWillMount() {
@@ -34,10 +36,7 @@ class BasicProfile extends React.Component {
 	}
 
 	componentDidMount() {
-		this.node.addEventListener(
-			'animationend',
-			this.removeAnimationClass
-		)
+		this.node.addEventListener('animationend', this.removeAnimationClass)
 	}
 
 	componentWillReceiveProps() {
@@ -47,10 +46,19 @@ class BasicProfile extends React.Component {
 
 	removeAnimationClass() {
 		this.node.classList.remove('animateable')
-		this.node.removeEventListener(
-			'animationend',
-			this.removeAnimationClass
-		)
+		this.node.removeEventListener('animationend', this.removeAnimationClass)
+	}
+
+	startEditBasicData() {
+		this.setState({
+			isBasicDataEditActive: true
+		})
+	}
+
+	exitEditBasicData() {
+		this.setState({
+			isBasicDataEditActive: false
+		})
 	}
 
 	showAllSkills(e) {
@@ -132,17 +140,29 @@ class BasicProfile extends React.Component {
 
 		return (
 			<ul
-				ref={(ref) => { this.node = ref }}
-				className={`basic-profile ${this.props.shouldSkillsAnimate
-					? 'animateable'
-					: ''}`}>
-				<li className="info">
-					<div className="avatar"></div>
-					<p className="name">
-						{displayName}
-					</p>
-					<p className="email">{email}</p>
-				</li>
+				ref={ref => {
+					this.node = ref
+				}}
+				className={`basic-profile ${
+					this.props.shouldSkillsAnimate ? 'animateable' : ''
+				}`}>
+				{this.state.isBasicDataEditActive ? (
+					<li className="info">
+						<p className="name">
+							<input type="text" value={displayName} />
+						</p>
+						<p className="email">
+							<input type="text" value={email} />
+						</p>
+						<button onClick={this.exitEditBasicData}>Save</button>
+					</li>
+				) : (
+					<li className="info">
+						<p className="name">{displayName}</p>
+						<p className="email">{email}</p>
+						{this.props.allowEditBasicData && <button onClick={this.startEditBasicData}>Edit Info</button>}
+					</li>
+				)}
 
 				{this.renderSearchedSkills()}
 
@@ -158,7 +178,8 @@ class BasicProfile extends React.Component {
 								handleClickEvent={() =>
 									this.setState({
 										sortedSkills: this.sortSkills('name', 'asc'),
-									})}
+									})
+								}
 							/>
 							<div className="skill-legend__item--skills">
 								<SkillLegendItem
@@ -167,7 +188,8 @@ class BasicProfile extends React.Component {
 									handleClickEvent={() =>
 										this.setState({
 											sortedSkills: this.sortSkills('skillLevel', 'desc'),
-										})}
+										})
+									}
 								/>
 								<SkillLegendItem
 									title="Will level"
@@ -175,7 +197,8 @@ class BasicProfile extends React.Component {
 									handleClickEvent={() =>
 										this.setState({
 											sortedSkills: this.sortSkills('willLevel', 'desc'),
-										})}
+										})
+									}
 								/>
 							</div>
 						</SkillLegend>
@@ -212,7 +235,10 @@ function mapStateToProps(state) {
 	const { shouldSkillsAnimate, searchedSkills } = state
 	return {
 		shouldSkillsAnimate,
-		searchedSkills
+		searchedSkills,
 	}
 }
-export default connect(mapStateToProps, { clearUserData })(BasicProfile)
+export default connect(
+	mapStateToProps,
+	{ clearUserData }
+)(BasicProfile)

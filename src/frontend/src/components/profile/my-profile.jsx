@@ -3,16 +3,9 @@ import BasicProfile from './basic-profile.jsx'
 import SkillSearch from '../search/skill-search.jsx'
 import Icon from '../icon/icon.jsx'
 import Layer from "../layer/layer"
-import { apiServer } from '../../env.js'
-import {
-	toggleSkillsEditMode,
-	exitSkillsEditMode,
-	editSkill,
-	setLastSortedBy,
-	updateUserSkills,
-	fetchCurrentUser
-} from '../../actions'
-import { connect } from 'react-redux'
+import {apiServer} from '../../env.js'
+import {editSkill, exitSkillsEditMode, fetchCurrentUser, setLastSortedBy, toggleSkillsEditMode, updateUserSkills} from '../../actions'
+import {connect} from 'react-redux'
 
 class MyProfile extends React.Component {
 	constructor(props) {
@@ -153,6 +146,7 @@ class MyProfile extends React.Component {
 								lastSortedBy={this.props.lastSortedBy}
 								getUserProfileData={this.props.getUserProfileData}
 								user={this.props.currentUser}
+								allowEditBasicData={true}
 							/>
 							<div className="profile-actions" data-skilledit={skillEditOpen}>
 								<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
@@ -180,7 +174,7 @@ class MyProfile extends React.Component {
 function mapStateToProps(state) {
 	return {
 		currentUser: state.currentUser,
-		lastSortedBy: state.lastSortedBy,
+		lastSortedBy: state.lastSortedBy
 	}
 }
 export default connect(mapStateToProps, {

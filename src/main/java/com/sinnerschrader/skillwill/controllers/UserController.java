@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.swagger.models.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -24,12 +25,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+
 
 /**
  * Controller handling /users/{foo}
@@ -98,6 +96,12 @@ public class UserController {
   @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
   public ResponseEntity<User> getUser(@PathVariable String id) {
     return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/users/{id}", method = RequestMethod.PUT)
+  public ResponseEntity<Void> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
+    userService.updateUserData(id, updatedUser);
+    return ResponseEntity.ok().build();
   }
 
   /**

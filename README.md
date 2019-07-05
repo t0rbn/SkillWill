@@ -23,6 +23,7 @@ SkillWill creates more transparency about the collective knowledge and needs at 
 # Development Setup
 
 ## Infrastructure
+* Java 12
 * A local [MongoDB](https://www.mongodb.com/)
   * port defined in application.properties
   * you could embed one, see section 'Build'

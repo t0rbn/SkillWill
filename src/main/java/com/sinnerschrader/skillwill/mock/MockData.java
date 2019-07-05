@@ -78,7 +78,7 @@ public class MockData {
           skillJson.getString("name"),
           skillJson.getInt("skillLevel"),
           skillJson.getInt("willLevel"),
-          false
+          skillJson.getBoolean("mentor")
         );
       }
 

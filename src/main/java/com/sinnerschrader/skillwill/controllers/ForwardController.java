@@ -18,13 +18,13 @@ public class ForwardController {
   @ApiOperation(value = "forward to swagger", notes = "forward to swagger")
   @RequestMapping(path = "/swagger")
   public String forwardSwagger() {
-    return "forward:/swagger-ui.html";
+    return "redirect:/swagger-ui.html";
   }
 
   @ApiOperation(value = "forward frontend to index", notes = "forward routes handled by react-router to index")
-  @RequestMapping(path = {"/my-profile/", "/profile/{user}"})
+  @RequestMapping(path = {"/my-profile", "/profile/{user}"})
   public String forwardIndex() {
-    return "forward:/";
+    return "redirect:/";
   }
 
 }

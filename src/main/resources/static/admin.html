@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skillwill Admin</title>
+</head>
+
+<body>
+
+<h1>Edit Skills</h1>
+<p>Yes, this admin "interface" is as improvides as it looks...</p>
+
+<h3>All Skills</h3>
+<ul id="skillList"></ul>
+
+<hr>
+<h3>Add Skill</h3>
+<div>
+	<input type="text" id="newSkillName">
+	<button onclick="addSkill()">Add</button>
+</div>
+
+<hr>
+<h3>Remove Skill</h3>
+<div>
+	<p>Skill to Delete: </p><select id="removeSkillName"></select>
+	<p>Migrate User Skills to: </p><select id="migrateSkillName"></select>
+	<button onclick="deleteSkill()">Delete</button>
+</div>
+
+
+<script>
+	function addSkill() {
+		const name = document.querySelector('#newSkillName').value
+		const formData = new FormData()
+		formData.append("name", name)
+		fetch('/skills', {
+			body: formData,
+			method: 'POST',
+			mode: 'cors',
+			cache: 'no-cache',
+			credentials: 'same-origin',
+		}).then(() => location.reload())
+	}
+
+	function deleteSkill() {
+		const removeName = document.querySelector('#removeSkillName').value
+		const migrateName = document.querySelector('#migrateSkillName').value
+		const formData = new FormData()
+		if (migrateName.length) {
+			formData.append("migrateTo", migrateName)
+		}
+		fetch('/skills/' + removeName, {
+			body: formData,
+			method: 'DELETE',
+			mode: 'cors',
+			cache: 'no-cache',
+			credentials: 'same-origin',
+		}).then(() => location.reload())
+	}
+
+	function loadSkills() {
+		fetch('/skills').then(response => response.json()).then(data => {
+			allSkills = data.map(skill => skill.name)
+			document.querySelector('#skillList').innerHTML = allSkills.map(s => '<li>' + s + '</li>').join('')
+
+			removeOptions = allSkills.map(s => '<option value="' + s + '">' + s + '</option>').join('')
+			migrateOptions = '<option value="">-</option>' + removeOptions
+
+			document.querySelector('#removeSkillName').innerHTML = removeOptions
+			document.querySelector('#migrateSkillName').innerHTML = migrateOptions
+		})
+	}
+
+	loadSkills()
+</script>
+
+</body>
+</html>

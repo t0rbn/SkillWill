@@ -2,7 +2,6 @@ package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.SkillSearchResult;
-import com.sinnerschrader.skillwill.domain.user.BasicInfoResource;
 import com.sinnerschrader.skillwill.domain.user.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.user.UserSimilarityUtils;
 import com.sinnerschrader.skillwill.domain.user.User;
@@ -78,14 +77,6 @@ public class UserService {
 
     logger.debug("Successfully found user {}", id);
     return user.get();
-  }
-
-  public void updateBasicUserInfo(String id, BasicInfoResource updatedInfo) throws UserNotFoundException {
-    var existingUser = getUser(id);
-    if (!StringUtils.isEmpty(updatedInfo.getDisplayName())) {
-      existingUser.setDisplayName(updatedInfo.getDisplayName());
-    }
-    userRepository.save(existingUser);
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)

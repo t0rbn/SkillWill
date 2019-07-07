@@ -15,15 +15,11 @@ class BasicProfile extends React.Component {
 			editLayerAt: null,
 			numberOfSkillsToShow: 10,
 			isSkillEditActive: false,
-			isDisplayNameEditActive: false,
 		}
 		this.showAllSkills = this.showAllSkills.bind(this)
 		this.sortSkills = this.sortSkills.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 		this.renderSearchedSkills = this.renderSearchedSkills.bind(this)
-		this.startEditDisplayName = this.startEditDisplayName.bind(this)
-		this.exitEditDisplayName = this.exitEditDisplayName.bind(this)
-		this.changeDisplayName = this.changeDisplayName.bind(this)
 	}
 
 	componentWillMount() {
@@ -48,23 +44,6 @@ class BasicProfile extends React.Component {
 	removeAnimationClass() {
 		this.node.classList.remove('animateable')
 		this.node.removeEventListener('animationend', this.removeAnimationClass)
-	}
-
-	startEditDisplayName() {
-		this.setState({
-			isDisplayNameEditActive: true,
-		})
-	}
-
-	changeDisplayName(event) {
-		this.displayName = event.target.value;
-	}
-	
-	exitEditDisplayName() {
-		this.props.editDisplayName(this.displayName, this.email);
-		this.setState({
-			isDisplayNameEditActive: false,
-		})
 	}
 
 	showAllSkills(e) {
@@ -134,7 +113,7 @@ class BasicProfile extends React.Component {
 
 	render() {
 		let {
-			user: { displayName, email, id },
+			user: { displayName, email },
 		} = this.props
 
 		const {
@@ -152,27 +131,10 @@ class BasicProfile extends React.Component {
 				className={`basic-profile ${
 					this.props.shouldSkillsAnimate ? 'animateable' : ''
 				}`}>
-				{this.state.isDisplayNameEditActive ? (
-					<li className="info">
-						<p className="name">
-							Displayed Name:
-							<input
-								type="text"
-								defaultValue={displayName}
-								onChange={this.changeDisplayName}
-							/>
-						</p>
-						<button onClick={this.exitEditDisplayName}>Save</button>
-					</li>
-				) : (
-					<li className="info">
-						<p className="name">{displayName}</p>
-						<p className="email">{email}</p>
-						{this.props.allowEditDisplayName && (
-							<button onClick={this.startEditDisplayName}>Edit Info</button>
-						)}
-					</li>
-				)}
+				<li className="info">
+					<p className="name">{displayName}</p>
+					<p className="email">{email}</p>
+				</li>
 
 				{this.renderSearchedSkills()}
 

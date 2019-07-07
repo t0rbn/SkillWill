@@ -1,21 +1,11 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.domain.user.BasicInfoResource;
 import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.services.SessionService;
+import com.sinnerschrader.skillwill.misc.OAuthHelper;
 import com.sinnerschrader.skillwill.services.SkillService;
 import com.sinnerschrader.skillwill.services.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.swagger.models.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -24,9 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -45,28 +40,21 @@ public class UserController {
 
   private final UserService userService;
 
-  private final SessionService sessionService;
-
   private final SkillService skillService;
 
+  private final OAuthHelper oAuthHelper;
+
   @Autowired
-  public UserController(UserService userService, SessionService sessionService, SkillService skillService) {
+  public UserController(UserService userService, SkillService skillService, OAuthHelper oAuthHelper) {
     this.userService = userService;
-    this.sessionService = sessionService;
     this.skillService = skillService;
+    this.oAuthHelper = oAuthHelper;
   }
 
   /**
    * Search for users with specific skills / list all users if no search query is specified
    */
   @ApiOperation(value = "search users", nickname = "search users", notes = "Search users.")
-  @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "skills", value = "Names of skills to search, separated by ','", paramType = "query", required = false),
-  })
   @RequestMapping(path = "/users", method = RequestMethod.GET)
   public ResponseEntity getUsers(@RequestParam(required = false) String skills) {
 
@@ -89,45 +77,19 @@ public class UserController {
    * Get a user
    */
   @ApiOperation(value = "get info", nickname = "user info", notes = "Returns the user with the given id")
-  @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
   @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
   public ResponseEntity<User> getUser(@PathVariable String id) {
     return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
-  }
-
-  @RequestMapping(path = "/users/{id}", method = RequestMethod.PUT)
-  public ResponseEntity<Void> upadteUser(@PathVariable String id, @RequestBody BasicInfoResource updatedInfo) {
-    userService.updateBasicUserInfo(id, updatedInfo);
-    return ResponseEntity.ok().build();
   }
 
   /**
    * modify users's skills
    */
   @ApiOperation(value = "modify skill", nickname = "modify skills", notes = "Create or edit a skill of a user")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 403, message = "Forbidden"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
-    @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "form", required = true),
-    @ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType = "form", required = true),
-    @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true),
-    @ApiImplicitParam(name = "mentor", value = "Mentor flag", paramType = "form", required = true, dataType = "Boolean")
-  })
   @RequestMapping(path = "/users/{id}/skills", method = RequestMethod.POST)
-  public ResponseEntity<String> updateSkills(@PathVariable String id,
-    @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
-    @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, @CookieValue("_oauth2_proxy") String oAuthToken) {
-    sessionService.validateForUserId(oAuthToken, id);
+  public ResponseEntity<String> updateSkills(@PathVariable String id, @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
+    @RequestParam("will_level") String will_level, @RequestParam("mentor") boolean mentor, OAuth2AuthenticationToken oauthToken) {
+    oAuthHelper.validateForUserId(oauthToken, id);
     userService.updateSkills(id, skill, Integer.parseInt(skill_level), Integer.parseInt(will_level), mentor);
     return ResponseEntity.ok().build();
   }
@@ -136,21 +98,9 @@ public class UserController {
    * delete user's skill
    */
   @ApiOperation(value = "remove skill", nickname = "remove skills", notes = "remove a skill from a user")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 403, message = "Forbidden"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "_oauth2_proxy", value = "session token of the current user", paramType = "cookie", required = true),
-    @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
-  })
   @RequestMapping(path = "/users/{id}/skills", method = RequestMethod.DELETE)
-  public ResponseEntity removeSkill(@PathVariable String id,
-    @RequestParam("skill") String skill, @CookieValue("_oauth2_proxy") String oAuthToken) {
-    sessionService.validateForUserId(oAuthToken, id);
+  public ResponseEntity removeSkill(@PathVariable String id, @RequestParam("skill") String skill, OAuth2AuthenticationToken oauthToken) {
+    oAuthHelper.validateForUserId(oauthToken, id);
     userService.removeSkills(id, skill);
     logger.info("Successfully deleted {}'s skill {}", id, skill);
     return ResponseEntity.ok().build();
@@ -160,18 +110,8 @@ public class UserController {
    * Get users with similar skill sets
    */
   @ApiOperation(value = "get similar", nickname = "get similar", notes = "get users with similar skills sets")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "count", value = "number of users to find (max)", paramType = "query", defaultValue = "10"),
-  })
   @RequestMapping(path = "/users/{id}/similar", method = RequestMethod.GET)
-  public ResponseEntity<List<User>> getSimilar(@PathVariable String id,
-    @RequestParam(value = "count", required = false) Integer count) {
+  public ResponseEntity<List<User>> getSimilar(@PathVariable String id, @RequestParam(value = "count", required = false) Integer count) {
 
     List<User> similar = userService.getSimilar(id, count);
     logger.debug("Successfully found {} users similar to {}", similar.size(), id);

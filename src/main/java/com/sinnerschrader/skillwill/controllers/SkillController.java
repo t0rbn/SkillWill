@@ -1,11 +1,9 @@
 package com.sinnerschrader.skillwill.controllers;
 
 import com.sinnerschrader.skillwill.domain.skills.Skill;
-import com.sinnerschrader.skillwill.domain.skills.SuggestionSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,15 +11,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import io.swagger.models.Response;
-import org.json.JSONArray;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,14 +54,6 @@ public class SkillController {
    * typing
    */
   @ApiOperation(value = "suggest skills", nickname = "suggest skills", notes = "suggest skills")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "search", value = "Name to search", paramType = "query"),
-    @ApiImplicitParam(name = "count", value = "Limit the number of skills to find", paramType = "query"),
-  })
   @RequestMapping(path = "/skills", method = RequestMethod.GET)
   public ResponseEntity<List<Skill>> getSkills(@RequestParam(required = false) String search,
     @RequestParam(required = false, defaultValue = "-1") int count) {
@@ -81,11 +65,6 @@ public class SkillController {
    * Get a skill by its name
    */
   @ApiOperation(value = "get skill", nickname = "get skill")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.GET)
   public ResponseEntity getSkill(@PathVariable(value = "skill") String name) {
     var skill = skillService.getSkillByName(name);
@@ -104,14 +83,6 @@ public class SkillController {
    * for that"
    */
   @ApiOperation(value = "suggest next skill", nickname = "suggest next skill", notes = "suggest next skill")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "search", value = "Names of skills already entered, separated by comma", paramType = "query", required = false),
-    @ApiImplicitParam(name = "count", value = "Count of recommendations to get", paramType = "query", defaultValue = "10")
-  })
   @RequestMapping(path = "/skills/next", method = RequestMethod.GET)
   public ResponseEntity getNext(@RequestParam(required = false) String search,
                                                  @RequestParam(defaultValue = "10") int count) {
@@ -136,14 +107,6 @@ public class SkillController {
    * create new skill
    */
   @ApiOperation(value = "add skill", nickname = "add skill", notes = "add a skill; Caution: parameter name is NOT the new skill's ID")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "name", value = "new skill's name", paramType = "form", required = true),
-  })
   @RequestMapping(path = "/skills", method = RequestMethod.POST)
   public ResponseEntity<String> addSkill(
     @RequestParam String name) {
@@ -162,15 +125,6 @@ public class SkillController {
    * delete skill
    */
   @ApiOperation(value = "delete skill", nickname = "delete skill", notes = "parameter must be a valid skill Id")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "migrateTo", value = "skill to which old levels will be migrated", paramType = "form")
-  })
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
   public ResponseEntity<Void> deleteSkill(@PathVariable String skill, @RequestParam(required = false) String migrateTo) {
 
@@ -191,15 +145,6 @@ public class SkillController {
    * edit skill
    */
   @ApiOperation(value = "edit skill", nickname = "edit skill")
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Success"),
-    @ApiResponse(code = 400, message = "Bad Request"),
-    @ApiResponse(code = 404, message = "Not Found"),
-    @ApiResponse(code = 500, message = "Failure")
-  })
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "name", value = "skill's new name", paramType = "form", required = false),
-  })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.POST)
   public ResponseEntity<Void> updateSkill(@PathVariable String skill,
     @RequestParam(required = false) String name) {

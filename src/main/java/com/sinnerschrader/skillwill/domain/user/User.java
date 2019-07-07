@@ -37,10 +37,18 @@ public class User {
   @Version
   private Long version;
 
+  public User() {
+    this(null, null);
+  }
+
   public User(String email) {
+    this(email, email);
+  }
+
+  public User(String email, String name) {
     this.id = UUID.randomUUID().toString();
     this.email = email;
-    this.displayName = email;
+    this.displayName = name;
     this.skills = new ArrayList<>();
   }
 

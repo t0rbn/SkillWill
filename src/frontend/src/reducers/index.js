@@ -147,16 +147,6 @@ function editSkill(state = {}, action) {
 	}
 }
 
-function editDisplayName(state = {}, action) {
-	switch (action.type) {
-		case EDIT_BASIC_INFO:
-			console.log("Foo 4")
-			return action.payload
-		default:
-			return state
-	}
-}
-
 function lastSortedBy(state = {}, action) {
 	switch (action.type) {
 		case SET_LAST_SORTED_BY:
@@ -242,7 +232,6 @@ export default {
 	skills: fetchSkillsBySearchTerm,
 	skillSearchTerms: setSkillSearchTerms,
 	isSkillEditActive: setSkillsEditMode,
-	editDisplayName,
 	editSkill,
 	shouldSkillsAnimate,
 	lastSortedBy,

@@ -97,9 +97,9 @@ export default class SearchSuggestions extends React.Component {
 		if (this.state.doAutoComplete) {
 			return 'Matching Skills:'
 		} else if (this.props.searchTerms.length > 0) {
-			return 'Relevant Skills:'
+			return 'Relevant Searches:'
 		}
-		return 'Popular Skills:'
+		return 'Popular Searches:'
 	}
 
 	render() {

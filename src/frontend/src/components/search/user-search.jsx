@@ -1,10 +1,7 @@
 import React from 'react'
 import SearchBar from './search-bar.jsx'
-import Dropdown from '../dropdown/dropdown.jsx'
-import config from '../../config.json'
-import { getUserBySearchTerms } from '../../actions'
-import { connect } from 'react-redux'
-import { companiesFilterOptions, locationOptionsForCompany }from './filter-options'
+import {getUserBySearchTerms} from '../../actions'
+import {connect} from 'react-redux'
 
 class UserSearch extends React.Component {
 	constructor(props) {

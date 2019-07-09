@@ -15,9 +15,9 @@ module.exports = [
 		loader: 'file-loader',
 	},
 	{
-		test: /\.(woff|woff2)$/,
+		test: /\.(otf)$/,
 		exclude: /(node_modules|public\/)/,
-		loader: 'url-loader?prefix=font/&limit=5000',
+		loader: 'file-loader',
 	},
 	{
 		test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,

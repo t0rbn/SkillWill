@@ -4,7 +4,6 @@ import NavigationItem from '../navigation/navigation-item'
 import NavigationLink from '../navigation/navigation-link'
 import NavigationList from '../navigation/navigation-list'
 import NavigationListItem from '../navigation/navigation-list-item'
-import Logo from '../logo/logo'
 import Icon from '../icon/icon.jsx'
 
 export default class Header extends React.Component {
@@ -15,12 +14,7 @@ export default class Header extends React.Component {
 				<Navigation>
 					<NavigationItem>
 						<NavigationLink target={'/'}>
-							<Icon name="s2-logo" width={131} height={30} />
-						</NavigationLink>
-					</NavigationItem>
-					<NavigationItem>
-						<NavigationLink target={'/'}>
-							<Logo small />
+							<Icon name="mm-logo" width={56} height={30} />
 						</NavigationLink>
 					</NavigationItem>
 					<NavigationItem>

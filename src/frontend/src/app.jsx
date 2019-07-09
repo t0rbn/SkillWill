@@ -2,12 +2,10 @@
 import React from 'react'
 import IconSymbols from './components/icon/icon-symbols.jsx'
 import Header from './components/header/header.jsx'
-import Logo from './components/logo/logo.jsx'
 import Footer from './components/footer/footer.jsx'
 import UserSearch from './components/search/user-search.jsx'
 import Results from './components/results/results.jsx'
 import { connect } from 'react-redux'
-import { login } from './actions'
 
 class App extends React.Component {
 
@@ -18,8 +16,8 @@ class App extends React.Component {
 				<IconSymbols />
 				<Header />
 				<div className="search">
-					<Logo />
 					<div className="container">
+						<h1>gemeinsam. digital. verb.</h1>
 						<UserSearch location={this.props.location} />
 					</div>
 				</div>

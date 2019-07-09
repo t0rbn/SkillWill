@@ -132,8 +132,8 @@ class BasicProfile extends React.Component {
 					this.props.shouldSkillsAnimate ? 'animateable' : ''
 				}`}>
 				<li className="info">
-					<p className="name">{displayName}</p>
-					<p className="email">{email}</p>
+					<h1 className="name">{displayName}</h1>
+					<h3 className="email">{email}</h3>
 				</li>
 
 				{this.renderSearchedSkills()}

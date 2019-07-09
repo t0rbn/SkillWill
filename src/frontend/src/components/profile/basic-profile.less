@@ -27,51 +27,16 @@
   flex-basis: 45%;
   .info {
     text-align: center;
-    .avatar {
-      height: 100px;
-      width: 100px;
-      border-radius: 100px;
-      margin: 0 auto;
-      margin-bottom: @l-stack;
-      background-size: cover;
-      background-position: center center;
-    }
     .name {
       font-size: @s-title-font-size;
       line-height: @s-title-font-size;
       font-weight: bold;
       padding-bottom: @xs-stack;
     }
-    .id {
-      display: block;
-      padding: 0 0 @xxs-stack;
-      font-size: @m-base-font-size;
-      line-height: @m-base-font-size;
-      font-weight: 300;
-    }
-    .department,
-    .location {
-      display: block;
-      padding: @xxs-stack 0;
-      font-size: @m-base-font-size;
-      line-height: @m-base-font-size;
-      font-weight: 500;
-    }
-    .location {
-      flex-basis: 10%;
-    }
-    .social {
-      margin-bottom: @m-stack;
-    }
-    .mail,
-    .move,
-    .slack {
-      display: inline-block;
-      margin: @l-inline @s-inline 0;
-      color: @s2-red;
-      &:hover {
-        color: @s2-black;
-      }
+
+    h1, h3 {
+      font-family: @headline-font;
+      font-weight: bold;
     }
   }
 
@@ -92,7 +57,7 @@
     padding: @s-stack 0 @l-stack;
   }
   .show-more-link {
-    color: @s2-red;
+    color: @mm-red;
     margin: @xl-stack auto;
     text-transform: capitalize;
     position: relative;
@@ -113,8 +78,7 @@
   }
   .info-layer {
     position: absolute;
-    background-color: @s2-white;
-    box-shadow: @s2-box-shadow-medium;
+    background-color: @mm-white;
     width: 100vw;
     top: 50%;
     left: 0;
@@ -122,7 +86,7 @@
     z-index: 4;
     cursor: auto;
     .skill-title {
-      color: @s2-red;
+      color: @mm-red;
       font-size: @xs-title-font-size;
       line-height: @xs-title-font-size;
       padding: @xs-stack 0;
@@ -134,8 +98,7 @@
       height: 0;
       bottom: -30px;
       left: 50%;
-      border: 1em solid @s2-body;
-      border-color: transparent transparent @s2-white @s2-white;
+      border-color: transparent transparent @mm-white @mm-white;
       transform-origin: 0 0;
       transform: rotate(-45deg);
       box-shadow: -5px 5px 5px 0 rgba(0, 0, 0, 0.3);
@@ -158,7 +121,7 @@
   .edit,
   .delete {
     display: inline-block;
-    color: @s2-red;
+    color: @mm-red;
     cursor: pointer;
   }
   @media (min-width: @tablet-portrait-up) {
@@ -205,8 +168,7 @@
   width: 100%;
   padding: @s-stack;
   text-align: center;
-  border-top: 1px solid @s2-grey2;
-  background-color: @s2-white;
+  background-color: @mm-white;
 
   .icon {
     position: relative;
@@ -228,14 +190,14 @@
 .edit-skill-btn {
   display: inline-block;
   padding: @xs-stack @l-stack @xs-stack @l-stack;
-  color: @s2-red;
+  color: @mm-blue;
   cursor: pointer;
   position: relative;
   border: 0;
   background-color: transparent;
 
   &:hover {
-    filter: grayscale(1);
+    color: @mm-green;
   }
 
   &:focus {
@@ -246,6 +208,10 @@
     display: block;
     text-align: left;
     margin: 0 @xs-stack @xs-stack;
+  }
+
+  &:disabled {
+    display: none;
   }
 }
 .add-skill-btn {

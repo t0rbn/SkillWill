@@ -1,10 +1,10 @@
 .search {
-  background-color: @s2-verydarkblue;
+  background-color: @mm-red;
   height: auto;
   min-height: ~"calc(100vh - 54px)"; // 54px -> 30px Logo + 24px padding (12 top, 12 bottom)
   transition: all 0.4s ease-in;
-  border-bottom: 5px solid @s2-red;
   box-sizing: border-box;
+  padding-top: @4xl-stack;
 
   &:after {
     content: "";
@@ -16,10 +16,15 @@
   }
 
   .container {
-    padding-top: 260px;
-    padding-bottom: @6xl-stack;
+    background-color: @mm-white;
+    padding: @4xl-stack @4xl-stack @m-stack @4xl-stack;
     transition: all .4s ease-in;
-    transition-delay: .4s;
+    //transition-delay: .4s;
+
+    h1 {
+      font-family: @headline-font;
+      font-weight: bold;
+    }
   }
 
   
@@ -28,14 +33,13 @@
     max-height: 100vh;
 
     .container {
-      padding-top: @xl-stack;
       padding-bottom: @5xl-stack;
     }
   }
 }
 
 .searchbar {
-  margin-top: @4xl-stack;
+  margin-top: @xl-stack;
   padding-bottom: @xl-stack;
   padding-top: @l-stack;
   text-align: center;
@@ -49,7 +53,7 @@
       flex-wrap: wrap;
       width: 100%;
       border-radius: 0;
-      border-bottom: @base-border;
+      border-bottom: @base-border-dark;
       padding-right: 60px;
       float: left;
 
@@ -65,27 +69,27 @@
         flex: 2 1 auto;
         border: none;
         border-radius: 0;
-        color: @s2-white;
+        color: @mm-black;
         z-index: 4;
 
         .profile & {
-          color: @s2-black;
+          color: @mm-black;
         }
 
         &::placeholder {
-          color: @s2-white;
+          color: @mm-grey;
           transition: color 0.1s ease-in;
 
           .profile & {
-            color: @s2-grey2;
+            color: @mm-grey;
           }
         }
 
         &:focus::placeholder {
-          color: @s2-border-color;
+          color: @mm-grey;
 
           .profile & {
-            color: @s2-black;
+            color: @mm-black;
           }
         }
 
@@ -103,8 +107,8 @@
       .search-term {
         display: inline-block;
         position: relative;
-        border: 1px solid rgba(255,255,255, 0.5);
-        color: @s2-white;
+        border: @base-border-grey;
+        color: @mm-black;
         padding: @s-stack;
         padding-right: @xl-inline;
         margin: @xs-inline @s-inline @xs-inline 0;
@@ -112,7 +116,6 @@
 
 
         &:hover {
-
           a {
             transition: opacity 0.1s ease-in;
             opacity: 0.8;
@@ -128,7 +131,7 @@
           margin-left: @s-inline;
           cursor: pointer;
           opacity: 1;
-          color: @s2-white;
+          color: @mm-black;
           border: 10px solid transparent;
         }
 
@@ -153,9 +156,9 @@
       opacity: 1;
 
       &.submit-search-button {
-        color: @s2-red;
+        color: @mm-red;
         &--faded {
-          color: @s2-white;
+          color: @mm-white;
         }
       }
 
@@ -168,7 +171,7 @@
       }
 
       .profile & {
-        color: @s2-red;
+        color: @mm-red;
       }
     }
   }

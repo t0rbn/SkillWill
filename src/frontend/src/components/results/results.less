@@ -10,7 +10,7 @@
     &--border {
       display: block;
       height: 5px;
-      background: @s2-red;
+      background: @mm-red;
       margin-top: -5px;
     }
   }
@@ -27,7 +27,7 @@
     font-size: .75rem;
 
     &:hover {
-      color: @s2-red;
+      color: @mm-red;
     }
 
     @media (min-width: @tablet-portrait-up) {
@@ -48,7 +48,7 @@
     transform: translateY(-100%);
     text-align: center;
     opacity: 1;
-    color: @s2-red;
+    color: @mm-grey;
     font-size: @xs-title-font-size;
     line-height: @xs-title-font-size;
     padding: @xl-stack @tower @xxl-stack @tower;
@@ -79,14 +79,14 @@
 }
 
 .sort-buttons-wrapper {
-  background-color: @s2-red;
+  background-color: @mm-red;
   padding: @xl-stack 0;
   text-transform: uppercase;
 }
 
 .results-legend-wrapper {
-  background-color: @s2-red;
-  color: @s2-white;
+  background-color: @mm-red;
+  color: @mm-white;
   padding: @xl-stack 0;
   @media (max-width: @tablet-portrait-up) {
     padding: 0;
@@ -96,7 +96,7 @@
 .results-legend {
   text-transform: uppercase;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   @media (max-width: @tablet-portrait-up) {
     display: none;
   }
@@ -121,6 +121,7 @@
     flex-basis: 20%;
     padding: 0;
     min-width: 130px;
+
   }
 }
 .results-legend-item {
@@ -134,7 +135,7 @@
 .result-item {
   width: auto;
   height: auto;
-  border-bottom: 1px solid @s2-grey2;
+  border-bottom: 1px solid @mm-grey;
   padding: 0;
 
   a {
@@ -218,7 +219,7 @@
     padding: 0 @m-stack;
 
     &:hover {
-      background-color: @s2-lightgrey;
+      background-color: @mm-lightgrey;
     }
   }
 }

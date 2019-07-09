@@ -2,14 +2,21 @@ import React from 'react'
 import SkillItem from '../skill-item/skill-item'
 
 const TopWills = props => {
+
+	function filterdWills() {
+		return props.wills.filter(w => w.willLevel > 1).slice(0, 5)
+	}
+
+	if (filterdWills().length < 1) {
+		return null;
+	}
+
 	return (
 		<li className="top-wills skill-listing">
 			<div className="listing-header">Top wills</div>
 			<ul className="skills-list">
-				{props.wills.map((skill, i) => {
-					if (i < 5 && skill['willLevel'] > 1) {
-						return <SkillItem skill={skill} key={skill.name} />
-					}
+				{filterdWills().map(skill => {
+					return <SkillItem skill={skill} key={skill.name} />
 				})}
 			</ul>
 		</li>

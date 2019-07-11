@@ -10,3 +10,5 @@ services:
     environment:
       PORT: 8765
       MONGOURI: 'mongodb+srv://dbTestuser:<password>@cluster0-zc3ak.mongodb.net/test?retryWrites=true&w=majority'
+      GOOGLEID: 175845741268-gn6j8jrlguee95o6qurdea7m2fmgmobi.apps.googleusercontent.com
+      GOOGLESECRET: mIjngOK5nH5I7bIEANdlmcMA

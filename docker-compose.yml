@@ -4,13 +4,9 @@ services:
   app:
     build: .
     expose:
-      - "8080"
+      - "8765"
     ports:
-      - "8080:8080"
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo:latest
-    expose:
-      - "27017"
+      - "8765:8765"
+    environment:
+      PORT: 8765
+      MONGOURI: 'mongodb+srv://dbTestuser:<password>@cluster0-zc3ak.mongodb.net/test?retryWrites=true&w=majority'

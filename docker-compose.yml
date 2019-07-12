@@ -4,18 +4,21 @@ services:
   app:
     build: .
     expose:
-      - 8080
+      - "8080"
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
-      PORT: 8080
-      MONGOURI: mongodb://mongo:27017/skillwill
-      GOOGLEID: 175845741268-gn6j8jrlguee95o6qurdea7m2fmgmobi.apps.googleusercontent.com
-      GOOGLESECRET: mIjngOK5nH5I7bIEANdlmcMA
+      PORT: "8080"
+      MONGOURI: "mongodb://mongo:27017/skillwill"
+      GOOGLEID: "175845741268-gn6j8jrlguee95o6qurdea7m2fmgmobi.apps.googleusercontent.com"
+      GOOGLESECRET: "mIjngOK5nH5I7bIEANdlmcMA"
+      mockInit: "true"
+      mockSkillFilePath: "skills.json"
+      mockPersonsFilePath: "persons.json"
     depends_on:
       - mongo
 
   mongo:
     image: mongo:latest
     expose:
-      - 27017
+      - "27017"

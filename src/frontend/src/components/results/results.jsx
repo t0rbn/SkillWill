@@ -77,20 +77,15 @@ class Results extends React.Component {
 					</div>
 				</div>
 			)
-		} else if (!users) {
-			return (
-				<div
-					ref={(ref) => { this.node = ref }}
-					className="no-results-container-border"
-					data-isEmptyLabel={this.props.noResultsLabel}
-				/>
-			)
 		} else {
 			return (
 				<div
 					ref={(ref) => { this.node = ref }}
 					className="no-results-container"
 					data-isEmptyLabel={this.props.noResultsLabel}>
+					<div className="container">
+						No results found :(
+					</div>
 				</div>
 			)
 		}

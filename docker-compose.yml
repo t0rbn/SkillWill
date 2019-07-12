@@ -4,11 +4,18 @@ services:
   app:
     build: .
     expose:
-      - "8765"
+      - 8080
     ports:
-      - "8765:8765"
+      - 8080:8080
     environment:
-      PORT: 8765
-      MONGOURI: 'mongodb+srv://dbTestuser:<password>@cluster0-zc3ak.mongodb.net/test?retryWrites=true&w=majority'
+      PORT: 8080
+      MONGOURI: mongodb://mongo:27017/skillwill
       GOOGLEID: 175845741268-gn6j8jrlguee95o6qurdea7m2fmgmobi.apps.googleusercontent.com
       GOOGLESECRET: mIjngOK5nH5I7bIEANdlmcMA
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    expose:
+      - 27017

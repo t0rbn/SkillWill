@@ -3,4 +3,4 @@
 cd ..
 
 mvn clean install
-java -jar target/skillwill.jar --spring.profiles.active=standalone
+java -jar target/skillwill.jar --spring.profiles.active=dev

@@ -17,7 +17,7 @@ class App extends React.Component {
 				<Header />
 				<div className="search">
 					<div className="container">
-						<h1>gemeinsam. digital. verb.</h1>
+						<h1>gemeinsam. digital. <span className="claim-verb">können.</span></h1>
 						<UserSearch location={this.props.location} />
 					</div>
 				</div>

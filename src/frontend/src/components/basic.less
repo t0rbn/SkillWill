@@ -6,6 +6,7 @@
 html {
   position: relative;
   background-color: @mm-black;
+
   &.layer-open {
     overflow-y: hidden;
     max-height: 100vh;
@@ -24,7 +25,7 @@ body {
   }
 }
 
-html, input, textarea, keygen, select, button, p , a  {
+html, input, textarea, keygen, select, button, p, a {
   font-family: @base-font;
   font-size: @base-font-size;
   line-height: 1;
@@ -74,3 +75,23 @@ a {
     background-color: @mm-blue;
   }
 }
+
+.claim-verb:hover {
+  animation: step-end 2s claim-verb-animation infinite;
+}
+
+@keyframes claim-verb-animation {
+  0% {
+    color: @mm-blue;
+  }
+  25% {
+    color: @mm-orange;
+  }
+  50% {
+    color: @mm-green;
+  }
+  75% {
+    color: @mm-red;
+  }
+}
+

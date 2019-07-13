@@ -77,7 +77,7 @@ class Results extends React.Component {
 					</div>
 				</div>
 			)
-		} else {
+		} else if (users) {
 			return (
 				<div
 					ref={(ref) => { this.node = ref }}
@@ -88,6 +88,8 @@ class Results extends React.Component {
 					</div>
 				</div>
 			)
+		} else {
+			return null;
 		}
 	}
 }

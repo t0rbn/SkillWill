@@ -43,7 +43,7 @@ module.exports = {
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.DefinePlugin({
 			'process.env': {
-				API_SERVER: JSON.stringify('http://localhost:1337'),
+				API_SERVER: JSON.stringify('http://localhost:8080'),
 			},
 		}),
 		new ExtractTextPlugin({

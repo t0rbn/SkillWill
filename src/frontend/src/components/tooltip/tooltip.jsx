@@ -20,7 +20,7 @@ class Tooltip extends React.Component {
 								<div className="level">
 									<div className={`skillBar levelBar levelBar--zero`} />
 								</div>
-								<span className={`${className}-legend-name`}>n/a</span>
+								<span className={`${className}-legend-name`}>head the name</span>
 							</div>
 							<div className={`${className}-legend-item`}>
 								<div className="level">
@@ -32,7 +32,7 @@ class Tooltip extends React.Component {
 								<div className="level">
 									<div className={`skillBar levelBar levelBar--2`} />
 								</div>
-								<span className={`${className}-legend-name`}>intermediate</span>
+								<span className={`${className}-legend-name`}>advanced</span>
 							</div>
 							<div className={`${className}-legend-item`}>
 								<div className="level">

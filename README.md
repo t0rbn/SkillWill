@@ -86,7 +86,7 @@ SkillWill creates more transparency about the collective knowledge and needs at 
 
 
 # More Docs
-* when starting you can find the interactive API documentation at ```localhost:1337/swagger```
+* when starting you can find the interactive API documentation at ```localhost:8080/swagger```
 * Bachelor's Thesis covering concept and backend: [on GitHub](https://github.com/t0rbn/BSc)
 * Bachelor's Thesis covering the frontend: ?
 

@@ -10,7 +10,7 @@ class Results extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			lastSortedBy: 'fitness',
+			lastSortedBy: 'fitnessScoreValue',
 		}
 	}
 

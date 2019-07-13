@@ -22,7 +22,7 @@ const store = createStore(
 		searchTerms: [],
 		skills: [],
 		lastSortedBy: {
-			lastSortedBy: 'fitness',
+			lastSortedBy: 'fitnessScoreValue',
 		},
 		directionFilter: 'descending',
 	},

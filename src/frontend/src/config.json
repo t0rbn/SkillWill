@@ -1,6 +1,6 @@
 {
-  "skillLegend": ["n/a", "Basic", "Intermediate", "Expert"],
-  "willLegend": ["None whatsoever", "ok", "High", "Super high"],
+  "skillLegend": ["Heard the name.", "Basic", "Intermediate", "Expert"],
+  "willLegend": ["None", "ok", "High", "Super high"],
   "directionFilterOptions": [{
       "value": "ascending",
       "display": "ascending"
@@ -11,7 +11,7 @@
     }
   ],
   "sortFilterOptions": [{
-      "value": "fitness",
+      "value": "fitnessScoreValue",
       "display": "match"
     },
     {

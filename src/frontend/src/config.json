@@ -1,6 +1,6 @@
 {
-  "skillLegend": ["Head the name", "Basic", "Advanced", "Expert"],
-  "willLegend": ["None", "ok", "High", "Super high"],
+  "skillLegend": ["none", "basic", "advanced", "expert"],
+  "willLegend": ["meh.", "ok", "interested", "love it!"],
   "directionFilterOptions": [{
       "value": "ascending",
       "display": "ascending"

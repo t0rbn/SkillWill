@@ -20,7 +20,7 @@ class Tooltip extends React.Component {
 								<div className="level">
 									<div className={`skillBar levelBar levelBar--zero`} />
 								</div>
-								<span className={`${className}-legend-name`}>head the name</span>
+								<span className={`${className}-legend-name`}>none</span>
 							</div>
 							<div className={`${className}-legend-item`}>
 								<div className="level">
@@ -46,13 +46,13 @@ class Tooltip extends React.Component {
 					{variant === 'will' && (
 						<div className={`${className}-legend-wrapper`}>
 							<div className={`${className}-legend-item`}>
-								<span className={`${className}-legend-name`}>super high</span>
+								<span className={`${className}-legend-name`}>love it!</span>
 								<div className="level">
 									<div className={`willBar levelBar levelBar--3`} />
 								</div>
 							</div>
 							<div className={`${className}-legend-item`}>
-								<span className={`${className}-legend-name`}>high</span>
+								<span className={`${className}-legend-name`}>interested</span>
 								<div className="level">
 									<div className={`willBar levelBar levelBar--2`} />
 								</div>
@@ -64,7 +64,7 @@ class Tooltip extends React.Component {
 								</div>
 							</div>
 							<div className={`${className}-legend-item`}>
-								<span className={`${className}-legend-name`}>none</span>
+								<span className={`${className}-legend-name`}>meh.</span>
 								<div className="level">
 									<div className={`willBar levelBar levelBar--zero`} />
 								</div>

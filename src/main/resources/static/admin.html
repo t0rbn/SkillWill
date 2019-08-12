@@ -8,26 +8,32 @@
 <body>
 
 <h1>Edit Skills</h1>
-<p>Yes, this admin "interface" is as improvides as it looks...</p>
 
 <h3>All Skills</h3>
 <ul id="skillList"></ul>
-
 <hr>
+
 <h3>Add Skill</h3>
 <div>
 	<input type="text" id="newSkillName">
 	<button onclick="addSkill()">Add</button>
 </div>
-
 <hr>
+
 <h3>Remove Skill</h3>
 <div>
 	<p>Skill to Delete: </p><select id="removeSkillName"></select>
 	<p>Migrate User Skills to: </p><select id="migrateSkillName"></select>
 	<button onclick="deleteSkill()">Delete</button>
 </div>
+<hr>
 
+<h1>Edit Users</h1>
+
+<h3>Remove User</h3>
+<div>
+	<select id="removeUserName"></select>
+</div>
 
 <script>
 	function addSkill() {
@@ -44,8 +50,13 @@
 	}
 
 	function deleteSkill() {
+		if (!window.confirm('Are you sure?')) {
+				return;
+		}
+
 		const removeName = document.querySelector('#removeSkillName').value
 		const migrateName = document.querySelector('#migrateSkillName').value
+
 		const formData = new FormData()
 		if (migrateName.length) {
 			formData.append("migrateTo", migrateName)
@@ -56,7 +67,7 @@
 			mode: 'cors',
 			cache: 'no-cache',
 			credentials: 'same-origin',
-		}).then(() => location.reload())
+		}).then(() => loadSkills())
 	}
 
 	function loadSkills() {
@@ -72,7 +83,15 @@
 		})
 	}
 
+	function loadUsers() {
+      fetch('/users').then(response => response.json()).then(data => {
+          removeOptions = data.results.map(user => '<option value="' + user.id + '">' + user.displayName + '</option>').join('')
+          document.querySelector('#removeUserName').innerHTML = removeOptions
+      })
+	}
+
 	loadSkills()
+	loadUsers()
 </script>
 
 </body>

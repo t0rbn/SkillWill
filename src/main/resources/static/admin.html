@@ -33,6 +33,7 @@
 <h3>Remove User</h3>
 <div>
 	<select id="removeUserName"></select>
+	<button onclick="deleteUser()">Delete</button>
 </div>
 
 <script>
@@ -68,6 +69,20 @@
 			cache: 'no-cache',
 			credentials: 'same-origin',
 		}).then(() => loadSkills())
+	}
+
+	function deleteUser() {
+	    if (!window.confirm('Are you sure?')) {
+	        return;
+			}
+
+      const removeName = document.querySelector('#removeUserName').value;
+      fetch('/users/' + removeName, {
+          method: 'DELETE',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+      }).then(() => loadUsers())
 	}
 
 	function loadSkills() {

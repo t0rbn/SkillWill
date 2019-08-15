@@ -118,4 +118,10 @@ public class UserController {
     return new ResponseEntity<>(similar, HttpStatus.OK);
   }
 
+  public ResponseEntity deleteUserById(String id) {
+
+    userService.deleteUserById(id);
+
+    return ResponseEntity.ok().build();
+  }
 }

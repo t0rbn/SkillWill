@@ -143,6 +143,11 @@ public class UserService {
     if (StringUtils.isEmpty(id)) {
       throw new EmptyArgumentException("");
     }
+
+    if (userRepository.findById(id).isEmpty()) {
+      throw new UserNotFoundException("");
+    }
+
     userRepository.deleteById(id);
   }
 }

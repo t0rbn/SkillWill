@@ -1,6 +1,7 @@
 package com.sinnerschrader.skillwill.services;
 
 import com.sinnerschrader.skillwill.domain.user.FitnessScoreProperties;
+import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import org.junit.Rule;
@@ -41,5 +42,13 @@ public class UserServiceTest {
     verify(userRepository).deleteById(givenId);
   }
 
+  @Test(expected = EmptyArgumentException.class)
+  public void shouldRejectNullId() {
+    userService.deleteUserById(null);
+  }
 
+  @Test(expected = EmptyArgumentException.class)
+  public void shouldRejectEmptyId() {
+    userService.deleteUserById("");
+  }
 }

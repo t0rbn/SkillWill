@@ -140,7 +140,9 @@ public class UserService {
   }
 
   public void deleteUserById(String id) {
-
+    if (StringUtils.isEmpty(id)) {
+      throw new EmptyArgumentException("");
+    }
     userRepository.deleteById(id);
   }
 }

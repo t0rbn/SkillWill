@@ -139,4 +139,8 @@ public class UserService {
     return UserSimilarityUtils.findSimilar(user, toSearch, count);
   }
 
+  public void deleteUserById(String id) {
+
+    userRepository.deleteById(id);
+  }
 }

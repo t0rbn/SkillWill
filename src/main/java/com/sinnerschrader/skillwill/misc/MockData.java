@@ -17,12 +17,6 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-/**
- * Reads Mock Data from files specified in application.properties and
- * inserts it into DB. Handle with care, as this could delete all your data.
- *
- * @author torree
- */
 @Component
 public class MockData {
 

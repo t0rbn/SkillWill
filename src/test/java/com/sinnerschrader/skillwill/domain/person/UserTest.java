@@ -9,11 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Partial unit tests for User
- *
- * @author torree
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class UserTest {

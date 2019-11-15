@@ -2,12 +2,6 @@ package com.sinnerschrader.skillwill.domain.skills;
 
 import org.springframework.data.annotation.Id;
 
-/**
- * A skill owned by a person
- * includes name, skill level and will level
- *
- * @author torree
- */
 public class UserSkill {
 
   @Id

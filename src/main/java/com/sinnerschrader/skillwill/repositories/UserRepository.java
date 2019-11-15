@@ -5,12 +5,6 @@ import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-/**
- * MongoRepository for Persons
- * Collection: person
- *
- * @author torree
- */
 public interface UserRepository extends MongoRepository<User, String> {
 
   User findByEmailIgnoreCase(String email);

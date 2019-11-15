@@ -23,13 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-
-/**
- * Controller handling /users/{foo}
- *
- * @author torree
- */
 @Api(tags = "Users", description = "User management and search")
 @Controller
 @CrossOrigin

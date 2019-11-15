@@ -7,12 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Calculate how well a user fits into a searched skill set.
- * The result can be on a scale from 0 (does not fit at all) to 1 (perfect match)
- *
- * @author torree
- */
 public class FitnessScore {
 
   private final FitnessScoreProperties props;

@@ -6,14 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- * Forward / to /swagger-ui.html
- *
- * @author torree
- */
 @Controller
 @Scope("prototype")
-public class ForwardController {
+public class StaticRedirectController {
 
 //  @ApiOperation(value = "forward to swagger", notes = "forward to swagger")
   @RequestMapping(path = "/swagger")

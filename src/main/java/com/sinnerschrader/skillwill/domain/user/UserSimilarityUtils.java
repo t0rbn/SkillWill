@@ -7,12 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Get n Persons that are similar to the reference user
- * similar = low jaccard distance between users' skillsets
- *
- * @author torree
- */
 public class UserSimilarityUtils {
 
   public static List<User> findSimilar(User user, Collection<User> candidates, Integer count) {

@@ -30,11 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-/**
- * Services handling skills management (create, rename, suggest, delete, ...)
- *
- * @author torree
- */
 @Service
 @EnableRetry
 public class SkillService {

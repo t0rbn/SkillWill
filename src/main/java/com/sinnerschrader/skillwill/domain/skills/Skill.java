@@ -11,11 +11,6 @@ import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
-/**
- * A skill known to the system including a list of suggestable skills
- *
- * @author torree
- */
 public class Skill {
 
   private String name;

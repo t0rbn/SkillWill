@@ -1,10 +1,5 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
-/**
- * A suggestable skill used by Skill
- *
- * @author torree
- */
 public class SuggestionSkill {
 
   private String name;

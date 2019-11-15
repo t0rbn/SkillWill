@@ -12,13 +12,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-
-
-/**
- * Class holding all information about a person
- *
- * @author torree
- */
 public class User {
 
   @Id

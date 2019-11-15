@@ -24,13 +24,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-
-
-/**
- * Service handling user management
- *
- * @author torree
- */
 @Service
 @EnableRetry
 public class UserService {
